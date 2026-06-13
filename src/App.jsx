@@ -188,6 +188,7 @@ function HomeScreen({ onCreateGame, onJoinGame }) {
   const [name, setName] = useState("");
   const [mode, setMode] = useState(null);
   const [error, setError] = useState("");
+  const [joining, setJoining] = useState(false);
 
   const handleCreate = async () => {
     if (!name.trim()) { setError("Enter your name"); return; }
@@ -199,7 +200,9 @@ function HomeScreen({ onCreateGame, onJoinGame }) {
     if (!name.trim()) { setError("Enter your name"); return; }
     if (!joinCode.trim()) { setError("Enter a room code"); return; }
     setError("");
-    onJoinGame(name.trim(), joinCode.trim().toUpperCase());
+    setJoining(true);
+    await onJoinGame(name.trim(), joinCode.trim().toUpperCase());
+    setJoining(false);
   };
 
   return (
@@ -242,7 +245,9 @@ function HomeScreen({ onCreateGame, onJoinGame }) {
             <div style={{ color: C.muted, fontSize: 12, marginBottom: 4, fontFamily: "monospace" }}>ROOM CODE</div>
             <input value={joinCode} onChange={e => setJoinCode(e.target.value)} placeholder="e.g. AB12CD" style={{ ...inputStyle, fontFamily: "monospace", letterSpacing: 3, textTransform: "uppercase" }} maxLength={6} />
             {error && <div style={{ color: C.red, fontSize: 13 }}>{error}</div>}
-            <button onClick={handleJoin} style={btnStyle(C.accent)}>Join Game →</button>
+            <button onClick={handleJoin} disabled={joining} style={{ ...btnStyle(joining ? C.surface : C.accent, joining ? C.border : C.accent), opacity: joining ? 0.6 : 1, cursor: joining ? "default" : "pointer" }}>
+              {joining ? "Joining…" : "Join Game →"}
+            </button>
             <button onClick={() => { setMode(null); setError(""); }} style={btnStyle("transparent", C.border, C.muted)}>Back</button>
           </div>
         )}
@@ -776,10 +781,15 @@ export default function App() {
   };
 
   const loadRoomData = async (code) => {
-    try {
-      const r = await window.storage.get(`room:${code}`, true);
-      return r ? JSON.parse(r.value) : null;
-    } catch { return null; }
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const r = await window.storage.get(`room:${code}`, true);
+        return r ? JSON.parse(r.value) : null;
+      } catch (e) {
+        if (attempt < 2) await new Promise(res => setTimeout(res, 800));
+        else throw e;
+      }
+    }
   };
 
   // ── DRAW QUESTIONS FOR A ROUND ──────────────────────────────────────────
@@ -815,6 +825,7 @@ export default function App() {
       round: 0, topicPick: null,
       createdAt: Date.now(),
     };
+
     await saveRoomData(code, room);
 
     roundQuestionsRef.current = firstQs;
@@ -828,20 +839,37 @@ export default function App() {
 
     // Poll until joiner arrives
     pollRef.current = setInterval(async () => {
-      const r = await loadRoomData(code);
-      if (r && r.joiner) { setOpponentName(r.joiner); clearInterval(pollRef.current); }
+      try {
+        const r = await loadRoomData(code);
+        if (r && r.joiner) { setOpponentName(r.joiner); clearInterval(pollRef.current); }
+      } catch {}
     }, 3000);
   };
 
   // ── JOIN GAME ─────────────────────────────────────────────────────────────
   const handleJoinGame = async (name, code) => {
-    const room = await loadRoomData(code);
-    if (!room) { alert("Room not found. Check the code and try again."); return; }
+    let room;
+    try {
+      room = await loadRoomData(code);
+    } catch (e) {
+      alert("Could not reach storage. Check your connection and try again.");
+      return;
+    }
+
+    if (!room) {
+      alert("Room not found. Double-check the code — it's case-sensitive and must match exactly.");
+      return;
+    }
     if (room.joiner && room.joiner !== name) { alert("This game already has two players."); return; }
 
     const topic = room.roundTopics[0] || TOPIC_NAMES[0];
     const allQs = Object.values(TOPICS).flatMap(t => t.questions);
     const qs = (room.roundQuestions[0] || []).map(id => allQs.find(q => q.id === id)).filter(Boolean);
+
+    if (qs.length === 0) {
+      alert("Room found but questions could not be loaded. Ask the creator to share the code again.");
+      return;
+    }
 
     room.joiner = name;
     await saveRoomData(code, room);

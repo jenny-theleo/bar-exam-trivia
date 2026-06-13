@@ -786,10 +786,12 @@ export default function App() {
         const r = await window.storage.get(`room:${code}`, true);
         return r ? JSON.parse(r.value) : null;
       } catch (e) {
+        // Storage throws on key-not-found — treat as null after retries
         if (attempt < 2) await new Promise(res => setTimeout(res, 800));
-        else throw e;
+        else return null;
       }
     }
+    return null;
   };
 
   // ── DRAW QUESTIONS FOR A ROUND ──────────────────────────────────────────
@@ -848,16 +850,10 @@ export default function App() {
 
   // ── JOIN GAME ─────────────────────────────────────────────────────────────
   const handleJoinGame = async (name, code) => {
-    let room;
-    try {
-      room = await loadRoomData(code);
-    } catch (e) {
-      alert("Could not reach storage. Check your connection and try again.");
-      return;
-    }
+    const room = await loadRoomData(code);
 
     if (!room) {
-      alert("Room not found. Double-check the code — it's case-sensitive and must match exactly.");
+      alert("Room not found. Double-check the code and try again.");
       return;
     }
     if (room.joiner && room.joiner !== name) { alert("This game already has two players."); return; }

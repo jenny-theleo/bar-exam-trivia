@@ -215,6 +215,13 @@ function HomeScreen({ onCreateGame, onJoinGame }) {
   const [mode, setMode] = useState(urlCode ? "join" : null);
   const [name, setName] = useState("");
   const [joinCode, setJoinCode] = useState(urlCode.toUpperCase());
+
+  // Clear ?room= from URL once on mount so Back to Lobby shows lobby not join form
+  useEffect(() => {
+    if (urlCode) {
+      try { window.history.replaceState({}, "", window.location.pathname); } catch {}
+    }
+  }, []);
   const [error, setError] = useState("");
   const [joining, setJoining] = useState(false);
   const [sessions, setSessions] = useState([]);

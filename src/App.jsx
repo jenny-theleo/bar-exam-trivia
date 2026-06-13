@@ -247,16 +247,22 @@ function HomeScreen({ onCreateGame, onJoinGame }) {
           const currentRound = rounds.length > 0 ? rounds[0] : 0;
           const totalRounds = Object.keys(room.roundTopics || {}).length;
 
-          // Check if it's my turn (I haven't submitted answers this round)
+          // Check if it's my turn
           let myTurn = false;
-          if (room.roundTopics && room.roundTopics[currentRound]) {
+          const topicChosen = room.roundTopics && room.roundTopics[currentRound];
+          if (!topicChosen) {
+            // No topic yet — only the creator needs to act (spin the wheel)
+            myTurn = isCreator;
+          } else {
             const myDone = [0, 1, 2].every(i => room.answers && room.answers[`${role}_r${currentRound}q${i}`]);
             const oppDone = [0, 1, 2].every(i => room.answers && room.answers[`${oppRole}_r${currentRound}q${i}`]);
-            if (!myDone) myTurn = true;
-            else if (myDone && oppDone && currentRound + 1 < 5) myTurn = true; // round result pending
-          } else {
-            // Creator hasn't spun yet
-            myTurn = isCreator;
+            if (!myDone) {
+              myTurn = true; // haven't answered yet
+            } else if (myDone && oppDone) {
+              // Both done — need to handle round result / next round spin
+              myTurn = true;
+            }
+            // else myDone && !oppDone → waiting for opponent, myTurn stays false
           }
 
           statuses[code] = { opponent, myTurn, currentRound: totalRounds, opponent };
@@ -447,21 +453,24 @@ function ShareCodeScreen({ creatorName, roomCode, onSpin, inviteCopied, onCopy }
 // ── JOINER WAITING SCREEN ─────────────────────────────────────────────────────
 // Shown to the joiner after they enter their name+code if the creator hasn't
 // spun yet. Polls every 2s until roundTopics[0] is set.
-function JoinerWaitingScreen({ creatorName }) {
+function JoinerWaitingScreen({ creatorName, onBackToLobby }) {
   return (
     <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif" }}>
       <div style={{ maxWidth: 420, width: "100%", textAlign: "center" }}>
         <div style={{ fontSize: 48, marginBottom: 16 }}>🎡</div>
-        <h2 style={{ color: C.text, fontSize: 24, fontWeight: 900, margin: "0 0 8px" }}>Waiting for Spin</h2>
+        <h2 style={{ color: C.text, fontSize: 24, fontWeight: 900, margin: "0 0 8px" }}>Waiting for Topic</h2>
         <p style={{ color: C.muted, fontSize: 14, marginBottom: 24 }}>
-          <span style={{ color: C.p1, fontWeight: 700 }}>{creatorName}</span> is spinning the wheel to pick a topic…
+          <span style={{ color: C.p1, fontWeight: 700 }}>{creatorName}</span> is picking the first topic…
         </p>
-        <div style={{ display: "flex", justifyContent: "center", gap: 6 }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 32 }}>
           {[0, 1, 2].map(i => (
             <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: C.accent, opacity: 0.7,
               animation: `pulse ${0.6 + i * 0.2}s ease-in-out infinite alternate` }} />
           ))}
         </div>
+        <button onClick={onBackToLobby} style={{ background: "transparent", border: `1px solid ${C.border}`, borderRadius: 10, padding: "12px 20px", color: C.muted, fontSize: 14, cursor: "pointer", fontFamily: "system-ui, sans-serif" }}>
+          ← Back to Lobby
+        </button>
       </div>
     </div>
   );
@@ -734,7 +743,7 @@ function SpinWheelScreen({ pickerName, onTopicChosen, isFirstRound }) {
         <p style={{ color: C.muted, fontSize: 13, margin: "0 0 24px", lineHeight: 1.5 }}>
           {isFirstRound
             ? <span><span style={{ color: C.p1, fontWeight: 700 }}>{pickerName}</span> — you created the game, spin to pick the first topic</span>
-            : <span><span style={{ color: C.p2, fontWeight: 700 }}>{pickerName}</span> lost the round — spin the wheel to pick the next topic</span>
+            : <span><span style={{ color: C.p1, fontWeight: 700 }}>{pickerName}</span> — spin the wheel to pick the next topic</span>
           }
         </p>
 
@@ -799,20 +808,23 @@ function SpinWheelScreen({ pickerName, onTopicChosen, isFirstRound }) {
 }
 
 // ── WAITING FOR OPPONENT TOPIC SPIN ──────────────────────────────────────────
-function WaitingForTopicScreen({ loserName }) {
+function WaitingForTopicScreen({ loserName, onBackToLobby }) {
   return (
     <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif" }}>
       <div style={{ maxWidth: 420, width: "100%", textAlign: "center" }}>
         <div style={{ fontSize: 44, marginBottom: 16 }}>🎡</div>
-        <h2 style={{ color: C.text, fontSize: 24, fontWeight: 900, margin: "0 0 8px" }}>Waiting for Spin</h2>
+        <h2 style={{ color: C.text, fontSize: 24, fontWeight: 900, margin: "0 0 8px" }}>Waiting for Topic</h2>
         <p style={{ color: C.muted, fontSize: 14, marginBottom: 24 }}>
-          <span style={{ color: C.p2, fontWeight: 700 }}>{loserName}</span> is spinning the wheel…
+          <span style={{ color: C.p1, fontWeight: 700 }}>{loserName}</span> is picking the next topic…
         </p>
-        <div style={{ display: "flex", justifyContent: "center", gap: 6 }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 32 }}>
           {[0, 1, 2].map(i => (
             <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: C.accent, animation: `pulse ${0.6 + i * 0.2}s ease-in-out infinite alternate`, opacity: 0.7 }} />
           ))}
         </div>
+        <button onClick={onBackToLobby} style={{ background: "transparent", border: `1px solid ${C.border}`, borderRadius: 10, padding: "12px 20px", color: C.muted, fontSize: 14, cursor: "pointer", fontFamily: "system-ui, sans-serif" }}>
+          ← Back to Lobby
+        </button>
       </div>
     </div>
   );
@@ -1657,14 +1669,14 @@ export default function App() {
     return <SpinWheelScreen pickerName={playerName} onTopicChosen={handleTopicChosen} />;
 
   if (screen === "joinerWaiting")
-    return <JoinerWaitingScreen creatorName={opponentName} />;
+    return <JoinerWaitingScreen creatorName={opponentName} onBackToLobby={() => { clearInterval(pollRef.current); setScreen("home"); }} />;
 
   if (screen === "topicReveal")
     return <TopicRevealScreen creatorName={opponentName} topic={topicRevealTopic} onReady={handleJoinerReady} />;
 
   if (screen === "waitingForTopic") {
     const loserDisplayName = roundLoser === "them" ? playerName : opponentName;
-    return <WaitingForTopicScreen loserName={loserDisplayName} />;
+    return <WaitingForTopicScreen loserName={loserDisplayName} onBackToLobby={() => { clearInterval(pollRef.current); setScreen("home"); }} />;
   }
 
   if (screen === "playing") {

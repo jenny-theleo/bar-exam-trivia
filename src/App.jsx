@@ -964,28 +964,36 @@ export default function App() {
   const qKey = (round, q) => `r${round}q${q}`;
 
   // ── STORAGE HELPERS ──────────────────────────────────────────────────────
+  const storageAvailable = typeof window !== "undefined" && window.storage && typeof window.storage.set === "function";
+
   const saveRoomData = async (code, data) => {
-    const json = JSON.stringify(data);
-    console.log("[SAVE] key=room:" + code + " bytes=" + json.length);
+    if (!storageAvailable) {
+      console.error("[SAVE] window.storage not available");
+      return false;
+    }
     try {
-      const result = await window.storage.set("room:" + code, json, true);
-      console.log("[SAVE] result=", result);
+      const result = await window.storage.set(`room:${code}`, JSON.stringify(data), true);
+      console.log("[SAVE] ok code=" + code + " result=", result);
       return true;
     } catch (e) {
-      console.error("[SAVE] FAILED", e);
+      console.error("[SAVE] FAILED code=" + code, e);
       return false;
     }
   };
 
   const loadRoomData = async (code) => {
-    console.log("[LOAD] key=room:" + code);
+    if (!storageAvailable) {
+      console.error("[LOAD] window.storage not available");
+      return null;
+    }
+    console.log("[LOAD] code=" + code);
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
-        const r = await window.storage.get("room:" + code, true);
-        console.log("[LOAD] attempt=" + attempt + " result=", r);
+        const r = await window.storage.get(`room:${code}`, true);
+        console.log("[LOAD] attempt=" + attempt + " got=", r);
         return r ? JSON.parse(r.value) : null;
       } catch (e) {
-        console.log("[LOAD] attempt=" + attempt + " threw:", e);
+        console.log("[LOAD] attempt=" + attempt + " threw:", String(e));
         if (attempt < 2) await new Promise(res => setTimeout(res, 800));
         else return null;
       }
@@ -1020,7 +1028,8 @@ export default function App() {
     console.log("[CREATE] stub room saved=", saved, "code=", code);
 
     if (!saved) {
-      alert("Could not create game — storage unavailable. Please try again.");
+      const reason = (typeof window !== "undefined" && window.storage) ? "save failed" : "window.storage is not available on this host";
+      alert("Could not create game: " + reason + ". Check console for details.");
       return;
     }
 

@@ -892,7 +892,7 @@ function FinalResultScreen({ playerName, opponentName, scores, onPlayAgain }) {
             </div>
           ))}
         </div>
-        <button onClick={onPlayAgain} style={btnStyle(C.accent)}>Play Again</button>
+        <button onClick={onPlayAgain} style={btnStyle(C.accent)}>🔄 Play Another Series</button>
       </div>
     </div>
   );
@@ -1053,7 +1053,6 @@ export default function App() {
   const handleGoSpin = () => setScreen("topicPickerFirst");
 
   // Step 3: creator confirms topic from wheel → update room with questions
-  // No loadRoomData here — build full room directly to avoid lag
   const handleFirstTopicChosen = async (topic) => {
     const name = pendingCreatorName;
     const code = roomCodeRef.current;
@@ -1063,15 +1062,15 @@ export default function App() {
     TOPIC_NAMES.forEach(t => { initUsed[t] = []; });
     initUsed[topic] = firstQs.map(q => q.id);
 
-    // Write the complete room — overwrite the stub
-    const room = {
-      code, creator: name, joiner: opponentName || null,
-      roundQuestions: { 0: firstQs.map(q => q.id) },
-      roundTopics: { 0: topic },
-      usedIds: initUsed,
-      answers: {}, topicPick: null, createdAt: Date.now(),
-    };
-    await saveRoomData(code, room);
+    // Write atomically — preserves joiner name if already registered
+    await Promise.all([
+      setRoomField(code, "roundTopics/0", topic),
+      setRoomField(code, "roundQuestions/0", firstQs.map(q => q.id)),
+      setRoomField(code, "usedIds", initUsed),
+      setRoomField(code, "answers", {}),
+      setRoomField(code, "topicPick", null),
+      setRoomField(code, "rematch", null),
+    ]);
 
     roundQuestionsRef.current = firstQs;
     setCurrentTopic(topic);
@@ -1349,14 +1348,15 @@ export default function App() {
     const newUsed = { ...usedIds };
     const newQs = drawRoundQuestions(topic, newUsed[topic] || []);
     newUsed[topic] = [...(newUsed[topic] || []), ...newQs.map(q => q.id)];
+    const code = roomCodeRef.current;
 
-    // Use PATCH to avoid overwriting other fields (especially answers written concurrently)
-    await patchRoomData(roomCodeRef.current, {
-      usedIds: newUsed,
-      [`roundTopics/${nextRound}`]: topic,
-      [`roundQuestions/${nextRound}`]: newQs.map(q => q.id),
-      topicPick: { round: nextRound, topic, timestamp: Date.now() },
-    });
+    // Write each field atomically to avoid overwriting concurrent answer writes
+    await Promise.all([
+      setRoomField(code, "usedIds", newUsed),
+      setRoomField(code, `roundTopics/${nextRound}`, topic),
+      setRoomField(code, `roundQuestions/${nextRound}`, newQs.map(q => q.id)),
+      setRoomField(code, "topicPick", { round: nextRound, topic, timestamp: Date.now() }),
+    ]);
 
     roundQuestionsRef.current = newQs;
     setUsedIds(newUsed);
@@ -1389,13 +1389,20 @@ export default function App() {
     }, 2000);
   };
 
-  const handleNextRound = () => {
+  const handleNextRound = async () => {
     const nextRound = currentRoundRef.current + 1;
     if (nextRound >= MAX_ROUNDS) { setScreen("finalResult"); return; }
     if (roundLoser === "tie") {
       const newUsed = { ...usedIds };
       const newQs = drawRoundQuestions(currentTopic, newUsed[currentTopic] || []);
       newUsed[currentTopic] = [...(newUsed[currentTopic] || []), ...newQs.map(q => q.id)];
+      const code = roomCodeRef.current;
+      await Promise.all([
+        setRoomField(code, "usedIds", newUsed),
+        setRoomField(code, `roundTopics/${nextRound}`, currentTopic),
+        setRoomField(code, `roundQuestions/${nextRound}`, newQs.map(q => q.id)),
+        setRoomField(code, "topicPick", { round: nextRound, topic: currentTopic, timestamp: Date.now() }),
+      ]);
       roundQuestionsRef.current = newQs;
       setUsedIds(newUsed);
       setRoundQuestions(newQs);
@@ -1404,9 +1411,15 @@ export default function App() {
     }
   };
 
-  const handlePlayAgain = () => {
+  const handlePlayAgain = async () => {
     clearInterval(pollRef.current);
     clearInterval(timerRef.current);
+
+    const code = roomCodeRef.current;
+    const name = playerName;
+    const isCreatorPlayer = isCreatorRef.current;
+
+    // Reset local state
     myAnswersRef.current = {};
     setMyAnswers({});
     setScores({ me: 0, them: 0 });
@@ -1415,9 +1428,50 @@ export default function App() {
     setInviteCopied(false);
     setRoundLoser(null);
     setTopicRevealTopic(null);
-    setPendingCreatorName("");
     setCurrentQSelected(null);
-    setScreen("home");
+
+    if (code && name) {
+      // Reuse the same room — reset game data but keep both players linked
+      const initUsed = {};
+      TOPIC_NAMES.forEach(t => { initUsed[t] = []; });
+      await Promise.all([
+        setRoomField(code, "answers", {}),
+        setRoomField(code, "roundTopics", {}),
+        setRoomField(code, "roundQuestions", {}),
+        setRoomField(code, "usedIds", initUsed),
+        setRoomField(code, "topicPick", null),
+        setRoomField(code, "rematch", { requestedBy: name, timestamp: Date.now() }),
+      ]);
+
+      if (isCreatorPlayer) {
+        // Creator goes to spin screen for new series
+        setPendingCreatorName(name);
+        setScreen("topicPickerFirst");
+      } else {
+        // Joiner waits for creator to spin
+        setScreen("joinerWaiting");
+        pollRef.current = setInterval(async () => {
+          const r = await loadRoomData(code);
+          if (!r) return;
+          const allQs = Object.values(TOPICS).flatMap(t => t.questions);
+          const t = r.roundTopics ? r.roundTopics[0] : null;
+          const q = t ? (r.roundQuestions[0] || []).map(id => allQs.find(x => x.id === id)).filter(Boolean) : [];
+          if (t && q.length >= QUESTIONS_PER_ROUND) {
+            clearInterval(pollRef.current);
+            const used = r.usedIds || initUsed;
+            roundQuestionsRef.current = q;
+            setCurrentTopic(t);
+            setRoundQuestions(q);
+            setUsedIds(used);
+            setTopicRevealTopic(t);
+            setScreen("topicReveal");
+          }
+        }, 2000);
+      }
+    } else {
+      setPendingCreatorName("");
+      setScreen("home");
+    }
   };
 
   // ── RENDER ────────────────────────────────────────────────────────────────

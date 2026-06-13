@@ -834,7 +834,7 @@ function WaitingForTopicScreen({ loserName, onBackToLobby }) {
 // feedback survives across renders without a remount destroying it.
 function QuestionScreen({ question, questionNum, totalQuestions, onAnswer,
                           timeLeft, topic, isLastQuestion,
-                          selectedAnswer, waitingForOpponent, onAdvance }) {
+                          selectedAnswer, waitingForOpponent, onAdvance, onBackToLobby }) {
   const topicConfig = TOPICS[topic] || TOPICS["Constitutional Law"];
   const correctAnswer = question.correct;
   const isRevealed = !!selectedAnswer;
@@ -912,6 +912,13 @@ function QuestionScreen({ question, questionNum, totalQuestions, onAnswer,
                 Next Question →
               </button>
             )}
+            {isLastQuestion && onBackToLobby && (
+              <button
+                onClick={onBackToLobby}
+                style={{ background: "transparent", border: `1px solid ${C.border}`, borderRadius: 10, padding: "12px 20px", color: C.muted, fontSize: 14, cursor: "pointer", width: "100%", fontFamily: "system-ui, sans-serif", marginTop: 8 }}>
+                ← Back to Lobby
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -919,7 +926,7 @@ function QuestionScreen({ question, questionNum, totalQuestions, onAnswer,
   );
 }
 
-function RoundResultScreen({ roundResults, playerName, opponentName, scores, onNextRound, isGameOver, currentTopic, roundWinner, myName, isLoser, onPickTopic }) {
+function RoundResultScreen({ roundResults, playerName, opponentName, scores, onNextRound, isGameOver, currentTopic, roundWinner, myName, isLoser, onPickTopic, onBackToLobby }) {
   const myTotal = roundResults.filter(r => r.myCorrect).length;
   const theirTotal = roundResults.filter(r => r.theirCorrect).length;
   const iWon = myTotal > theirTotal;
@@ -993,16 +1000,20 @@ function RoundResultScreen({ roundResults, playerName, opponentName, scores, onN
         )}
 
         {!isGameOver
-          ? <button
-              onClick={!tied && !isLoser ? undefined : handleContinue}
-              disabled={!tied && !isLoser}
-              style={{
-                ...btnStyle(tied || isLoser ? C.accent : C.surface, tied || isLoser ? C.accent : C.border, tied || isLoser ? "#fff" : C.muted),
-                opacity: tied || isLoser ? 1 : 0.5,
-                cursor: tied || isLoser ? "pointer" : "default",
-              }}>
-              {tied ? "Next Round →" : isLoser ? "Pick the Next Topic →" : "Wait for Topic Pick…"}
-            </button>
+          ? <>
+              <button
+                onClick={!tied && !isLoser ? undefined : handleContinue}
+                disabled={!tied && !isLoser}
+                style={{
+                  ...btnStyle(tied || isLoser ? C.accent : C.surface, tied || isLoser ? C.accent : C.border, tied || isLoser ? "#fff" : C.muted),
+                  opacity: tied || isLoser ? 1 : 0.5,
+                  cursor: tied || isLoser ? "pointer" : "default",
+                  marginBottom: 10,
+                }}>
+                {tied ? "Next Round →" : isLoser ? "Pick the Next Topic →" : "Wait for Topic Pick…"}
+              </button>
+              <button onClick={onBackToLobby} style={btnStyle("transparent", C.border, C.text)}>← Back to Lobby</button>
+            </>
           : <button onClick={() => onNextRound(null)} style={btnStyle(C.accent)}>See Final Results →</button>
         }
       </div>
@@ -1010,17 +1021,19 @@ function RoundResultScreen({ roundResults, playerName, opponentName, scores, onN
   );
 }
 
-function FinalResultScreen({ playerName, opponentName, scores, onPlayAgain }) {
+function FinalResultScreen({ playerName, opponentName, scores, onPlayAgain, onBackToLobby, onEndGame }) {
   const iWon = scores.me > scores.them;
   const tied = scores.me === scores.them;
   return (
     <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif" }}>
-      <div style={{ maxWidth: 420, width: "100%", textAlign: "center" }}>
-        <div style={{ fontSize: 56, marginBottom: 12 }}>{tied ? "🤝" : iWon ? "🎉" : "💪"}</div>
-        <h2 style={{ color: C.text, fontSize: 32, fontWeight: 900, margin: "0 0 8px" }}>
-          {tied ? "It's a Tie!" : iWon ? "You Won!" : `${opponentName} Won!`}
-        </h2>
-        <p style={{ color: C.muted, fontSize: 14, marginBottom: 32 }}>Final results · 5 rounds complete</p>
+      <div style={{ maxWidth: 420, width: "100%" }}>
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <div style={{ fontSize: 56, marginBottom: 12 }}>{tied ? "🤝" : iWon ? "🎉" : "💪"}</div>
+          <h2 style={{ color: C.text, fontSize: 32, fontWeight: 900, margin: "0 0 8px" }}>
+            {tied ? "It's a Tie!" : iWon ? "You Won!" : `${opponentName} Won!`}
+          </h2>
+          <p style={{ color: C.muted, fontSize: 14, marginBottom: 0 }}>Final results · 5 rounds complete</p>
+        </div>
         <div style={{ display: "flex", gap: 12, marginBottom: 32 }}>
           {[{ name: "You", score: scores.me, color: C.p1 }, { name: opponentName, score: scores.them, color: C.p2 }].map((p, i) => (
             <div key={i} style={{ flex: 1, background: C.surface, border: `2px solid ${(i === 0 ? iWon : !iWon) && !tied ? p.color : C.border}`, borderRadius: 16, padding: "20px 12px", textAlign: "center" }}>
@@ -1030,7 +1043,11 @@ function FinalResultScreen({ playerName, opponentName, scores, onPlayAgain }) {
             </div>
           ))}
         </div>
-        <button onClick={onPlayAgain} style={btnStyle(C.accent)}>🔄 Play Another Series</button>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <button onClick={onPlayAgain} style={btnStyle(C.accent)}>🔄 Play Another Series</button>
+          <button onClick={onBackToLobby} style={btnStyle("transparent", C.border, C.text)}>← Back to Lobby</button>
+          <button onClick={onEndGame} style={btnStyle("transparent", C.border, C.red)}>🗑 End Game Room</button>
+        </div>
       </div>
     </div>
   );
@@ -1694,6 +1711,7 @@ export default function App() {
         topic={currentTopic}
         isLastQuestion={currentQ === QUESTIONS_PER_ROUND - 1}
         onAdvance={() => startQuestion(currentRound, currentQ + 1)}
+        onBackToLobby={waitingForOpponent ? () => { clearInterval(pollRef.current); setScreen("home"); } : null}
       />
     );
   }
@@ -1714,6 +1732,7 @@ export default function App() {
         isLoser={iAmLoser}
         isGameOver={isGameOver}
         onNextRound={handleNextRound}
+        onBackToLobby={() => { clearInterval(pollRef.current); setScreen("home"); }}
         onPickTopic={() => {
           if (iAmLoser) handlePickTopic();
           else if (iAmWinner) handleWinnerWaitsForTopic();
@@ -1724,12 +1743,33 @@ export default function App() {
   }
 
   if (screen === "finalResult") {
+    const handleEndGame = async () => {
+      const code = roomCodeRef.current;
+      // Delete from Firebase
+      try { await fetch(`${FB_URL}/rooms/${code}.json`, { method: "DELETE" }); } catch {}
+      // Remove from localStorage lobby
+      removeSession(code);
+      clearInterval(pollRef.current);
+      clearInterval(timerRef.current);
+      myAnswersRef.current = {};
+      setMyAnswers({});
+      setScores({ me: 0, them: 0 });
+      setRoundResults([]);
+      setRoundLoser(null);
+      setTopicRevealTopic(null);
+      setPendingCreatorName("");
+      setCurrentQSelected(null);
+      setRoomCodeBoth("");
+      setScreen("home");
+    };
     return (
       <FinalResultScreen
         playerName={playerName}
         opponentName={opponentName || "Opponent"}
         scores={scores}
         onPlayAgain={handlePlayAgain}
+        onBackToLobby={() => { clearInterval(pollRef.current); setScreen("home"); }}
+        onEndGame={handleEndGame}
       />
     );
   }

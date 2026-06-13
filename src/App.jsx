@@ -184,16 +184,25 @@ const C = {
 // ── SCREENS ──────────────────────────────────────────────────────────────────
 
 function HomeScreen({ onCreateGame, onJoinGame }) {
-  const [joinCode, setJoinCode] = useState("");
+  // Auto-detect room code from URL hash (#room=XXXXXX) or query param (?room=XXXXXX)
+  const urlCode = (() => {
+    try {
+      const hash = window.location.hash.replace("#", "");
+      const hashParams = new URLSearchParams(hash);
+      if (hashParams.get("room")) return hashParams.get("room");
+      return new URLSearchParams(window.location.search).get("room") || "";
+    } catch { return ""; }
+  })();
+  const [joinCode, setJoinCode] = useState(urlCode.toUpperCase());
   const [name, setName] = useState("");
-  const [mode, setMode] = useState(null);
+  const [mode, setMode] = useState(urlCode ? "join" : null);
   const [error, setError] = useState("");
   const [joining, setJoining] = useState(false);
 
   const handleCreate = async () => {
     if (!name.trim()) { setError("Enter your name"); return; }
     setError("");
-    onCreateGame(name.trim());
+    await onCreateGame(name.trim());
   };
 
   const handleJoin = async () => {
@@ -260,42 +269,52 @@ function HomeScreen({ onCreateGame, onJoinGame }) {
 // Creator sees this immediately after hitting Create Game — code is live,
 // joiner can connect before the spin even happens.
 function ShareCodeScreen({ creatorName, roomCode, onSpin, inviteCopied, onCopy }) {
+  const joinUrl = (() => {
+    try {
+      const u = new URL(window.location.href);
+      u.search = "";
+      u.hash = "room=" + roomCode;
+      return u.toString();
+    } catch { return window.location.href.split("?")[0].split("#")[0] + "#room=" + roomCode; }
+  })();
+  const shareMsg = "Join my Bar Exam Trivia game! \uD83C\uDF93\n\n" + joinUrl;
+
   return (
     <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif" }}>
       <div style={{ maxWidth: 420, width: "100%" }}>
         <div style={{ textAlign: "center", marginBottom: 32 }}>
           <div style={{ fontSize: 11, letterSpacing: 4, color: C.accent, textTransform: "uppercase", marginBottom: 10, fontFamily: "monospace" }}>Game Created</div>
           <h2 style={{ color: C.text, fontSize: 26, fontWeight: 900, margin: "0 0 8px" }}>Invite Your Opponent</h2>
-          <p style={{ color: C.muted, fontSize: 14, margin: 0 }}>Share this code — they can join right now while you spin</p>
+          <p style={{ color: C.muted, fontSize: 14, margin: 0 }}>They click the link and join instantly — no code needed</p>
         </div>
 
-        {/* Big code display */}
-        <div style={{ background: C.card, border: `2px solid ${C.accent}`, borderRadius: 18, padding: "28px 24px", textAlign: "center", marginBottom: 20 }}>
-          <div style={{ color: C.muted, fontSize: 10, letterSpacing: 3, textTransform: "uppercase", fontFamily: "monospace", marginBottom: 10 }}>Room Code</div>
-          <div style={{ color: C.accent, fontSize: 48, fontWeight: 900, letterSpacing: 10, fontFamily: "monospace", lineHeight: 1 }}>{roomCode}</div>
+        <div style={{ background: C.card, border: "2px solid " + C.accent, borderRadius: 18, padding: "24px", textAlign: "center", marginBottom: 20 }}>
+          <div style={{ color: C.muted, fontSize: 10, letterSpacing: 3, textTransform: "uppercase", fontFamily: "monospace", marginBottom: 8 }}>Room Code</div>
+          <div style={{ color: C.accent, fontSize: 44, fontWeight: 900, letterSpacing: 8, fontFamily: "monospace", lineHeight: 1, marginBottom: 16 }}>{roomCode}</div>
+          <div style={{ color: C.muted, fontSize: 10, letterSpacing: 2, textTransform: "uppercase", fontFamily: "monospace", marginBottom: 8 }}>Join Link (tap to copy)</div>
+          <div
+            onClick={onCopy}
+            style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: 8, padding: "10px 12px",
+              wordBreak: "break-all", fontSize: 11, fontFamily: "monospace", color: C.accent,
+              lineHeight: 1.5, cursor: "pointer", userSelect: "all" }}>
+            {joinUrl}
+          </div>
         </div>
 
-        {/* Invite message textarea */}
-        <textarea
-          id="share-ta"
-          readOnly
-          value={`Join my Bar Exam Trivia game! 🎓
+        <textarea id="share-ta" readOnly value={shareMsg} onChange={() => {}}
+          style={{ position: "absolute", left: -9999, top: -9999, opacity: 0 }} />
 
-Room code: ${roomCode}
-
-${window.location.href}`}
-          rows={3}
-          onFocus={e => e.target.select()}
-          style={{ width: "100%", background: C.surface, border: `1px solid ${C.border}`, borderRadius: 10, padding: "10px 12px", color: C.text, fontSize: 12, fontFamily: "monospace", resize: "none", boxSizing: "border-box", lineHeight: 1.6, marginBottom: 12 }}
-        />
-
-        <button
-          onClick={onCopy}
-          style={{ ...btnStyle(inviteCopied ? C.green : C.surface, inviteCopied ? C.green : C.border, inviteCopied ? "#fff" : C.text), marginBottom: 12, transition: "all 0.2s" }}>
-          {inviteCopied ? "✓ Copied!" : "📋 Copy Invite"}
+        <button onClick={onCopy}
+          style={{ background: inviteCopied ? C.green : C.surface, border: "2px solid " + (inviteCopied ? C.green : C.border),
+            borderRadius: 12, padding: "16px", fontSize: 16, fontWeight: 700, cursor: "pointer",
+            width: "100%", color: inviteCopied ? "#fff" : C.text, fontFamily: "system-ui, sans-serif",
+            transition: "all 0.2s", marginBottom: 12 }}>
+          {inviteCopied ? "✓ Copied!" : "📋 Copy Invite Link"}
         </button>
 
-        <button onClick={onSpin} style={btnStyle(C.accent)}>
+        <button onClick={onSpin} style={{ background: C.accent, border: "2px solid " + C.accent, borderRadius: 12,
+          padding: "16px", fontSize: 16, fontWeight: 700, cursor: "pointer", width: "100%",
+          color: "#fff", fontFamily: "system-ui, sans-serif" }}>
           🎡 Spin for Topic →
         </button>
       </div>
@@ -1003,6 +1022,7 @@ export default function App() {
   const handleGoSpin = () => setScreen("topicPickerFirst");
 
   // Step 3: creator confirms topic from wheel → update room with questions
+  // No loadRoomData here — build full room directly to avoid lag
   const handleFirstTopicChosen = async (topic) => {
     const name = pendingCreatorName;
     const code = roomCodeRef.current;
@@ -1012,14 +1032,14 @@ export default function App() {
     TOPIC_NAMES.forEach(t => { initUsed[t] = []; });
     initUsed[topic] = firstQs.map(q => q.id);
 
-    // Load the stub room and fill in the topic + questions
-    const room = (await loadRoomData(code)) || {
-      code, creator: name, joiner: null, answers: {}, topicPick: null,
-      roundQuestions: {}, roundTopics: {}, usedIds: initUsed, createdAt: Date.now(),
+    // Write the complete room — overwrite the stub
+    const room = {
+      code, creator: name, joiner: opponentName || null,
+      roundQuestions: { 0: firstQs.map(q => q.id) },
+      roundTopics: { 0: topic },
+      usedIds: initUsed,
+      answers: {}, topicPick: null, createdAt: Date.now(),
     };
-    room.roundQuestions[0] = firstQs.map(q => q.id);
-    room.roundTopics[0] = topic;
-    room.usedIds = initUsed;
     await saveRoomData(code, room);
 
     roundQuestionsRef.current = firstQs;
@@ -1284,14 +1304,12 @@ export default function App() {
   if (screen === "home") return <HomeScreen onCreateGame={handleCreateGame} onJoinGame={handleJoinGame} />;
 
   if (screen === "shareCode") {
-    const url = window.location.href;
-    const msg = `Join my Bar Exam Trivia game! 🎓\n\nRoom code: ${roomCode}\n\n${url}`;
     const doCopy = () => {
       const ta = document.getElementById("share-ta");
-      if (ta) { ta.select(); ta.setSelectionRange(0, 99999); }
+      const text = ta ? ta.value : "";
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(msg).catch(() => { try { document.execCommand("copy"); } catch {} });
-      } else { try { document.execCommand("copy"); } catch {} }
+        navigator.clipboard.writeText(text).catch(() => { try { if (ta) { ta.select(); document.execCommand("copy"); } } catch {} });
+      } else { try { if (ta) { ta.select(); ta.setSelectionRange(0, 99999); document.execCommand("copy"); } } catch {} }
       setInviteCopied(true);
       setTimeout(() => setInviteCopied(false), 2500);
     };

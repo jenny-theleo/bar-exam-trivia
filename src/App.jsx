@@ -911,12 +911,15 @@ const MAX_ROUNDS = 5;
 const TIME_PER_Q = 90;
 
 export default function App() {
+  // ── SESSION RESTORE ───────────────────────────────────────────────────────
+  // On mount, check localStorage for a saved session and rejoin automatically
   const [screen, setScreen] = useState("home");
   const [roomCode, setRoomCode] = useState("");
   const [playerName, setPlayerName] = useState("");
   const [opponentName, setOpponentName] = useState("");
   const [isCreator, setIsCreator] = useState(false);
   const [pendingCreatorName, setPendingCreatorName] = useState("");
+  const [sessionRestoring, setSessionRestoring] = useState(true);
 
   const [roundQuestions, setRoundQuestions] = useState([]);
   const [usedIds, setUsedIds] = useState(() => {
@@ -956,6 +959,31 @@ export default function App() {
   // Keep refs in sync with state
   const setRoomCodeBoth = (v) => { roomCodeRef.current = v; setRoomCode(v); };
   const setIsCreatorBoth = (v) => { isCreatorRef.current = v; setIsCreator(v); };
+
+  // ── SESSION PERSISTENCE ───────────────────────────────────────────────────
+  const saveSession = (name, code) => {
+    try { localStorage.setItem("btSession", JSON.stringify({ name, code })); } catch {}
+  };
+
+  const clearSession = () => {
+    try { localStorage.removeItem("btSession"); } catch {}
+  };
+
+  // On mount: restore session if one exists
+  useEffect(() => {
+    const restore = async () => {
+      try {
+        const raw = localStorage.getItem("btSession");
+        if (!raw) { setSessionRestoring(false); return; }
+        const { name, code } = JSON.parse(raw);
+        if (!name || !code) { setSessionRestoring(false); return; }
+        // Try to rejoin silently — no alerts if room not found
+        await handleJoinGame(name, code, true);
+      } catch {}
+      setSessionRestoring(false);
+    };
+    restore();
+  }, []);
 
   const qKey = (round, q) => `r${round}q${q}`;
 
@@ -1040,6 +1068,7 @@ export default function App() {
       return;
     }
 
+    saveSession(name, code);
     setScreen("shareCode");
 
     // Poll until joiner arrives
@@ -1081,11 +1110,11 @@ export default function App() {
   };
 
   // ── JOIN GAME ─────────────────────────────────────────────────────────────
-  const handleJoinGame = async (name, code) => {
+  const handleJoinGame = async (name, code, silent = false) => {
     const room = await loadRoomData(code);
 
     if (!room) {
-      alert("Room not found. Double-check the code and try again.");
+      if (!silent) alert("Room not found. Double-check the code and try again.");
       return;
     }
 
@@ -1095,7 +1124,7 @@ export default function App() {
     const isNewJoiner = !room.joiner;
 
     if (!isCreator && !isExistingJoiner && !isNewJoiner) {
-      alert("This game already has two players.");
+      if (!silent) alert("This game already has two players.");
       return;
     }
 
@@ -1104,6 +1133,7 @@ export default function App() {
       await setRoomField(code, "joiner", name);
     }
 
+    saveSession(name, code);
     setRoomCodeBoth(code);
     setIsCreatorBoth(isCreator);
     setPlayerName(name);
@@ -1431,6 +1461,7 @@ export default function App() {
     setCurrentQSelected(null);
 
     if (code && name) {
+      saveSession(name, code);
       // Reuse the same room — reset game data but keep both players linked
       const initUsed = {};
       TOPIC_NAMES.forEach(t => { initUsed[t] = []; });
@@ -1469,12 +1500,22 @@ export default function App() {
         }, 2000);
       }
     } else {
+      clearSession();
       setPendingCreatorName("");
       setScreen("home");
     }
   };
 
   // ── RENDER ────────────────────────────────────────────────────────────────
+  if (sessionRestoring) return (
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "system-ui, sans-serif" }}>
+      <div style={{ textAlign: "center" }}>
+        <div style={{ color: C.accent, fontSize: 32, marginBottom: 12 }}>⚖️</div>
+        <div style={{ color: C.muted, fontSize: 13 }}>Loading…</div>
+      </div>
+    </div>
+  );
+
   if (screen === "home") return <HomeScreen onCreateGame={handleCreateGame} onJoinGame={handleJoinGame} />;
 
   if (screen === "shareCode") {

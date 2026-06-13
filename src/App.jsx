@@ -962,6 +962,7 @@ export default function App() {
   // ── STORAGE HELPERS (Firebase Realtime Database REST API) ───────────────
   const FB_URL = "https://cracked-bar-trivia-default-rtdb.firebaseio.com";
 
+  // Full room write (PUT) — used for creating/updating whole room structure
   const saveRoomData = async (code, data) => {
     try {
       const res = await fetch(`${FB_URL}/rooms/${code}.json`, {
@@ -969,32 +970,44 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) {
-        console.error("[SAVE] HTTP error", res.status);
-        return false;
-      }
-      console.log("[SAVE] ok code=" + code);
+      if (!res.ok) { console.error("[SAVE] HTTP error", res.status); return false; }
       return true;
-    } catch (e) {
-      console.error("[SAVE] FAILED", e);
-      return false;
-    }
+    } catch (e) { console.error("[SAVE] FAILED", e); return false; }
+  };
+
+  // Atomic merge (PATCH) — writes only specified fields, no overwrite risk
+  const patchRoomData = async (code, patch) => {
+    try {
+      const res = await fetch(`${FB_URL}/rooms/${code}.json`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(patch),
+      });
+      if (!res.ok) { console.error("[PATCH] HTTP error", res.status); return false; }
+      return true;
+    } catch (e) { console.error("[PATCH] FAILED", e); return false; }
+  };
+
+  // Write a single deeply-nested field atomically — no read-modify-write needed
+  const setRoomField = async (code, path, value) => {
+    try {
+      const res = await fetch(`${FB_URL}/rooms/${code}/${path}.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(value),
+      });
+      if (!res.ok) { console.error("[SET] HTTP error", res.status); return false; }
+      return true;
+    } catch (e) { console.error("[SET] FAILED", e); return false; }
   };
 
   const loadRoomData = async (code) => {
     try {
       const res = await fetch(`${FB_URL}/rooms/${code}.json`);
-      if (!res.ok) {
-        console.error("[LOAD] HTTP error", res.status);
-        return null;
-      }
+      if (!res.ok) { console.error("[LOAD] HTTP error", res.status); return null; }
       const data = await res.json();
-      console.log("[LOAD] code=" + code + " data=", data);
       return data || null;
-    } catch (e) {
-      console.error("[LOAD] FAILED", e);
-      return null;
-    }
+    } catch (e) { console.error("[LOAD] FAILED", e); return null; }
   };
 
   // ── DRAW QUESTIONS FOR A ROUND ──────────────────────────────────────────
@@ -1087,10 +1100,9 @@ export default function App() {
       return;
     }
 
-    // Register as joiner if new
+    // Register as joiner if new — atomic write, no race condition
     if (isNewJoiner && !isCreator) {
-      room.joiner = name;
-      await saveRoomData(code, room);
+      await setRoomField(code, "joiner", name);
     }
 
     setRoomCodeBoth(code);
@@ -1269,15 +1281,16 @@ export default function App() {
     if (nextQ < QUESTIONS_PER_ROUND) {
       // Player taps "Next Question" — onAdvance in QuestionScreen calls startQuestion
     } else {
-      // All 3 done — write to storage and start polling
+      // All 3 done — write each answer atomically (no read-modify-save race condition)
       const role = isCreatorRef.current ? "creator" : "joiner";
-      const room = await loadRoomData(roomCodeRef.current);
-      if (!room) return;
+      const code = roomCodeRef.current;
+      const writes = [];
       for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
         const k = qKey(round, i);
-        room.answers[`${role}_${k}`] = newMyAnswers[k] || "__timeout__";
+        const answerKey = `answers/${role}_${k}`;
+        writes.push(setRoomField(code, answerKey, newMyAnswers[k] || "__timeout__"));
       }
-      await saveRoomData(roomCodeRef.current, room);
+      await Promise.all(writes);
       setWaitingForOpponent(true);
       pollForRoundCompletion(round, newMyAnswers);
     }
@@ -1337,16 +1350,13 @@ export default function App() {
     const newQs = drawRoundQuestions(topic, newUsed[topic] || []);
     newUsed[topic] = [...(newUsed[topic] || []), ...newQs.map(q => q.id)];
 
-    const room = await loadRoomData(roomCodeRef.current);
-    if (room) {
-      room.roundTopics  = room.roundTopics  || {};
-      room.roundQuestions = room.roundQuestions || {};
-      room.usedIds = newUsed;
-      room.roundTopics[nextRound]    = topic;
-      room.roundQuestions[nextRound] = newQs.map(q => q.id);
-      room.topicPick = { round: nextRound, topic, timestamp: Date.now() };
-      await saveRoomData(roomCodeRef.current, room);
-    }
+    // Use PATCH to avoid overwriting other fields (especially answers written concurrently)
+    await patchRoomData(roomCodeRef.current, {
+      usedIds: newUsed,
+      [`roundTopics/${nextRound}`]: topic,
+      [`roundQuestions/${nextRound}`]: newQs.map(q => q.id),
+      topicPick: { round: nextRound, topic, timestamp: Date.now() },
+    });
 
     roundQuestionsRef.current = newQs;
     setUsedIds(newUsed);

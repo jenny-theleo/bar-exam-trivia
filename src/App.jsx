@@ -965,18 +965,27 @@ export default function App() {
 
   // ── STORAGE HELPERS ──────────────────────────────────────────────────────
   const saveRoomData = async (code, data) => {
+    const json = JSON.stringify(data);
+    console.log("[SAVE] key=room:" + code + " bytes=" + json.length);
     try {
-      await window.storage.set(`room:${code}`, JSON.stringify(data), true);
-    } catch (e) { console.error("save error", e); }
+      const result = await window.storage.set("room:" + code, json, true);
+      console.log("[SAVE] result=", result);
+      return true;
+    } catch (e) {
+      console.error("[SAVE] FAILED", e);
+      return false;
+    }
   };
 
   const loadRoomData = async (code) => {
+    console.log("[LOAD] key=room:" + code);
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
-        const r = await window.storage.get(`room:${code}`, true);
+        const r = await window.storage.get("room:" + code, true);
+        console.log("[LOAD] attempt=" + attempt + " result=", r);
         return r ? JSON.parse(r.value) : null;
       } catch (e) {
-        // Storage throws on key-not-found — treat as null after retries
+        console.log("[LOAD] attempt=" + attempt + " threw:", e);
         if (attempt < 2) await new Promise(res => setTimeout(res, 800));
         else return null;
       }
@@ -1007,7 +1016,13 @@ export default function App() {
       usedIds: (() => { const u = {}; TOPIC_NAMES.forEach(t => { u[t] = []; }); return u; })(),
       answers: {}, topicPick: null, createdAt: Date.now(),
     };
-    await saveRoomData(code, stubRoom);
+    const saved = await saveRoomData(code, stubRoom);
+    console.log("[CREATE] stub room saved=", saved, "code=", code);
+
+    if (!saved) {
+      alert("Could not create game — storage unavailable. Please try again.");
+      return;
+    }
 
     setScreen("shareCode");
 
@@ -1052,10 +1067,12 @@ export default function App() {
 
   // ── JOIN GAME ─────────────────────────────────────────────────────────────
   const handleJoinGame = async (name, code) => {
+    console.log("[JOIN] attempting code=", code);
     const room = await loadRoomData(code);
+    console.log("[JOIN] loaded room=", room);
 
     if (!room) {
-      alert("Room not found. Double-check the code and try again.");
+      alert("Room not found for code: " + code + ". Check browser console for details.");
       return;
     }
     if (room.joiner && room.joiner !== name) { alert("This game already has two players."); return; }

@@ -1391,12 +1391,21 @@ export default function App() {
         setScores({ me: meTotal, them: themTotal });
         setScreen("roundResult");
       } else {
-        // I'm done, opponent isn't — resume waiting
+        // I'm done, opponent isn't — show Q3 locked with my answer, waiting for opponent
         myAnswersRef.current = myAnswersThisRound;
         setMyAnswers(myAnswersThisRound);
+        // Manually set state so Q3 shows as answered+locked without resetting via startQuestion
+        const lastQ = QUESTIONS_PER_ROUND - 1;
+        const lastKey = qKey(currentRoundNum, lastQ);
+        currentRoundRef.current = currentRoundNum;
+        currentQRef.current = lastQ;
+        setCurrentRound(currentRoundNum);
+        setCurrentQ(lastQ);
+        setCurrentQSelected(myAnswersThisRound[lastKey] || "__timeout__");
+        setTimeLeft(0);
+        setTimerActive(false);
         setWaitingForOpponent(true);
         setScreen("playing");
-        startQuestion(currentRoundNum, QUESTIONS_PER_ROUND - 1);
         pollForRoundCompletion(currentRoundNum, myAnswersThisRound);
       }
     } else {
@@ -1452,6 +1461,8 @@ export default function App() {
 
   // ── ANSWER ────────────────────────────────────────────────────────────────
   const handleAnswer = async (letter, round, qIdx) => {
+    // Guard: if already waiting for opponent, ignore any answer attempts
+    if (waitingForOpponent) return;
     clearInterval(timerRef.current);
     setTimerActive(false);
     setCurrentQSelected(letter);

@@ -231,7 +231,7 @@ function HomeScreen({ onCreateGame, onJoinGame }) {
         {mode === "create" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div style={{ color: C.muted, fontSize: 12, marginBottom: 4, fontFamily: "monospace" }}>YOUR NAME</div>
-            <input value={name} onChange={e => setName(e.target.value)} placeholder="Enter your name" style={inputStyle} />
+            <input value={name} onChange={e => setName(e.target.value)} placeholder="Enter your name" style={inputStyle} onKeyDown={e => e.key === "Enter" && handleCreate()} />
             {error && <div style={{ color: C.red, fontSize: 13 }}>{error}</div>}
             <button onClick={handleCreate} style={btnStyle(C.accent)}>Create Game →</button>
             <button onClick={() => { setMode(null); setError(""); }} style={btnStyle("transparent", C.border, C.muted)}>Back</button>
@@ -243,13 +243,183 @@ function HomeScreen({ onCreateGame, onJoinGame }) {
             <div style={{ color: C.muted, fontSize: 12, marginBottom: 4, fontFamily: "monospace" }}>YOUR NAME</div>
             <input value={name} onChange={e => setName(e.target.value)} placeholder="Enter your name" style={inputStyle} />
             <div style={{ color: C.muted, fontSize: 12, marginBottom: 4, fontFamily: "monospace" }}>ROOM CODE</div>
-            <input value={joinCode} onChange={e => setJoinCode(e.target.value)} placeholder="e.g. AB12CD" style={{ ...inputStyle, fontFamily: "monospace", letterSpacing: 3, textTransform: "uppercase" }} maxLength={6} />
+            <input value={joinCode} onChange={e => setJoinCode(e.target.value)} placeholder="e.g. AB12CD" style={{ ...inputStyle, fontFamily: "monospace", letterSpacing: 3, textTransform: "uppercase" }} maxLength={6} onKeyDown={e => e.key === "Enter" && handleJoin()} />
             {error && <div style={{ color: C.red, fontSize: 13 }}>{error}</div>}
             <button onClick={handleJoin} disabled={joining} style={{ ...btnStyle(joining ? C.surface : C.accent, joining ? C.border : C.accent), opacity: joining ? 0.6 : 1, cursor: joining ? "default" : "pointer" }}>
               {joining ? "Joining…" : "Join Game →"}
             </button>
             <button onClick={() => { setMode(null); setError(""); }} style={btnStyle("transparent", C.border, C.muted)}>Back</button>
           </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── SHARE CODE SCREEN ────────────────────────────────────────────────────────
+// Creator sees this immediately after hitting Create Game — code is live,
+// joiner can connect before the spin even happens.
+function ShareCodeScreen({ creatorName, roomCode, onSpin, inviteCopied, onCopy }) {
+  return (
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif" }}>
+      <div style={{ maxWidth: 420, width: "100%" }}>
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <div style={{ fontSize: 11, letterSpacing: 4, color: C.accent, textTransform: "uppercase", marginBottom: 10, fontFamily: "monospace" }}>Game Created</div>
+          <h2 style={{ color: C.text, fontSize: 26, fontWeight: 900, margin: "0 0 8px" }}>Invite Your Opponent</h2>
+          <p style={{ color: C.muted, fontSize: 14, margin: 0 }}>Share this code — they can join right now while you spin</p>
+        </div>
+
+        {/* Big code display */}
+        <div style={{ background: C.card, border: `2px solid ${C.accent}`, borderRadius: 18, padding: "28px 24px", textAlign: "center", marginBottom: 20 }}>
+          <div style={{ color: C.muted, fontSize: 10, letterSpacing: 3, textTransform: "uppercase", fontFamily: "monospace", marginBottom: 10 }}>Room Code</div>
+          <div style={{ color: C.accent, fontSize: 48, fontWeight: 900, letterSpacing: 10, fontFamily: "monospace", lineHeight: 1 }}>{roomCode}</div>
+        </div>
+
+        {/* Invite message textarea */}
+        <textarea
+          id="share-ta"
+          readOnly
+          value={`Join my Bar Exam Trivia game! 🎓
+
+Room code: ${roomCode}
+
+${window.location.href}`}
+          rows={3}
+          onFocus={e => e.target.select()}
+          style={{ width: "100%", background: C.surface, border: `1px solid ${C.border}`, borderRadius: 10, padding: "10px 12px", color: C.text, fontSize: 12, fontFamily: "monospace", resize: "none", boxSizing: "border-box", lineHeight: 1.6, marginBottom: 12 }}
+        />
+
+        <button
+          onClick={onCopy}
+          style={{ ...btnStyle(inviteCopied ? C.green : C.surface, inviteCopied ? C.green : C.border, inviteCopied ? "#fff" : C.text), marginBottom: 12, transition: "all 0.2s" }}>
+          {inviteCopied ? "✓ Copied!" : "📋 Copy Invite"}
+        </button>
+
+        <button onClick={onSpin} style={btnStyle(C.accent)}>
+          🎡 Spin for Topic →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── JOINER WAITING SCREEN ─────────────────────────────────────────────────────
+// Shown to the joiner after they enter their name+code if the creator hasn't
+// spun yet. Polls every 2s until roundTopics[0] is set.
+function JoinerWaitingScreen({ creatorName }) {
+  return (
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif" }}>
+      <div style={{ maxWidth: 420, width: "100%", textAlign: "center" }}>
+        <div style={{ fontSize: 48, marginBottom: 16 }}>🎡</div>
+        <h2 style={{ color: C.text, fontSize: 24, fontWeight: 900, margin: "0 0 8px" }}>Waiting for Spin</h2>
+        <p style={{ color: C.muted, fontSize: 14, marginBottom: 24 }}>
+          <span style={{ color: C.p1, fontWeight: 700 }}>{creatorName}</span> is spinning the wheel to pick a topic…
+        </p>
+        <div style={{ display: "flex", justifyContent: "center", gap: 6 }}>
+          {[0, 1, 2].map(i => (
+            <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: C.accent, opacity: 0.7,
+              animation: `pulse ${0.6 + i * 0.2}s ease-in-out infinite alternate` }} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── TOPIC REVEAL SCREEN ───────────────────────────────────────────────────────
+// Joiner sees this after the creator has spun. The wheel auto-spins and lands
+// on the chosen topic so both sides feel the same experience.
+function TopicRevealScreen({ creatorName, topic, onReady }) {
+  const canvasRef = useRef(null);
+  const rafRef = useRef(null);
+  const angleRef = useRef(0);
+  const [revealed, setRevealed] = useState(false);
+  const topicConfig = TOPICS[topic];
+
+  const topics = TOPIC_NAMES;
+  const sliceAngle = (2 * Math.PI) / topics.length;
+  const sliceColors = topics.map(t => TOPICS[t].color);
+
+  const draw = (angle) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const W = canvas.width;
+    const cx = W / 2, cy = W / 2, r = W / 2 - 6;
+    ctx.clearRect(0, 0, W, W);
+    topics.forEach((t, i) => {
+      const start = angle + i * sliceAngle - Math.PI / 2;
+      const end = start + sliceAngle;
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, start, end); ctx.closePath();
+      ctx.fillStyle = sliceColors[i] + "cc"; ctx.fill();
+      ctx.strokeStyle = "#0b0d14"; ctx.lineWidth = 2; ctx.stroke();
+      const mid = start + sliceAngle / 2;
+      const lx = cx + Math.cos(mid) * r * 0.62, ly = cy + Math.sin(mid) * r * 0.62;
+      ctx.save(); ctx.translate(lx, ly); ctx.rotate(mid + Math.PI / 2);
+      ctx.font = `${Math.max(14, Math.min(22, W / (topics.length * 1.4)))}px serif`;
+      ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = "#fff";
+      ctx.fillText(TOPICS[t].icon, 0, -10);
+      ctx.font = `bold ${Math.max(9, Math.min(13, W / (topics.length * 1.9)))}px system-ui`;
+      ctx.fillText(TOPICS[t].label, 0, 8); ctx.restore();
+    });
+    ctx.beginPath(); ctx.arc(cx, cy, 18, 0, 2 * Math.PI);
+    ctx.fillStyle = "#0b0d14"; ctx.fill(); ctx.strokeStyle = "#252836"; ctx.lineWidth = 2; ctx.stroke();
+    const pW = 14, pH = 22;
+    ctx.beginPath(); ctx.moveTo(cx, cy - r - 2); ctx.lineTo(cx - pW / 2, cy - r + pH); ctx.lineTo(cx + pW / 2, cy - r + pH);
+    ctx.closePath(); ctx.fillStyle = "#eaedf5"; ctx.fill();
+  };
+
+  useEffect(() => {
+    draw(0);
+    // Calculate landing angle for the chosen topic
+    const targetIdx = topics.indexOf(topic);
+    // We want the pointer (at -PI/2 from canvas top) to point at slice targetIdx.
+    // Slice i starts at angle + i*sliceAngle - PI/2, midpoint at angle + i*sliceAngle - PI/2 + sliceAngle/2
+    // For pointer at top (angle=-PI/2 in canvas), we need the mid of slice targetIdx at -PI/2:
+    // finalAngle + targetIdx*sliceAngle - PI/2 + sliceAngle/2 = -PI/2  =>  finalAngle = -(targetIdx + 0.5)*sliceAngle
+    const finalAngle = -(targetIdx + 0.5) * sliceAngle;
+    // Add several full rotations for drama
+    const totalAngle = finalAngle - (6 * 2 * Math.PI);
+    const startAngle = 0;
+    const duration = 3500;
+    const startTime = performance.now();
+
+    const animate = (now) => {
+      const t = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      angleRef.current = startAngle + (totalAngle - startAngle) * eased;
+      draw(angleRef.current);
+      if (t < 1) { rafRef.current = requestAnimationFrame(animate); }
+      else { setRevealed(true); }
+    };
+    rafRef.current = requestAnimationFrame(animate);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, []);
+
+  return (
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px 16px", fontFamily: "system-ui, sans-serif" }}>
+      <div style={{ maxWidth: 380, width: "100%", textAlign: "center" }}>
+        <div style={{ fontSize: 11, letterSpacing: 4, color: C.accent, textTransform: "uppercase", marginBottom: 10, fontFamily: "monospace" }}>Round 1</div>
+        <h2 style={{ color: C.text, fontSize: 24, fontWeight: 900, margin: "0 0 6px" }}>
+          <span style={{ color: C.p1 }}>{creatorName}</span> spun the wheel
+        </h2>
+        <p style={{ color: C.muted, fontSize: 13, margin: "0 0 24px" }}>Watch where it lands…</p>
+
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
+          <canvas ref={canvasRef} width={300} height={300} style={{ borderRadius: "50%", display: "block" }} />
+        </div>
+
+        {revealed && (
+          <>
+            <div style={{ background: topicConfig.color + "22", border: `2px solid ${topicConfig.color}`, borderRadius: 14, padding: "14px 20px", marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
+              <span style={{ fontSize: 28 }}>{topicConfig.icon}</span>
+              <div style={{ textAlign: "left" }}>
+                <div style={{ color: topicConfig.color, fontWeight: 800, fontSize: 16 }}>{topic}</div>
+                <div style={{ color: C.muted, fontSize: 12, marginTop: 2 }}>{creatorName} picked this topic</div>
+              </div>
+            </div>
+            <button onClick={onReady} style={btnStyle(C.accent)}>Let's Play →</button>
+          </>
         )}
       </div>
     </div>
@@ -753,6 +923,7 @@ export default function App() {
   const [showCodeBanner, setShowCodeBanner] = useState(false);
   const [inviteCopied, setInviteCopied] = useState(false);
   const [roundLoser, setRoundLoser] = useState(null);
+  const [topicRevealTopic, setTopicRevealTopic] = useState(null);
   const [currentQSelected, setCurrentQSelected] = useState(null);
 
   // ── Refs for values needed inside async callbacks / intervals ────────────
@@ -802,50 +973,61 @@ export default function App() {
   };
 
   // ── CREATE GAME ──────────────────────────────────────────────────────────
-  const handleCreateGame = (name) => {
+  // Step 1: creator enters name → generate code, save stub room, show share screen
+  const handleCreateGame = async (name) => {
+    const code = generateCode();
     setPendingCreatorName(name);
     setPlayerName(name);
     setIsCreatorBoth(true);
-    setScreen("topicPickerFirst");
+    setRoomCodeBoth(code);
+
+    // Save a stub room immediately so joiner can connect before spin
+    const stubRoom = {
+      code, creator: name, joiner: null,
+      roundQuestions: {}, roundTopics: {},
+      usedIds: (() => { const u = {}; TOPIC_NAMES.forEach(t => { u[t] = []; }); return u; })(),
+      answers: {}, topicPick: null, createdAt: Date.now(),
+    };
+    await saveRoomData(code, stubRoom);
+
+    setScreen("shareCode");
+
+    // Poll until joiner arrives
+    pollRef.current = setInterval(async () => {
+      const r = await loadRoomData(code);
+      if (r && r.joiner) { setOpponentName(r.joiner); clearInterval(pollRef.current); }
+    }, 3000);
   };
 
+  // Step 2: creator hits "Spin for Topic" on the share screen
+  const handleGoSpin = () => setScreen("topicPickerFirst");
+
+  // Step 3: creator confirms topic from wheel → update room with questions
   const handleFirstTopicChosen = async (topic) => {
     const name = pendingCreatorName;
-    const code = generateCode();
+    const code = roomCodeRef.current;
     const firstQs = drawRoundQuestions(topic, []);
 
     const initUsed = {};
     TOPIC_NAMES.forEach(t => { initUsed[t] = []; });
     initUsed[topic] = firstQs.map(q => q.id);
 
-    const room = {
-      code, creator: name, joiner: null,
-      roundQuestions: { 0: firstQs.map(q => q.id) },
-      roundTopics: { 0: topic },
-      usedIds: initUsed,
-      answers: {},
-      round: 0, topicPick: null,
-      createdAt: Date.now(),
+    // Load the stub room and fill in the topic + questions
+    const room = (await loadRoomData(code)) || {
+      code, creator: name, joiner: null, answers: {}, topicPick: null,
+      roundQuestions: {}, roundTopics: {}, usedIds: initUsed, createdAt: Date.now(),
     };
-
+    room.roundQuestions[0] = firstQs.map(q => q.id);
+    room.roundTopics[0] = topic;
+    room.usedIds = initUsed;
     await saveRoomData(code, room);
 
     roundQuestionsRef.current = firstQs;
-    setRoomCodeBoth(code);
-    setShowCodeBanner(true);
     setCurrentTopic(topic);
     setRoundQuestions(firstQs);
     setUsedIds(initUsed);
     startQuestion(0, 0);
     setScreen("playing");
-
-    // Poll until joiner arrives
-    pollRef.current = setInterval(async () => {
-      try {
-        const r = await loadRoomData(code);
-        if (r && r.joiner) { setOpponentName(r.joiner); clearInterval(pollRef.current); }
-      } catch {}
-    }, 3000);
   };
 
   // ── JOIN GAME ─────────────────────────────────────────────────────────────
@@ -858,31 +1040,55 @@ export default function App() {
     }
     if (room.joiner && room.joiner !== name) { alert("This game already has two players."); return; }
 
-    const topic = room.roundTopics[0] || TOPIC_NAMES[0];
-    const allQs = Object.values(TOPICS).flatMap(t => t.questions);
-    const qs = (room.roundQuestions[0] || []).map(id => allQs.find(q => q.id === id)).filter(Boolean);
-
-    if (qs.length === 0) {
-      alert("Room found but questions could not be loaded. Ask the creator to share the code again.");
-      return;
-    }
-
+    // Register joiner name immediately (creator may still be spinning)
     room.joiner = name;
     await saveRoomData(code, room);
 
-    const initUsed = {};
-    TOPIC_NAMES.forEach(t => { initUsed[t] = []; });
-    const usedFromRoom = room.usedIds || initUsed;
-
-    roundQuestionsRef.current = qs;
     setRoomCodeBoth(code);
     setIsCreatorBoth(false);
     setPlayerName(name);
     setOpponentName(room.creator);
-    setCurrentTopic(topic);
-    setRoundQuestions(qs);
-    setUsedIds(usedFromRoom);
-    setShowCodeBanner(false);
+
+    const allQs = Object.values(TOPICS).flatMap(t => t.questions);
+    const topic = room.roundTopics ? room.roundTopics[0] : null;
+    const qs = topic
+      ? (room.roundQuestions[0] || []).map(id => allQs.find(q => q.id === id)).filter(Boolean)
+      : [];
+
+    if (!topic || qs.length < QUESTIONS_PER_ROUND) {
+      // Creator hasn't spun yet — show waiting screen, poll until they do
+      setScreen("joinerWaiting");
+      clearInterval(pollRef.current);
+      pollRef.current = setInterval(async () => {
+        const r = await loadRoomData(code);
+        if (!r) return;
+        const t = r.roundTopics ? r.roundTopics[0] : null;
+        const q = t ? (r.roundQuestions[0] || []).map(id => allQs.find(q => q.id === id)).filter(Boolean) : [];
+        if (t && q.length >= QUESTIONS_PER_ROUND) {
+          clearInterval(pollRef.current);
+          const usedFromRoom = r.usedIds || (() => { const u = {}; TOPIC_NAMES.forEach(x => { u[x] = []; }); return u; })();
+          roundQuestionsRef.current = q;
+          setCurrentTopic(t);
+          setRoundQuestions(q);
+          setUsedIds(usedFromRoom);
+          setTopicRevealTopic(t);
+          setScreen("topicReveal");
+        }
+      }, 2000);
+    } else {
+      // Creator already spun — go straight to topic reveal animation then play
+      const usedFromRoom = room.usedIds || (() => { const u = {}; TOPIC_NAMES.forEach(t => { u[t] = []; }); return u; })();
+      roundQuestionsRef.current = qs;
+      setCurrentTopic(topic);
+      setRoundQuestions(qs);
+      setUsedIds(usedFromRoom);
+      setTopicRevealTopic(topic);
+      setScreen("topicReveal");
+    }
+  };
+
+  // Joiner hits "Let's Play" after topic reveal animation
+  const handleJoinerReady = () => {
     startQuestion(0, 0);
     setScreen("playing");
   };
@@ -1068,6 +1274,7 @@ export default function App() {
     setShowCodeBanner(false);
     setInviteCopied(false);
     setRoundLoser(null);
+    setTopicRevealTopic(null);
     setPendingCreatorName("");
     setCurrentQSelected(null);
     setScreen("home");
@@ -1076,11 +1283,32 @@ export default function App() {
   // ── RENDER ────────────────────────────────────────────────────────────────
   if (screen === "home") return <HomeScreen onCreateGame={handleCreateGame} onJoinGame={handleJoinGame} />;
 
+  if (screen === "shareCode") {
+    const url = window.location.href;
+    const msg = `Join my Bar Exam Trivia game! 🎓\n\nRoom code: ${roomCode}\n\n${url}`;
+    const doCopy = () => {
+      const ta = document.getElementById("share-ta");
+      if (ta) { ta.select(); ta.setSelectionRange(0, 99999); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(msg).catch(() => { try { document.execCommand("copy"); } catch {} });
+      } else { try { document.execCommand("copy"); } catch {} }
+      setInviteCopied(true);
+      setTimeout(() => setInviteCopied(false), 2500);
+    };
+    return <ShareCodeScreen creatorName={playerName} roomCode={roomCode} onSpin={handleGoSpin} inviteCopied={inviteCopied} onCopy={doCopy} />;
+  }
+
   if (screen === "topicPickerFirst")
     return <SpinWheelScreen pickerName={playerName} isFirstRound onTopicChosen={handleFirstTopicChosen} />;
 
   if (screen === "topicPicker")
     return <SpinWheelScreen pickerName={playerName} onTopicChosen={handleTopicChosen} />;
+
+  if (screen === "joinerWaiting")
+    return <JoinerWaitingScreen creatorName={opponentName} />;
+
+  if (screen === "topicReveal")
+    return <TopicRevealScreen creatorName={opponentName} topic={topicRevealTopic} onReady={handleJoinerReady} />;
 
   if (screen === "waitingForTopic") {
     const loserDisplayName = roundLoser === "them" ? playerName : opponentName;
@@ -1091,61 +1319,18 @@ export default function App() {
     const q = roundQuestions[currentQ];
     if (!q) return null;
     return (
-      <div style={{ position: "relative" }}>
-        {showCodeBanner && (() => {
-          const url = window.location.href;
-          const msg = `Join my Bar Exam Trivia game! 🎓\n\nRoom code: ${roomCode}\n\n${url}`;
-          const doCopy = () => {
-            const ta = document.getElementById("invite-ta");
-            if (ta) { ta.select(); ta.setSelectionRange(0, 99999); }
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-              navigator.clipboard.writeText(msg).catch(() => { try { document.execCommand("copy"); } catch {} });
-            } else {
-              try { document.execCommand("copy"); } catch {}
-            }
-            setInviteCopied(true);
-            setTimeout(() => setInviteCopied(false), 2500);
-          };
-          return (
-            <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: "#1a1d27", borderBottom: `2px solid ${C.accent}`, padding: "14px 16px", fontFamily: "system-ui, sans-serif" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-                <div>
-                  <div style={{ color: C.muted, fontSize: 10, letterSpacing: 2, textTransform: "uppercase", fontFamily: "monospace", marginBottom: 2 }}>Invite a friend</div>
-                  <div style={{ color: C.accent, fontSize: 24, fontWeight: 900, letterSpacing: 6, fontFamily: "monospace" }}>{roomCode}</div>
-                </div>
-                <button onClick={() => setShowCodeBanner(false)} style={{ background: "transparent", border: "none", color: C.muted, fontSize: 22, cursor: "pointer", padding: "4px 8px", lineHeight: 1 }}>✕</button>
-              </div>
-              <textarea
-                id="invite-ta"
-                readOnly
-                value={msg}
-                rows={3}
-                onFocus={e => e.target.select()}
-                style={{ width: "100%", background: C.surface, border: `1px solid ${C.border}`, borderRadius: 8, padding: "8px 10px", color: C.text, fontSize: 12, fontFamily: "monospace", resize: "none", boxSizing: "border-box", lineHeight: 1.5, marginBottom: 8 }}
-              />
-              <button
-                onClick={doCopy}
-                style={{ width: "100%", background: inviteCopied ? C.green : C.accent, border: "none", borderRadius: 8, padding: "10px", fontSize: 13, fontWeight: 700, cursor: "pointer", color: "#fff", fontFamily: "system-ui, sans-serif", transition: "background 0.2s" }}>
-                {inviteCopied ? "✓ Copied!" : "Copy Invite Link"}
-              </button>
-            </div>
-          );
-        })()}
-        <div style={{ paddingTop: showCodeBanner ? 200 : 0 }}>
-          <QuestionScreen
-            question={q}
-            questionNum={currentQ + 1}
-            totalQuestions={QUESTIONS_PER_ROUND}
-            onAnswer={(letter) => handleAnswer(letter, currentRound, currentQ)}
-            timeLeft={timeLeft}
-            selectedAnswer={currentQSelected}
-            waitingForOpponent={waitingForOpponent}
-            topic={currentTopic}
-            isLastQuestion={currentQ === QUESTIONS_PER_ROUND - 1}
-            onAdvance={() => startQuestion(currentRound, currentQ + 1)}
-          />
-        </div>
-      </div>
+      <QuestionScreen
+        question={q}
+        questionNum={currentQ + 1}
+        totalQuestions={QUESTIONS_PER_ROUND}
+        onAnswer={(letter) => handleAnswer(letter, currentRound, currentQ)}
+        timeLeft={timeLeft}
+        selectedAnswer={currentQSelected}
+        waitingForOpponent={waitingForOpponent}
+        topic={currentTopic}
+        isLastQuestion={currentQ === QUESTIONS_PER_ROUND - 1}
+        onAdvance={() => startQuestion(currentRound, currentQ + 1)}
+      />
     );
   }
 

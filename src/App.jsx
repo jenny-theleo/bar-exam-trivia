@@ -963,42 +963,42 @@ export default function App() {
 
   const qKey = (round, q) => `r${round}q${q}`;
 
-  // ── STORAGE HELPERS ──────────────────────────────────────────────────────
-  const storageAvailable = typeof window !== "undefined" && window.storage && typeof window.storage.set === "function";
+  // ── STORAGE HELPERS (Firebase Realtime Database REST API) ───────────────
+  const FB_URL = "https://cracked-bar-trivia-default-rtdb.firebaseio.com";
 
   const saveRoomData = async (code, data) => {
-    if (!storageAvailable) {
-      console.error("[SAVE] window.storage not available");
-      return false;
-    }
     try {
-      const result = await window.storage.set(`room:${code}`, JSON.stringify(data), true);
-      console.log("[SAVE] ok code=" + code + " result=", result);
+      const res = await fetch(`${FB_URL}/rooms/${code}.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        console.error("[SAVE] HTTP error", res.status);
+        return false;
+      }
+      console.log("[SAVE] ok code=" + code);
       return true;
     } catch (e) {
-      console.error("[SAVE] FAILED code=" + code, e);
+      console.error("[SAVE] FAILED", e);
       return false;
     }
   };
 
   const loadRoomData = async (code) => {
-    if (!storageAvailable) {
-      console.error("[LOAD] window.storage not available");
+    try {
+      const res = await fetch(`${FB_URL}/rooms/${code}.json`);
+      if (!res.ok) {
+        console.error("[LOAD] HTTP error", res.status);
+        return null;
+      }
+      const data = await res.json();
+      console.log("[LOAD] code=" + code + " data=", data);
+      return data || null;
+    } catch (e) {
+      console.error("[LOAD] FAILED", e);
       return null;
     }
-    console.log("[LOAD] code=" + code);
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        const r = await window.storage.get(`room:${code}`, true);
-        console.log("[LOAD] attempt=" + attempt + " got=", r);
-        return r ? JSON.parse(r.value) : null;
-      } catch (e) {
-        console.log("[LOAD] attempt=" + attempt + " threw:", String(e));
-        if (attempt < 2) await new Promise(res => setTimeout(res, 800));
-        else return null;
-      }
-    }
-    return null;
   };
 
   // ── DRAW QUESTIONS FOR A ROUND ──────────────────────────────────────────
@@ -1025,11 +1025,9 @@ export default function App() {
       answers: {}, topicPick: null, createdAt: Date.now(),
     };
     const saved = await saveRoomData(code, stubRoom);
-    console.log("[CREATE] stub room saved=", saved, "code=", code);
 
     if (!saved) {
-      const reason = (typeof window !== "undefined" && window.storage) ? "save failed" : "window.storage is not available on this host";
-      alert("Could not create game: " + reason + ". Check console for details.");
+      alert("Could not create game — network error. Check your connection and try again.");
       return;
     }
 
@@ -1076,12 +1074,10 @@ export default function App() {
 
   // ── JOIN GAME ─────────────────────────────────────────────────────────────
   const handleJoinGame = async (name, code) => {
-    console.log("[JOIN] attempting code=", code);
     const room = await loadRoomData(code);
-    console.log("[JOIN] loaded room=", room);
 
     if (!room) {
-      alert("Room not found for code: " + code + ". Check browser console for details.");
+      alert("Room not found. Double-check the code and try again.");
       return;
     }
     if (room.joiner && room.joiner !== name) { alert("This game already has two players."); return; }

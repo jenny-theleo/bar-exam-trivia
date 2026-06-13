@@ -3,709 +3,716 @@ import { useState, useEffect, useRef } from "react";
 // ── QUESTIONS ────────────────────────────────────────────────────────────────
 
 const CON_LAW_QUESTIONS = [
-{ id: 1, category: "Constitutional Law", question: "A police officer employed for ten years refused a prescribed blood transfusion due to sincere religious beliefs after being shot on duty, and died. The city denied the death benefit under an amendment that denied benefits when death was caused by refusal of reasonably available medical care. Is the amendment constitutional as applied?", answers: ["(A) No, because it effectively discriminates against a religious practice.", "(B) No, because it violates the vested contractual rights of city employees hired before the amendment.", "(C) Yes, because it does not single out religious reasons for denial of benefits and is a reasonable limitation.", "(D) Yes, because it imposes a condition only on a government benefit and does not penalize individual conduct."], correct: "C" },
-{ id: 2, category: "Constitutional Law", question: "The United States sued a state in federal court for injunctive relief, arguing the state's federally-funded child welfare programs failed to comply with federal standards. The state has moved to dismiss. Is the court likely to dismiss the action?", answers: ["(A) No, because Congress can place any condition on the receipt of federal funds.", "(B) No, because the Eleventh Amendment does not bar actions brought by the United States.", "(C) Yes, because the Eleventh Amendment bars actions against a state in federal court.", "(D) Yes, because the protection of child welfare is reserved to the states."], correct: "B" },
-{ id: 3, category: "Constitutional Law", question: "A store owner was prosecuted under a state anti-obscenity law for selling a video consisting entirely of pictures of nude sunbathers on a foreign beach where nude sunbathing is common. The store owner defended on First Amendment grounds. Should the store owner prevail?", answers: ["(A) No, because the store owner is engaged in commercial sale not protected by the First and Fourteenth Amendments.", "(B) No, because the video appeals to the prurient interest of viewers and lacks serious social value.", "(C) Yes, because mere portrayals of nudity are insufficient to justify a finding that the video is obscene.", "(D) Yes, because the state lacks a compelling interest in applying its anti-obscenity law to conduct occurring outside the United States."], correct: "C" },
-{ id: 4, category: "Constitutional Law", question: "A state supreme court invalidated a state law protecting rape victim names solely on state constitutional grounds, noting the federal First Amendment 'very likely' also bars it but declining to decide that issue. The victim petitioned the U.S. Supreme Court for review. Is the U.S. Supreme Court likely to review the judgment?", answers: ["(A) No, because the First Amendment prohibits the imposition of liability for the publication of truthful information.", "(B) No, because the judgment rests upon an adequate and independent state-law ground.", "(C) Yes, because the supremacy clause does not permit a state to create rights greater than those in the federal Constitution.", "(D) Yes, because the U.S. Supreme Court's appellate jurisdiction extends to cases arising under federal law."], correct: "B" },
-{ id: 5, category: "Constitutional Law", question: "A federal statute prohibits all commercial advertising of red meat products based on studies linking red meat to cancer, but does not restrict sales. Red meat producers challenge the statute as a First Amendment violation. Is the court likely to find the statute constitutional?", answers: ["(A) No, because it does not serve a substantial government interest.", "(B) No, because it is more extensive than necessary to serve the government interest in preventing certain cancers.", "(C) Yes, because it does not affect speech protected by the First Amendment.", "(D) Yes, because it serves a legitimate government interest in protecting public health."], correct: "B" },
-{ id: 6, category: "Constitutional Law", question: "A federal statute authorizes an agency to issue rules requiring state legislatures to adopt laws of limited duration to reduce water pollution from gasoline-powered boat motors. Several states challenged the rules as unconstitutional. Should the court uphold the rules?", answers: ["(A) No, because the federal government may not compel a state legislature to enact a federally mandated regulatory program.", "(B) No, because the Tenth Amendment grants states immunity from all direct federal regulation.", "(C) Yes, because the rules serve an important purpose and requirements are only temporary.", "(D) Yes, because the supremacy clause of Article VI requires states to enforce federal law."], correct: "A" },
-{ id: 7, category: "Constitutional Law", question: "A state law prohibits use of state medical funding for surgery for any person who has resided in the state for less than one year, except in emergencies. A woman who moved to the state two months ago needs non-emergency surgery. Should the woman prevail in a suit to invalidate the law?", answers: ["(A) No, because the law reasonably conserves the state's limited resources.", "(B) No, because the law reasonably prevents expenditure of state funds on transient nonresidents.", "(C) Yes, because the law burdens the woman's fundamental right to health care.", "(D) Yes, because the law burdens the woman's fundamental right to travel."], correct: "D" },
-{ id: 8, category: "Constitutional Law", question: "Due to a heating fuel shortage, the President ordered federal executive agencies to be open only four days per week. Congress had assumed five days when appropriating funds but did not require it by statute. Is the President's order constitutional?", answers: ["(A) No, because the heads of the various executive agencies have final responsibility for the operation of those agencies.", "(B) No, because members of Congress assumed those agencies' offices would be open five days per week when they passed the appropriations statute.", "(C) Yes, because the Constitution vests the President with plenary authority to direct the administration of all federal agencies in any manner the President deems expedient.", "(D) Yes, because the order relates to the management of the executive branch and is not prohibited by any statute."], correct: "D" },
-{ id: 9, category: "Constitutional Law", question: "A state law prohibits publishing details of executions. After a botched execution, a newspaper published a detailed account written by its reporter who was permitted to observe but made no promise to report only the warden's official statement. Is the prosecution of the newspaper constitutional?", answers: ["(A) No, because the prosecution seeks to punish the publication of lawfully obtained, truthful information about a matter of public significance, without adequate justification.", "(B) No, because the reporter did not promise prison officials that he would report only the warden's official statement.", "(C) Yes, because publication of the details of such events might cause psychological damage to some children.", "(D) Yes, because the newspaper should have brought an action to test the validity of the law before publishing."], correct: "A" },
-{ id: 10, category: "Constitutional Law", question: "A state-owned electric power system refused to supply power to out-of-state purchasers residing in states that would not accept spent nuclear fuel for disposal. No federal statute applies. What is the strongest argument that the state's action is constitutional?", answers: ["(A) A state may condition the sale of its products to out-of-state purchasers on the willingness of those purchasers to bear the fair share of environmental costs.", "(B) The generation of electricity is intrastate by nature and therefore subject to plenary state control.", "(C) The state itself owns and operates the power system, and therefore its refusal is not subject to the negative implications of the commerce clause.", "(D) The state's action is rationally related to the health, safety, and welfare of state citizens."], correct: "C" },
-{ id: 11, category: "Constitutional Law", question: "A city enacted an ordinance requiring all rental housing units to provide at least one full bathroom per bedroom, washer/dryer hookups, and covered parking. A plaintiff who owns low-income rental housing has sued, claiming the ordinance is unconstitutional on its face. What is the burden of persuasion?", answers: ["(A) The city must demonstrate the ordinance is necessary to serve a compelling state interest because it adversely affects the fundamental right to use property efficiently.", "(B) The city must demonstrate the ordinance is necessary to serve a compelling state interest because it will have a substantial and disproportionate negative impact on low-income persons.", "(C) The plaintiff must demonstrate the ordinance is not substantially related to an important state interest.", "(D) The plaintiff must demonstrate there is no rational relationship between the ordinance and any legitimate state interest, because the ordinance regulates economic activity normally presumed within state regulatory authority."], correct: "D" },
-{ id: 12, category: "Constitutional Law", question: "A plaintiff sued a defendant in a state court alleging only a cause of action arising under a federal statute, though state law provides a similar cause of action. The federal statute says claims can be brought in any court of competent jurisdiction. Should the state court hear the case?", answers: ["(A) No, because cases arising under federal law must be decided in federal court.", "(B) No, because state courts must abstain in cases arising under federal law until a federal court has decided the federal issue.", "(C) Yes, because state courts may not discriminate against cases arising under federal law.", "(D) Yes, because the parties cannot proceed in federal court since there is no diversity of citizenship."], correct: "C" },
-{ id: 13, category: "Constitutional Law", question: "An airline falsely claimed in an ad that its competitor had an inferior safety record, based on erroneous information it assumed to be true. The airline was charged under a state law penalizing false or misleading public statements about a service or product. No federal statute applies. Which argument best supports the airline's First Amendment defense?", answers: ["(A) Its statement about the safety record was made without malice.", "(B) Its statement about the safety record was protected noncommercial speech.", "(C) The state law is a prior restraint.", "(D) The state law is overbroad."], correct: "D" },
-{ id: 14, category: "Constitutional Law", question: "A U.S. senator made a false speech on the floor of the Senate accusing a low-level federal purchasing officer of wasting taxpayer money. The officer sued the senator for defamation, alleging the accusation was false and the senator was negligent. What is the most appropriate ground for the court to dismiss the complaint?", answers: ["(A) The federal government is constitutionally immune from suit without its consent, and it has not consented to suits of this kind.", "(B) The First Amendment guarantees members of Congress an unqualified right to speak on matters of public concern at any place and time.", "(C) The First Amendment protects public officials from defamation liability for statements made in their official capacity unless the plaintiff proves actual malice.", "(D) The speech and debate clause of Article I, Section 6 wholly insulates members of Congress from tort liability for statements made on the floor of Congress."], correct: "D" },
-{ id: 15, category: "Constitutional Law", question: "A privately owned mall broke up a peaceful protest near a department store entrance and required the protesters to leave. The protesters claimed their First and Fourteenth Amendment rights to freedom of speech were violated. Should the protesters prevail?", answers: ["(A) No, because the mall is private property, and there was no state action to which the freedom of speech guarantees of the First and Fourteenth Amendments apply.", "(B) No, because the prohibition of protests adjacent to the entrance of a department store during shopping hours is a constitutionally proper time, place, and manner limitation.", "(C) Yes, because the mall is functionally equivalent to a town and its actions are subject to the Constitution's guarantees of freedom of speech and assembly.", "(D) Yes, because the mall's restriction on the protesters' speech was broader than necessary to ensure proper access to the department store."], correct: "A" },
-{ id: 16, category: "Constitutional Law", question: "A state law provides that a person who has been divorced may not marry again unless he or she is current on all child-support payments. A woman who was refused a marriage license under this law sued the appropriate state officials. What standard should the court apply in reviewing the constitutionality of this law?", answers: ["(A) The state must show that the law is necessary to serve a compelling government interest.", "(B) The state must show that the law is substantially related to an important government interest.", "(C) The woman must show that the law serves no important public purpose.", "(D) The woman must show that the legislature did not have a rational basis for enacting the law."], correct: "A" },
-{ id: 17, category: "Constitutional Law", question: "Congress enacted a statute prohibiting discrimination in the rental of residential property anywhere in the United States on the basis of sexual orientation or preference by any person or entity, public or private. Which provision provides the strongest basis for Congress's authority to enact this statute?", answers: ["(A) The Enforcement Clause of the Fourteenth Amendment.", "(B) The Privileges and Immunities Clause of Article IV.", "(C) The Commerce Clause of Article I, Section 8.", "(D) The General Welfare Clause of Article I, Section 8."], correct: "C" },
-{ id: 18, category: "Constitutional Law", question: "A school principal was prosecuted under a new state law for enrolling and providing education to foreign nationals he knew to be in the country illegally, for acts that took place before the law was adopted. No federal statute applied. What constitutional provision would most help the principal's defense?", answers: ["(A) The Due Process Clause of the Fourteenth Amendment.", "(B) The Equal Protection Clause of the Fourteenth Amendment.", "(C) The Ex Post Facto Clause of Article I, Section 10.", "(D) The Privileges or Immunities Clause of the Fourteenth Amendment."], correct: "C" },
-{ id: 19, category: "Constitutional Law", question: "A state law prohibited the distribution of 'seditious propaganda.' The state prosecuted U.S. Post Office letter carriers under this law for delivering propaganda from a foreign country. Which of the following statements is an INACCURATE description of the state's law as applied to the letter carriers?", answers: ["(A) It is an unconstitutional bill of attainder.", "(B) It is void for vagueness.", "(C) It may not be applied to the letter carriers, because they are employees of a federal instrumentality carrying out an authorized function.", "(D) It unconstitutionally abridges rights protected by the First and Fourteenth Amendments."], correct: "A" },
-{ id: 20, category: "Constitutional Law", question: "A protester entered an IRS office, denounced the income tax, and set fire to pages from his own copy of the Internal Revenue Code. He was charged with violating a state law prohibiting igniting a fire in a public building. He claimed the prosecution was unconstitutional under the First Amendment. May the protester constitutionally be convicted?", answers: ["(A) No, because he was exercising his right to freedom of speech by burning a copy of the code.", "(B) No, because the copy of the code belonged to him, and thus burning it did not infringe upon a legitimate government interest.", "(C) Yes, because the burning of the code was conduct rather than speech.", "(D) Yes, because the state law is narrowly drawn to further a substantial government interest in prohibiting the noncommunicative aspects of the act in question."], correct: "D" },
-{ id: 21, category: "Constitutional Law", question: "A private religiously-operated university, 25% state-funded, discharged a professor solely because she published a column arguing 'religion has become a negative force in society.' The professor sued claiming the discharge violated her constitutional right to freedom of speech. The university moved to dismiss, arguing the U.S. Constitution provides no cause of action. Should the court grant the motion to dismiss?", answers: ["(A) Yes, because the First and Fourteenth Amendments protect the right of the university to employ only individuals who share and communicate its views.", "(B) Yes, because the action of the university in discharging the professor is not attributable to the state for purposes of the Fourteenth Amendment.", "(C) No, because the accreditation and partial funding of the university by the state are sufficient to justify the conclusion that the state was an active participant in the discharge.", "(D) No, because the U.S. Constitution provides a cause of action against any state-accredited institution that restricts freedom of speech as a condition of employment."], correct: "B" },
-{ id: 22, category: "Constitutional Law", question: "A federal statute requires the President to appoint ambassadors from a Senate-compiled list of three individuals, with Senate confirmation deemed automatic 30 days after the President names an appointee from the list unless the Senate determines otherwise within that period. Is this statute constitutional?", answers: ["(A) No, because the statute violates the constitutional requirements for appointment of principal officers of the United States.", "(B) No, because the statute impermissibly restricts the plenary foreign affairs powers of the President.", "(C) Yes, because the statute is consistent with the constitutional requirement that presidential appointment of ambassadors be with the advice and consent of the Senate.", "(D) Yes, because the statute is a necessary and proper measure in furtherance of Congress's power to regulate commerce with foreign states."], correct: "A" },
-{ id: 23, category: "Constitutional Law", question: "Under a state law, a drug company is strictly liable for false factual claims about a prescription drug. A drug company claimed a drug was safe for children; medical studies at the time supported this claim, but later research proved the drug was harmful to children. The company moved to dismiss on First Amendment grounds. Should the court grant the motion?", answers: ["(A) No, because false or misleading commercial speech is not constitutionally protected.", "(B) No, because the drug business is subject to extensive health and safety regulation.", "(C) Yes, because liability cannot be imposed for false statements without a showing of actual malice.", "(D) Yes, because the company's claims about the drug were a matter of public concern."], correct: "A" },
-{ id: 24, category: "Constitutional Law", question: "A state-owned natural gas field awarded a contract to a lower-bidding local company over an interstate pipeline company that bid higher. The local company's bid included a commitment to pass savings along to local customers. The interstate company sued. Should the interstate company prevail?", answers: ["(A) No, because the state has a compelling interest in reducing the cost of gas for state citizens.", "(B) No, because the state acted as a market participant.", "(C) Yes, because the state acted irrationally by not choosing the highest bidder and thus denied the interstate company due process of law.", "(D) Yes, because the state discriminated against interstate commerce."], correct: "B" },
-{ id: 25, category: "Constitutional Law", question: "A state enacted a law requiring all children of elementary and secondary school age to attend schools operated by their local public school districts. Parents of children enrolled in private schools filed suit to challenge the constitutionality of this state law. Should the court uphold the law?", answers: ["(A) Yes, because it is rationally related to a legitimate state interest.", "(B) Yes, because it is necessary to further a compelling state interest.", "(C) No, because it is not rationally related to a legitimate state interest.", "(D) No, because it is not necessary to further a compelling state interest."], correct: "D" },
-{ id: 26, category: "Constitutional Law", question: "Congress enacted a statute establishing a biological diversity protection program. An inseverable provision provides that the agency must report each designation to a committee of Congress, and that the committee may overturn the agency's designation by majority vote. Why is the statute unconstitutional?", answers: ["(A) It constitutes an invalid delegation of legislative authority to an executive agency.", "(B) It interferes with the exercise of the President's paramount authority in foreign affairs.", "(C) It requires an executive agency to report its decisions to Congress.", "(D) It authorizes a committee of Congress to overturn an executive decision."], correct: "D" },
-{ id: 27, category: "Constitutional Law", question: "A city ordinance prohibited picketing in residential neighborhoods unless the picketing related to neighborhood zoning requirements. A group wanted to picket in front of a business owner's home because of the business owner's employment practices. Will the group's First Amendment challenge likely prevail?", answers: ["(A) No, because the ordinance is a content-neutral regulation of speech.", "(B) No, because the ordinance regulates conduct rather than speech.", "(C) Yes, because the ordinance irrationally discriminates between different types of protesters.", "(D) Yes, because the ordinance is a content-based regulation of speech."], correct: "D" },
-{ id: 28, category: "Constitutional Law", question: "A state law prohibits withdrawal of groundwater for use in another state. A federal statute provides that transport of groundwater may be restricted 'in accordance with the laws of the state in which the water originates.' An association of out-of-state water users sued, claiming the law violates the negative implications of the Commerce Clause. What is the best argument supporting a motion to dismiss?", answers: ["(A) The law promotes a compelling state interest that outweighs any burden on interstate commercial activity.", "(B) Groundwater within a state is not itself an article of interstate commerce, and state regulation of its withdrawal does not implicate the Commerce Clause.", "(C) The Tenth Amendment reserves to the states plenary authority over natural resources within their borders.", "(D) The federal statute explicitly consents to a state's regulation of its groundwater in a way that would otherwise violate the negative implications of the Commerce Clause."], correct: "D" },
-{ id: 29, category: "Constitutional Law", question: "Congress passed a statute providing that parties could no longer seek review in the U.S. Supreme Court of final judgments in criminal matters made by the highest court in each state. What is the best argument supporting the constitutionality of the statute?", answers: ["(A) Congress has the power to make exceptions to the appellate jurisdiction of the Supreme Court.", "(B) Criminal matters are traditionally governed by state law.", "(C) The proper means of federal judicial review of state criminal matters is by habeas corpus.", "(D) The review of state court judgments is not within the original jurisdiction of the Supreme Court."], correct: "A" },
-{ id: 30, category: "Constitutional Law", question: "A state denied bar admission to an applicant who refused to answer a question on the bar application asking whether the applicant was or had previously been a member of any subversive organization. The applicant challenged this as a violation of freedom of association. Is the applicant likely to prevail?", answers: ["(A) No, because membership in a subversive group constitutes endorsement of the group's illegal activities.", "(B) No, because the Constitution does not apply to the bar.", "(C) Yes, because denying bar admission based on any association with a subversive organization violates the First Amendment.", "(D) Yes, because denying bar admission based solely on past membership in a subversive organization violates the First Amendment."], correct: "D" },
-{ id: 31, category: "Constitutional Law", question: "A state statute prohibits publicly displaying or selling to any person material 'that may be harmful to minors because of the violent or sexually explicit nature of its pictorial content.' A store owner is prosecuted for displaying and selling such magazines. What is the best defense?", answers: ["(A) First Amendment as incorporated into the Fourteenth Amendment, because the statute is excessively vague and overbroad.", "(B) First Amendment as incorporated into the Fourteenth Amendment, because a state may not prohibit the sale of violent or sexually explicit material without proof that the material is utterly without any redeeming value.", "(C) Equal Protection of the Laws Clause, because the statute irrationally treats violent and sexually explicit material that is pictorial differently from such material that is composed wholly of printed words.", "(D) Equal Protection of the Laws Clause, because the statute irrationally distinguishes between violent and sexually explicit pictorial material that may harm minors and such material that may harm only adults."], correct: "A" },
-{ id: 32, category: "Constitutional Law", question: "A state passed a Coyote Bounty Bill offering $25 for each coyote killed within the state. A hunter shot coyotes in a National Forest without permission from the Bureau of Land Management and collected the bounty. The hunter was convicted under the National Ecological Balance Act and appealed. On appeal, the court of appeals should hold the National Ecological Balance Act, as applied to the hunter, to be:", answers: ["(A) Constitutional, because the Property Clause of Article IV, Section 3 authorizes such federal statutory controls and sanctions.", "(B) Constitutional, because Article I, Section 8 authorizes Congress to enact all laws necessary and proper to advance the general welfare.", "(C) Unconstitutional, because Congress may not use its delegated powers to override the Tenth Amendment right of the state to legislate in areas of traditional state governmental functions.", "(D) Unconstitutional, because Congress violates the Full Faith and Credit Clause of Article IV when it punishes conduct authorized by state action."], correct: "A" },
-{ id: 33, category: "Constitutional Law", question: "A purchaser bought land in mountain foothills to build a housing development. The county then prohibited all construction in the area to 'conserve for future generations the unique natural wildlife and plant habitats.' The purchaser cannot sell or lease the property at any price, and realtors have advised the property is now worthless. The purchaser sued the county for just compensation. Is the court likely to rule in favor of the purchaser?", answers: ["(A) No, because the county did not take title to the property from the purchaser.", "(B) No, because the regulation has not caused or authorized any uninvited physical invasion or intrusion onto the property.", "(C) Yes, because the conservation objective of the county ordinance is not sufficiently compelling to justify the substantial diminution in the property value.", "(D) Yes, because the effect of the county's regulation is to deny the purchaser's investment-backed expectation and essentially all economically beneficial use of the property."], correct: "D" },
-{ id: 34, category: "Constitutional Law", question: "Congress enacted a statute imposing severe criminal penalties on stock market traders who take 'unfair advantage' of other investors. The statute does not define 'unfair advantage.' An association of law professors who do not trade in stocks sued to enjoin enforcement of the statute as unconstitutionally vague. May the federal court determine the merits of this suit?", answers: ["(A) Yes, because the suit involves a dispute over the constitutionality of a federal statute.", "(B) Yes, because the plaintiffs seek real relief of a conclusive nature — an injunction against enforcement of this statute.", "(C) No, because the plaintiffs do not have an interest in the invalidation of this statute that is adequate to ensure that the suit presents an Article III controversy.", "(D) No, because a suit for an injunction against enforcement of a criminal statute may not be brought in federal court at any time prior to a bona fide effort to enforce that statute."], correct: "C" },
-{ id: 35, category: "Constitutional Law", question: "Congress enacted a $100 tax on each ton of a mineral mined in the United States — a mineral currently mined only in one state that is added to fresh water to prevent freshwater parasites. The mineral producers challenged the tax on constitutional grounds. Is this tax constitutional?", answers: ["(A) No, because producers in only one state will pay the tax, so it is not uniform among the states and denies equal protection.", "(B) No, because it is likely to have an adverse effect on the freshwater commercial fishing industry and Congress has a responsibility under the Commerce Clause to protect such industries.", "(C) Yes, because the tax is a necessary and proper means of exercising federal authority over the navigable waters of the United States.", "(D) Yes, because the power of Congress to impose taxes is plenary, this tax contains no provisions extraneous to tax needs or purposes, and it is not barred by any prohibitory language in the Constitution."], correct: "D" },
-{ id: 36, category: "Constitutional Law", question: "The U.S. government demonstrated that terrorist attacks involving commercial airliners were perpetrated exclusively by individuals of one particular race. Congress enacted a statute imposing stringent new airport and airline security measures only on individuals of that race. Which of the following provides the best ground for challenging the constitutionality of the statute?", answers: ["(A) The Commerce Clause of Article I, Section 8.", "(B) The Due Process Clause of the Fifth Amendment.", "(C) The Privileges and Immunities Clause of Article IV.", "(D) The Privileges or Immunities Clause of the Fourteenth Amendment."], correct: "B" },
-{ id: 37, category: "Constitutional Law", question: "A state law forbids aliens from owning more than 100 acres of land within the state. A resident alien purchased 200 acres after the law's passage and brought a federal court action to enjoin enforcement. The defendant moves to dismiss. The federal court should:", answers: ["(A) Dismiss the action, because under the Constitution aliens may not sue in federal court.", "(B) Dismiss the action, because a state has unlimited power to determine the qualifications for landholding within its boundaries.", "(C) Hear the action, because the United Nations Charter forbids such discrimination.", "(D) Hear the action, because a federal question is presented."], correct: "D" },
-{ id: 38, category: "Constitutional Law", question: "In a state employee sexual harassment grievance proceeding, the state's attorney used all five strikes to eliminate five of the six female arbitrators, stating she believed women as a group would be biased in favor of another woman claiming harassment. The resulting all-male panel ruled against the employee. The employee challenged the panel selection process as a gender-based denial of equal protection. In this case, the court should hold that the panel selection process is:", answers: ["(A) Unconstitutional, because the gender classification used by the state's attorney does not satisfy the requirements of intermediate scrutiny.", "(B) Unconstitutional, because the gender classification denies the grievant the right to a jury made up of her peers.", "(C) Constitutional, because the gender classification satisfies the requirements of the strict scrutiny test.", "(D) Constitutional, because the gender classification satisfies the requirements of the rational basis test."], correct: "A" },
-{ id: 39, category: "Constitutional Law", question: "A city ordinance imposes a license tax on computer assemblers as a percentage of gross receipts, but reduces the tax by a percentage equal to the proportion of components manufactured in-state. A company whose components all come from outside the state pays the full tax, while competitors using in-state components pay less. The company challenges the tax under the negative implications of the Commerce Clause. The court should rule:", answers: ["(A) Against the company, because the tax falls only on companies resident in the city and does not discriminate against interstate commerce.", "(B) Against the company, because the Commerce Clause does not interfere with the right of a state to foster and support businesses located within its borders.", "(C) For the company, because any tax on a company engaged in interstate commerce, measured in whole or in part by its gross receipts, is a per se violation of the negative implications of the Commerce Clause.", "(D) For the company, because the tax improperly discriminates against interstate commerce by treating in-state products more favorably than out-of-state products."], correct: "D" },
-{ id: 40, category: "Constitutional Law", question: "A federal statute required a federal agency to establish minimum quality standards for all beer sold in the United States. No standards have yet been adopted. A brewery that produces unpasteurized beer sued to enjoin the agency from adopting any standards that would prohibit the sale of unpasteurized beer. How should the district court dispose of the suit?", answers: ["(A) Determine whether the agency could reasonably believe that pasteurization is the safest process, and if so, refuse to issue the injunction.", "(B) Determine whether the process used by the brewery is as safe as pasteurization and, if it is, issue the injunction against the agency.", "(C) Refuse to adjudicate the merits of the suit at this time and stay the action until the agency has actually issued beer quality standards.", "(D) Refuse to adjudicate the merits of the suit, because it does not involve a justiciable case or controversy."], correct: "D" },
-{ id: 41, category: "Constitutional Law", question: "A city ordinance allows cemetery lot owners to erect a memorial monument or marker of their choice on their lot, subject to size restrictions. The city maintains the cemetery using lot sale revenues, supplemented by a small amount of city tax funds. City taxpayers challenged the ordinance insofar as it permits the erection of religious memorial monuments on lots in the city-operated cemetery. Is this suit likely to be successful?", answers: ["(A) No, because only a small amount of city tax funds has been used to maintain the cemetery.", "(B) No, because the purpose of the ordinance is entirely secular, its primary effect neither advances nor inhibits religion, and it does not foster excessive government entanglement with religion.", "(C) Yes, because city maintenance of any religious object is a violation of the Establishment Clause.", "(D) Yes, because no compelling governmental interest justifies authorizing private persons to erect religious monuments in a city-operated cemetery."], correct: "B" },
-{ id: 42, category: "Constitutional Law", question: "The governor of a state proposes to place a Christmas nativity scene donated by private citizens in the state capitol rotunda, displayed annually from December 1–31, next to permanent displays depicting the state's manufactured products. If challenged on Establishment Clause grounds, the proposed nativity scene display would be held:", answers: ["(A) Unconstitutional, because the components of the nativity scene would be owned by the state rather than by private persons.", "(B) Unconstitutional, because the nativity scene would not be displayed in a context that appeared to depict and commemorate the Christmas season as a primarily secular holiday.", "(C) Constitutional, because the components of the nativity scene would be donated to the state by private citizens rather than purchased with state funds.", "(D) Constitutional, because the nativity scene would be displayed alongside an exhibit of various products manufactured in the state."], correct: "B" },
-{ id: 43, category: "Constitutional Law", question: "A private organization that permits only males to serve in its highest offices rented a city-owned public auditorium for its national convention, inviting the general public to attend an officer installation ceremony. A plaintiff sued the organization seeking to enjoin its use of the auditorium for the installation, solely because the organization disqualifies women from its highest offices. Will the plaintiff prevail?", answers: ["(A) Yes, because the Fourteenth Amendment prohibits such an organization from discriminating against women in any of its activities to which it has invited members of the general public.", "(B) Yes, because the organization's use of the city auditorium subjects its conduct to the provisions of the Fourteenth Amendment.", "(C) No, because the freedom of association protected by the Fourteenth Amendment prohibits the city from interfering in any way with the organization's use of city facilities.", "(D) No, because this organization is not a state actor and, therefore, its activities are not subject to the provisions of the Fourteenth Amendment."], correct: "D" },
-{ id: 44, category: "Constitutional Law", question: "A county ordinance states that only taxicabs registered in the county may pick up or discharge passengers in the county, and that only county residents may register taxicabs in the county. The stated purpose is to reduce traffic congestion. Taxicab owners from a neighboring state challenged the ordinance. What is the proper result?", answers: ["(A) Judgment for the taxicab owners, because private passenger automobiles contribute more to traffic congestion than taxicabs, indicating the ordinance is not a reasonable means to solve that problem.", "(B) Judgment for the taxicab owners, because the ordinance unduly burdens interstate commerce by insulating county taxicab owners from out-of-state competition without adequate justification.", "(C) Judgment for the county, because the ordinance forbids taxicabs registered in other counties as well as in other states, and therefore it does not discriminate against interstate commerce.", "(D) Judgment for the county, because taxicab owners do not constitute a suspect class and the ordinance is reasonably related to the legitimate governmental purpose of reducing traffic congestion."], correct: "B" },
-{ id: 45, category: "Constitutional Law", question: "A city enacted an ordinance banning from its public sidewalks all machines dispensing publications consisting wholly of commercial advertisements, due to concerns about aesthetic effects of litter. The city continued to allow machines dispensing other types of publications. 30 of 300 sidewalk machines were removed. Is this ordinance constitutional?", answers: ["(A) Yes, because regulations of commercial speech are subject only to the requirement that they be rationally related to a legitimate state goal, and that requirement is satisfied here.", "(B) Yes, because the city has a compelling interest in protecting the aesthetics of its sidewalks and streets, and such a ban is necessary to vindicate this interest.", "(C) No, because it does not constitute the least restrictive means with which to protect the aesthetics of the city's sidewalks and streets.", "(D) No, because there is not a reasonable fit between the legitimate interest of the city in preserving the aesthetics of its sidewalks and streets and the means it chose to advance that interest."], correct: "D" },
-{ id: 46, category: "Constitutional Law", question: "A barber's license was revoked based solely on affidavits by unnamed informants who claimed to have purchased cocaine from the barber in his barbershop, but who were not present or available for cross-examination. In a suit to have this revocation set aside, the barber's best constitutional argument is that:", answers: ["(A) The barber's inability to cross-examine his accusers denied him a fair hearing and caused him to be deprived of his barber license without due process of law.", "(B) The administrative license revocation proceeding was invalid, because it denied full faith and credit to the dismissal of the criminal charges by the U.S. attorney.", "(C) Article III requires a penalty of the kind imposed on him to be imposed by a court rather than an administrative agency.", "(D) The existence of federal laws penalizing the illegal sale of cocaine preempts state action relating to drug trafficking of the kind involved in this case."], correct: "A" },
-{ id: 47, category: "Constitutional Law", question: "An attorney contracted for cable TV service solely to view a televised murder trial. When the judge banned cameras mid-trial as disruptive, the attorney sued for an injunction requiring the judge to resume televising, alleging deprivation of property without due process. The criminal trial ended in conviction before the attorney's case came to trial. The defendant moved to dismiss. The most proper disposition of this motion would be to:", answers: ["(A) Defer action on the motion until after any appellate proceedings in the suspect's case have concluded.", "(B) Defer action on the motion until after the state supreme court expresses a view on its proper disposition.", "(C) Grant the motion, because the subject matter of the controversy has ceased to exist and there is no strong likelihood that it will be revived.", "(D) Deny the motion, because the attorney has raised an important constitutional question about whether his investment in cable service is property protected by the Due Process Clause."], correct: "C" },
-{ id: 48, category: "Constitutional Law", question: "A state imposes a tax on income that includes the fair rental value of any automobile provided by an employer for an employee's personal use. The federal government supplies automobiles to employees who may also use them personally. No federal legislation addresses this subject. May the state collect this tax on the fair rental value of the personal use of the automobiles furnished by the federal government to these employees?", answers: ["(A) No, because such a tax would be a tax on the United States.", "(B) No, because such a tax would be a tax upon activities performed on behalf of the United States, since the automobiles are primarily used by federal employees in the discharge of their official duties.", "(C) Yes, because the tax is imposed on the employees rather than on the United States, and the tax does not discriminate against persons who are employed by the United States.", "(D) Yes, because an exemption from such state taxes for federal employees would be a denial to others of the equal protection of the laws."], correct: "C" },
-{ id: 49, category: "Constitutional Law", question: "A city taxicab operator's license ordinance provides that any citizen may file an objection to the issuance of a particular license, but only on the ground that an applicant does not possess the required qualifications. A licensed taxicab driver filed an objection solely on the ground that the grant of a license to a qualified applicant would impair the value of his existing license. City officials refused to hold a hearing. In this case, the court should rule for:", answers: ["(A) The taxicab driver, because the Due Process Clause of the Fourteenth Amendment requires all persons whose property may be adversely affected by governmental action to be given an opportunity for a hearing before such action occurs.", "(B) The taxicab driver, because the determination of whether to hold a hearing may not constitutionally be left to the discretion of the same officials whose action is being challenged.", "(C) The city officials, because the taxicab driver had the benefit of the licensing ordinance and, therefore, may not now question actions taken under it.", "(D) The city officials, because the licensing ordinance does not give the taxicab driver any property interest in being free of competition from additional licensees."], correct: "D" },
-{ id: 50, category: "Constitutional Law", question: "Congress enacted a statute requiring each state legislature to enact a state law making it a state crime for any person to possess, use, or distribute, within 1,000 feet of any elementary or secondary school, any controlled substance that has previously been transported in interstate commerce and is not possessed pursuant to a proper physician's prescription. This federal statute is:", answers: ["(A) Unconstitutional, because Congress has no authority to require a state legislature to enact any specified legislation.", "(B) Unconstitutional, because the possession, use, or distribution in close proximity to a school of a controlled substance that has previously been transported in interstate commerce does not have a sufficiently close nexus to such commerce to justify its regulation by Congress.", "(C) Constitutional, because it contains a jurisdictional provision that will ensure, on a case-by-case basis, that any particular controlled substance subject to the terms of this statute will affect interstate commerce.", "(D) Constitutional, because Congress possesses broad authority under both the General Welfare Clause and the Commerce Clause to regulate any activities affecting education that also have, in inseverable aggregates, a substantial effect on interstate commerce."], correct: "A" },
-{ id: 51, category: "Constitutional Law", question: "The President proposes to appoint a Presidential Advisory Commission on Vaccination to conduct a national publicity campaign to encourage vaccination. No federal statute authorizes or prohibits this action. The Commission's activities would be financed from funds appropriated by Congress to the office of the president for 'such other purposes as the President may think appropriate.' May the President constitutionally create such a commission?", answers: ["(A) Yes, because the President has plenary authority to provide for the health, safety, and welfare of the people of the United States.", "(B) Yes, because this action is within the scope of executive authority vested in the President by the Constitution, and no federal statute prohibits it.", "(C) No, because the protection of children against common diseases by vaccination is a traditional state function and therefore reserved to the states by the Tenth Amendment.", "(D) No, because Congress has not specifically authorized the creation and support of such a new federal agency."], correct: "B" },
-{ id: 52, category: "Constitutional Law", question: "A proposed federal statute would prohibit all types of discrimination against black persons on the basis of their race in every business transaction executed anywhere in the United States by any person or entity, governmental or private. Is this proposed federal statute likely to be constitutional?", answers: ["(A) Yes, because it could reasonably be viewed as an exercise of Congress's authority to enact laws for the general welfare.", "(B) Yes, because it could reasonably be viewed as a means of enforcing the provisions of the Thirteenth Amendment.", "(C) No, because it would regulate purely local transactions that are not in interstate commerce.", "(D) No, because it would invade the powers reserved to the states by the Tenth Amendment."], correct: "B" },
-{ id: 53, category: "Constitutional Law", question: "An independent municipal water-supply district adopted a rule unqualifiedly setting aside 25 percent of all staff positions and 25 percent of all contracts to members of racial minority groups, to help redress historical discrimination and help them achieve economic parity. No federal statute applies. The set-asides are:", answers: ["(A) Unconstitutional, because they would deny other potential employees or potential contractors the equal protection of the laws.", "(B) Unconstitutional, because they would impermissibly impair the right to contract of other potential employees or potential contractors.", "(C) Constitutional, because they would assure members of racial minority groups the equal protection of the laws.", "(D) Constitutional, because the function and activities of the water district are of a proprietary nature rather than a governmental nature and therefore not subject to the usual requirements of the Fourteenth Amendment."], correct: "A" },
-{ id: 54, category: "Constitutional Law", question: "A state statute permits a woman to have an abortion on demand during the first trimester of pregnancy but prohibits abortion after that time unless her physician determines it is necessary to protect the woman's life or health. If challenged on constitutional grounds, this statute will probably be held:", answers: ["(A) Constitutional, because the state has made a rational policy choice that creates an equitable balance between the compelling state interest in protecting fetal life and the fundamental right of a woman to reproductive choice.", "(B) Constitutional, because recent rulings indicate that after the first trimester a fetus may be characterized as a person whose right to life is protected by the Due Process Clause.", "(C) Unconstitutional, because the state has, without adequate justification, placed an undue burden on the fundamental right of a woman to reproductive choice prior to fetal viability.", "(D) Unconstitutional, because a statute unqualifiedly permitting abortion at one stage of pregnancy and denying it at another with only minor exceptions establishes an arbitrary classification in violation of the Equal Protection Clause."], correct: "C" },
-{ id: 55, category: "Constitutional Law", question: "Companies adversely affected by an EPA rule filed a petition for review in a court of appeals before the court decided the case, then sought immediate Supreme Court review via certiorari before the court of appeals ruled. The EPA asked the Supreme Court to dismiss the petition on jurisdictional grounds. The best constitutional argument in support of the EPA's request is that:", answers: ["(A) The case is not within the original jurisdiction of the Supreme Court as defined by Article III, and it is not a proper subject of that court's appellate jurisdiction because it has not yet been decided by any lower court.", "(B) The case is appellate in nature, but it is beyond the appellate jurisdiction of the Supreme Court, because Article III states that its jurisdiction extends only to cases arising under the Constitution.", "(C) Article III precludes federal courts from reviewing the validity of any federal agency rule in any proceeding other than an action to enforce the rule.", "(D) Article III provides that all federal cases, except those within the original jurisdiction of the Supreme Court, must be initiated by an action in a federal district court."], correct: "A" },
-{ id: 56, category: "Constitutional Law", question: "A newly elected President recognized a rebel group as the government of a foreign country and ordered the ambassador from the previously recognized ruling faction to leave the United States within ten days. The ambassador filed an action in federal district court for a declaration that the ruling faction was the true government. The United States moved to dismiss. If the court dismisses the action, what will be the most likely reason?", answers: ["(A) The action involves a nonjusticiable political question.", "(B) The action is not ripe.", "(C) The action is within the original jurisdiction of the U.S. Supreme Court.", "(D) The ambassador does not have standing."], correct: "A" },
-{ id: 57, category: "Constitutional Law", question: "A state statute requires an autopsy by the county coroner in all cases of death that are not obviously of natural causes. A man's parents, whose religion requires burial without invasive procedures, sought to enjoin an autopsy after the man died of mysterious causes. They claimed only that the application of this statute would violate their right to free exercise of religion. Assume that no federal statutes apply. The court should rule that the state's autopsy statute is:", answers: ["(A) Constitutional, because a dead individual is not a person protected by the Due Process Clause of the Fourteenth Amendment.", "(B) Constitutional, because it is a generally applicable statute and is rationally related to a legitimate state purpose.", "(C) Unconstitutional, because it is not necessary to vindicate a compelling state interest.", "(D) Unconstitutional, because it is not substantially related to an important state interest."], correct: "B" },
-{ id: 58, category: "Constitutional Law", question: "A federal statute appropriated $7 million for a nationwide essay contest on 'How the United States Can Best Stop Drug Abuse.' The statute provides adequate criteria for selecting winners and states that judges are to be appointed by the president with the advice and consent of the Senate. A provision authorizes any taxpayer to challenge its constitutionality. In a suit by a federal taxpayer, the court should:", answers: ["(A) Refuse to decide its merits, because the suit involves policy questions that are inherently political and therefore nonjusticiable.", "(B) Hold the statute unconstitutional, because it does not provide sufficient guidelines for awarding the prize money and therefore unconstitutionally delegates legislative power.", "(C) Hold the statute unconstitutional, because its relationship to legitimate purposes of the spending power of Congress is too tenuous and conjectural.", "(D) Hold the statute constitutional, because it is reasonably related to the general welfare, it states concrete objectives, and it provides adequate criteria for conducting the essay contest and awarding the prize money."], correct: "D" },
-{ id: 59, category: "Constitutional Law", question: "A senator made a speech on the floor of the U.S. Senate falsely accusing a federal civil servant of fraud, based on careless research by her legislative assistant. No legislation affecting the civil servant's agency was pending. The civil servant sued both the senator and her legislative assistant for defamation. As a matter of constitutional law, the court should:", answers: ["(A) Grant it as to the legislative assistant; deny it as to the senator because as an officer of the United States she has no freedom of speech rights in that capacity.", "(B) Grant it as to both defendants, because the senator is immune to suit for any speech she makes in the Senate under the Speech or Debate Clause, and the legislative assistant may assert the senator's immunity for his assistance in preparing the speech.", "(C) Deny it as to both defendants, because any immunity of the senator under the Speech or Debate Clause does not attach to a speech not germane to pending legislative business, and the legislative assistant is entitled to no greater immunity than the legislator he was assisting.", "(D) Deny it as to the legislative assistant; grant it as to the senator because she is immune from suit for her speech by virtue of the Speech or Debate Clause."], correct: "B" },
-{ id: 60, category: "Constitutional Law", question: "A city zoning board denied an individual's application for a special use permit to operate a group home for convicts in transition from prison to parole, even though the proposed group home met all requirements, solely because of the nature of the proposed use. The individual sued seeking declaratory and injunctive relief on constitutional grounds. Which of the following best states the appropriate burden of persuasion in this action?", answers: ["(A) Because housing is a fundamental right, the zoning board must demonstrate that denial of the permit is necessary to serve a compelling state interest.", "(B) Because the zoning board's action has the effect of discriminating against a quasi-suspect class in regard to a basic subsistence right, the zoning board must demonstrate that the denial of the permit is substantially related to an important state interest.", "(C) Because the zoning board's action invidiously discriminates against a suspect class, the zoning board must demonstrate that denial of the permit is necessary to serve a compelling state interest.", "(D) Because the zoning board's action is in the nature of an economic or social welfare regulation, the individual seeking the permit must demonstrate that the denial of the permit is not rationally related to a legitimate state interest."], correct: "D" },
-{ id: 61, category: "Constitutional Law", question: "After extensive hearings, Congress concluded that the sale of look-alike drugs was widespread and was creating severe health and law enforcement problems. To combat these problems, Congress enacted a comprehensive statute that regulates the manufacture, distribution, and sale of all nonprescription drugs in the United States. Which of the following sources of constitutional authority can most easily be used to justify the authority of Congress to enact this statute?", answers: ["(A) The spending power.", "(B) The Commerce Clause.", "(C) The general welfare clause.", "(D) The enforcement powers of the Fourteenth Amendment."], correct: "B" },
-{ id: 62, category: "Constitutional Law", question: "Congress created a program making federal loans available to family farmers who had been unable to obtain loans from private lenders. Congress gave a designated federal agency discretion to decide which applicants receive the loans. A family farmer's application was summarily denied without a hearing. The farmer sued claiming this violated the due process clause of the Fifth Amendment. Should the court uphold the agency's decision?", answers: ["(A) No, because due process requires federal agencies to provide a hearing before making any factual determination that adversely affects an identified individual on the basis of his or her particular circumstances.", "(B) No, because the denial of a loan may deprive the farmer of an established liberty interest to pursue her chosen occupation.", "(C) Yes, because the applicable statute gives the farmer no legitimate claim of entitlement to receive a loan.", "(D) Yes, because the spending clause of Article I, Section 8 gives Congress plenary power to control the distribution of appropriated funds in any manner it wishes."], correct: "C" },
-{ id: 63, category: "Constitutional Law", question: "A city passed an ordinance requiring individuals to obtain a license in order to care for children under the age of 12 for pay, requiring ten hours of instruction, a background check, and a $100 fee. The ordinance affected women disproportionately to men. Is the ordinance constitutional?", answers: ["(A) No, because it has a disparate impact on women without a showing that the ordinance is necessary to advance a compelling government interest.", "(B) No, because it infringes on the freedom of contract without a compelling government interest.", "(C) Yes, because any burden it imposes is clearly outweighed by an important government objective.", "(D) Yes, because it is rationally related to a legitimate government objective."], correct: "D" },
-{ id: 64, category: "Constitutional Law", question: "A federal statute required that any individual or entity owning more than 100 cars had to ensure that at least 10 percent of those cars were electric powered. A city filed suit in federal district court against the federal official who enforced this requirement, seeking an injunction prohibiting enforcement of the statute on the ground that it was unconstitutional. Should the court grant the injunction?", answers: ["(A) No, because the statute is valid under the Commerce Clause and does not violate the Tenth Amendment.", "(B) No, because the federal government has sovereign immunity and cannot be sued without its explicit consent.", "(C) Yes, because the statute violates the reserved rights of the states under the Tenth Amendment.", "(D) Yes, because as applied to state and local governments, the statute exceeds Congress's power under the Commerce Clause."], correct: "A" },
+  { id: 1, category: "Constitutional Law", question: "A police officer employed for ten years refused a prescribed blood transfusion due to sincere religious beliefs after being shot on duty, and died. The city denied the death benefit under an amendment that denied benefits when death was caused by refusal of reasonably available medical care. Is the amendment constitutional as applied?", answers: ["(A) No, because it effectively discriminates against a religious practice.", "(B) No, because it violates the vested contractual rights of city employees hired before the amendment.", "(C) Yes, because it does not single out religious reasons for denial of benefits and is a reasonable limitation.", "(D) Yes, because it imposes a condition only on a government benefit and does not penalize individual conduct."], correct: "C" },
+  { id: 2, category: "Constitutional Law", question: "The United States sued a state in federal court for injunctive relief, arguing the state's federally-funded child welfare programs failed to comply with federal standards. The state has moved to dismiss. Is the court likely to dismiss the action?", answers: ["(A) No, because Congress can place any condition on the receipt of federal funds.", "(B) No, because the Eleventh Amendment does not bar actions brought by the United States.", "(C) Yes, because the Eleventh Amendment bars actions against a state in federal court.", "(D) Yes, because the protection of child welfare is reserved to the states."], correct: "B" },
+  { id: 3, category: "Constitutional Law", question: "A store owner was prosecuted under a state anti-obscenity law for selling a video consisting entirely of pictures of nude sunbathers on a foreign beach where nude sunbathing is common. The store owner defended on First Amendment grounds. Should the store owner prevail?", answers: ["(A) No, because the store owner is engaged in commercial sale not protected by the First and Fourteenth Amendments.", "(B) No, because the video appeals to the prurient interest of viewers and lacks serious social value.", "(C) Yes, because mere portrayals of nudity are insufficient to justify a finding that the video is obscene.", "(D) Yes, because the state lacks a compelling interest in applying its anti-obscenity law to conduct occurring outside the United States."], correct: "C" },
+  { id: 4, category: "Constitutional Law", question: "A state supreme court invalidated a state law protecting rape victim names solely on state constitutional grounds, noting the federal First Amendment 'very likely' also bars it but declining to decide that issue. The victim petitioned the U.S. Supreme Court for review. Is the U.S. Supreme Court likely to review the judgment?", answers: ["(A) No, because the First Amendment prohibits the imposition of liability for the publication of truthful information.", "(B) No, because the judgment rests upon an adequate and independent state-law ground.", "(C) Yes, because the supremacy clause does not permit a state to create rights greater than those in the federal Constitution.", "(D) Yes, because the U.S. Supreme Court's appellate jurisdiction extends to cases arising under federal law."], correct: "B" },
+  { id: 5, category: "Constitutional Law", question: "A federal statute prohibits all commercial advertising of red meat products based on studies linking red meat to cancer, but does not restrict sales. Red meat producers challenge the statute as a First Amendment violation. Is the court likely to find the statute constitutional?", answers: ["(A) No, because it does not serve a substantial government interest.", "(B) No, because it is more extensive than necessary to serve the government interest in preventing certain cancers.", "(C) Yes, because it does not affect speech protected by the First Amendment.", "(D) Yes, because it serves a legitimate government interest in protecting public health."], correct: "B" },
+  { id: 6, category: "Constitutional Law", question: "A federal statute authorizes an agency to issue rules requiring state legislatures to adopt laws of limited duration to reduce water pollution from gasoline-powered boat motors. Several states challenged the rules as unconstitutional. Should the court uphold the rules?", answers: ["(A) No, because the federal government may not compel a state legislature to enact a federally mandated regulatory program.", "(B) No, because the Tenth Amendment grants states immunity from all direct federal regulation.", "(C) Yes, because the rules serve an important purpose and requirements are only temporary.", "(D) Yes, because the supremacy clause of Article VI requires states to enforce federal law."], correct: "A" },
+  { id: 7, category: "Constitutional Law", question: "A state law prohibits use of state medical funding for surgery for any person who has resided in the state for less than one year, except in emergencies. A woman who moved to the state two months ago needs non-emergency surgery. Should the woman prevail in a suit to invalidate the law?", answers: ["(A) No, because the law reasonably conserves the state's limited resources.", "(B) No, because the law reasonably prevents expenditure of state funds on transient nonresidents.", "(C) Yes, because the law burdens the woman's fundamental right to health care.", "(D) Yes, because the law burdens the woman's fundamental right to travel."], correct: "D" },
+  { id: 8, category: "Constitutional Law", question: "Due to a heating fuel shortage, the President ordered federal executive agencies to be open only four days per week. Congress had assumed five days when appropriating funds but did not require it by statute. Is the President's order constitutional?", answers: ["(A) No, because the heads of the various executive agencies have final responsibility for the operation of those agencies.", "(B) No, because members of Congress assumed those agencies' offices would be open five days per week when they passed the appropriations statute.", "(C) Yes, because the Constitution vests the President with plenary authority to direct the administration of all federal agencies in any manner the President deems expedient.", "(D) Yes, because the order relates to the management of the executive branch and is not prohibited by any statute."], correct: "D" },
+  { id: 9, category: "Constitutional Law", question: "A state law prohibits publishing details of executions. After a botched execution, a newspaper published a detailed account written by its reporter who was permitted to observe but made no promise to report only the warden's official statement. Is the prosecution of the newspaper constitutional?", answers: ["(A) No, because the prosecution seeks to punish the publication of lawfully obtained, truthful information about a matter of public significance, without adequate justification.", "(B) No, because the reporter did not promise prison officials that he would report only the warden's official statement.", "(C) Yes, because publication of the details of such events might cause psychological damage to some children.", "(D) Yes, because the newspaper should have brought an action to test the validity of the law before publishing."], correct: "A" },
+  { id: 10, category: "Constitutional Law", question: "A state-owned electric power system refused to supply power to out-of-state purchasers residing in states that would not accept spent nuclear fuel for disposal. No federal statute applies. What is the strongest argument that the state's action is constitutional?", answers: ["(A) A state may condition the sale of its products to out-of-state purchasers on the willingness of those purchasers to bear the fair share of environmental costs.", "(B) The generation of electricity is intrastate by nature and therefore subject to plenary state control.", "(C) The state itself owns and operates the power system, and therefore its refusal is not subject to the negative implications of the commerce clause.", "(D) The state's action is rationally related to the health, safety, and welfare of state citizens."], correct: "C" },
+  { id: 11, category: "Constitutional Law", question: "A city enacted an ordinance requiring all rental housing units to provide at least one full bathroom per bedroom, washer/dryer hookups, and covered parking. A plaintiff who owns low-income rental housing has sued, claiming the ordinance is unconstitutional on its face. What is the burden of persuasion?", answers: ["(A) The city must demonstrate the ordinance is necessary to serve a compelling state interest because it adversely affects the fundamental right to use property efficiently.", "(B) The city must demonstrate the ordinance is necessary to serve a compelling state interest because it will have a substantial and disproportionate negative impact on low-income persons.", "(C) The plaintiff must demonstrate the ordinance is not substantially related to an important state interest.", "(D) The plaintiff must demonstrate there is no rational relationship between the ordinance and any legitimate state interest, because the ordinance regulates economic activity normally presumed within state regulatory authority."], correct: "D" },
+  { id: 12, category: "Constitutional Law", question: "A plaintiff sued a defendant in a state court alleging only a cause of action arising under a federal statute, though state law provides a similar cause of action. The federal statute says claims can be brought in any court of competent jurisdiction. Should the state court hear the case?", answers: ["(A) No, because cases arising under federal law must be decided in federal court.", "(B) No, because state courts must abstain in cases arising under federal law until a federal court has decided the federal issue.", "(C) Yes, because state courts may not discriminate against cases arising under federal law.", "(D) Yes, because the parties cannot proceed in federal court since there is no diversity of citizenship."], correct: "C" },
+  { id: 13, category: "Constitutional Law", question: "An airline falsely claimed in an ad that its competitor had an inferior safety record, based on erroneous information it assumed to be true. The airline was charged under a state law penalizing false or misleading public statements about a service or product. No federal statute applies. Which argument best supports the airline's First Amendment defense?", answers: ["(A) Its statement about the safety record was made without malice.", "(B) Its statement about the safety record was protected noncommercial speech.", "(C) The state law is a prior restraint.", "(D) The state law is overbroad."], correct: "D" },
+  { id: 14, category: "Constitutional Law", question: "A U.S. senator made a false speech on the floor of the Senate accusing a low-level federal purchasing officer of wasting taxpayer money. The officer sued the senator for defamation, alleging the accusation was false and the senator was negligent. What is the most appropriate ground for the court to dismiss the complaint?", answers: ["(A) The federal government is constitutionally immune from suit without its consent, and it has not consented to suits of this kind.", "(B) The First Amendment guarantees members of Congress an unqualified right to speak on matters of public concern at any place and time.", "(C) The First Amendment protects public officials from defamation liability for statements made in their official capacity unless the plaintiff proves actual malice.", "(D) The speech and debate clause of Article I, Section 6 wholly insulates members of Congress from tort liability for statements made on the floor of Congress."], correct: "D" },
+  { id: 15, category: "Constitutional Law", question: "A privately owned mall broke up a peaceful protest near a department store entrance and required the protesters to leave. The protesters claimed their First and Fourteenth Amendment rights to freedom of speech were violated. Should the protesters prevail?", answers: ["(A) No, because the mall is private property, and there was no state action to which the freedom of speech guarantees of the First and Fourteenth Amendments apply.", "(B) No, because the prohibition of protests adjacent to the entrance of a department store during shopping hours is a constitutionally proper time, place, and manner limitation.", "(C) Yes, because the mall is functionally equivalent to a town and its actions are subject to the Constitution's guarantees of freedom of speech and assembly.", "(D) Yes, because the mall's restriction on the protesters' speech was broader than necessary to ensure proper access to the department store."], correct: "A" },
+  { id: 16, category: "Constitutional Law", question: "A state law provides that a person who has been divorced may not marry again unless he or she is current on all child-support payments. A woman who was refused a marriage license under this law sued the appropriate state officials. What standard should the court apply in reviewing the constitutionality of this law?", answers: ["(A) The state must show that the law is necessary to serve a compelling government interest.", "(B) The state must show that the law is substantially related to an important government interest.", "(C) The woman must show that the law serves no important public purpose.", "(D) The woman must show that the legislature did not have a rational basis for enacting the law."], correct: "A" },
+  { id: 17, category: "Constitutional Law", question: "Congress enacted a statute prohibiting discrimination in the rental of residential property anywhere in the United States on the basis of sexual orientation or preference by any person or entity, public or private. Which provision provides the strongest basis for Congress's authority to enact this statute?", answers: ["(A) The Enforcement Clause of the Fourteenth Amendment.", "(B) The Privileges and Immunities Clause of Article IV.", "(C) The Commerce Clause of Article I, Section 8.", "(D) The General Welfare Clause of Article I, Section 8."], correct: "C" },
+  { id: 18, category: "Constitutional Law", question: "A school principal was prosecuted under a new state law for enrolling and providing education to foreign nationals he knew to be in the country illegally, for acts that took place before the law was adopted. No federal statute applied. What constitutional provision would most help the principal's defense?", answers: ["(A) The Due Process Clause of the Fourteenth Amendment.", "(B) The Equal Protection Clause of the Fourteenth Amendment.", "(C) The Ex Post Facto Clause of Article I, Section 10.", "(D) The Privileges or Immunities Clause of the Fourteenth Amendment."], correct: "C" },
+  { id: 19, category: "Constitutional Law", question: "A state law prohibited the distribution of 'seditious propaganda.' The state prosecuted U.S. Post Office letter carriers under this law for delivering propaganda from a foreign country. Which of the following statements is an INACCURATE description of the state's law as applied to the letter carriers?", answers: ["(A) It is an unconstitutional bill of attainder.", "(B) It is void for vagueness.", "(C) It may not be applied to the letter carriers, because they are employees of a federal instrumentality carrying out an authorized function.", "(D) It unconstitutionally abridges rights protected by the First and Fourteenth Amendments."], correct: "A" },
+  { id: 20, category: "Constitutional Law", question: "A protester entered an IRS office, denounced the income tax, and set fire to pages from his own copy of the Internal Revenue Code. He was charged with violating a state law prohibiting igniting a fire in a public building. He claimed the prosecution was unconstitutional under the First Amendment. May the protester constitutionally be convicted?", answers: ["(A) No, because he was exercising his right to freedom of speech by burning a copy of the code.", "(B) No, because the copy of the code belonged to him, and thus burning it did not infringe upon a legitimate government interest.", "(C) Yes, because the burning of the code was conduct rather than speech.", "(D) Yes, because the state law is narrowly drawn to further a substantial government interest in prohibiting the noncommunicative aspects of the act in question."], correct: "D" },
+  { id: 21, category: "Constitutional Law", question: "A private religiously-operated university, 25% state-funded, discharged a professor solely because she published a column arguing 'religion has become a negative force in society.' The professor sued claiming the discharge violated her constitutional right to freedom of speech. The university moved to dismiss, arguing the U.S. Constitution provides no cause of action. Should the court grant the motion to dismiss?", answers: ["(A) Yes, because the First and Fourteenth Amendments protect the right of the university to employ only individuals who share and communicate its views.", "(B) Yes, because the action of the university in discharging the professor is not attributable to the state for purposes of the Fourteenth Amendment.", "(C) No, because the accreditation and partial funding of the university by the state are sufficient to justify the conclusion that the state was an active participant in the discharge.", "(D) No, because the U.S. Constitution provides a cause of action against any state-accredited institution that restricts freedom of speech as a condition of employment."], correct: "B" },
+  { id: 22, category: "Constitutional Law", question: "A federal statute requires the President to appoint ambassadors from a Senate-compiled list of three individuals, with Senate confirmation deemed automatic 30 days after the President names an appointee from the list unless the Senate determines otherwise within that period. Is this statute constitutional?", answers: ["(A) No, because the statute violates the constitutional requirements for appointment of principal officers of the United States.", "(B) No, because the statute impermissibly restricts the plenary foreign affairs powers of the President.", "(C) Yes, because the statute is consistent with the constitutional requirement that presidential appointment of ambassadors be with the advice and consent of the Senate.", "(D) Yes, because the statute is a necessary and proper measure in furtherance of Congress's power to regulate commerce with foreign states."], correct: "A" },
+  { id: 23, category: "Constitutional Law", question: "Under a state law, a drug company is strictly liable for false factual claims about a prescription drug. A drug company claimed a drug was safe for children; medical studies at the time supported this claim, but later research proved the drug was harmful to children. The company moved to dismiss on First Amendment grounds. Should the court grant the motion?", answers: ["(A) No, because false or misleading commercial speech is not constitutionally protected.", "(B) No, because the drug business is subject to extensive health and safety regulation.", "(C) Yes, because liability cannot be imposed for false statements without a showing of actual malice.", "(D) Yes, because the company's claims about the drug were a matter of public concern."], correct: "A" },
+  { id: 24, category: "Constitutional Law", question: "A state-owned natural gas field awarded a contract to a lower-bidding local company over an interstate pipeline company that bid higher. The local company's bid included a commitment to pass savings along to local customers. The interstate company sued. Should the interstate company prevail?", answers: ["(A) No, because the state has a compelling interest in reducing the cost of gas for state citizens.", "(B) No, because the state acted as a market participant.", "(C) Yes, because the state acted irrationally by not choosing the highest bidder and thus denied the interstate company due process of law.", "(D) Yes, because the state discriminated against interstate commerce."], correct: "B" },
+  { id: 25, category: "Constitutional Law", question: "A state enacted a law requiring all children of elementary and secondary school age to attend schools operated by their local public school districts. Parents of children enrolled in private schools filed suit to challenge the constitutionality of this state law. Should the court uphold the law?", answers: ["(A) Yes, because it is rationally related to a legitimate state interest.", "(B) Yes, because it is necessary to further a compelling state interest.", "(C) No, because it is not rationally related to a legitimate state interest.", "(D) No, because it is not necessary to further a compelling state interest."], correct: "D" },
+  { id: 26, category: "Constitutional Law", question: "Congress enacted a statute establishing a biological diversity protection program. An inseverable provision provides that the agency must report each designation to a committee of Congress, and that the committee may overturn the agency's designation by majority vote. Why is the statute unconstitutional?", answers: ["(A) It constitutes an invalid delegation of legislative authority to an executive agency.", "(B) It interferes with the exercise of the President's paramount authority in foreign affairs.", "(C) It requires an executive agency to report its decisions to Congress.", "(D) It authorizes a committee of Congress to overturn an executive decision."], correct: "D" },
+  { id: 27, category: "Constitutional Law", question: "A city ordinance prohibited picketing in residential neighborhoods unless the picketing related to neighborhood zoning requirements. A group wanted to picket in front of a business owner's home because of the business owner's employment practices. Will the group's First Amendment challenge likely prevail?", answers: ["(A) No, because the ordinance is a content-neutral regulation of speech.", "(B) No, because the ordinance regulates conduct rather than speech.", "(C) Yes, because the ordinance irrationally discriminates between different types of protesters.", "(D) Yes, because the ordinance is a content-based regulation of speech."], correct: "D" },
+  { id: 28, category: "Constitutional Law", question: "A state law prohibits withdrawal of groundwater for use in another state. A federal statute provides that transport of groundwater may be restricted 'in accordance with the laws of the state in which the water originates.' An association of out-of-state water users sued, claiming the law violates the negative implications of the Commerce Clause. What is the best argument supporting a motion to dismiss?", answers: ["(A) The law promotes a compelling state interest that outweighs any burden on interstate commercial activity.", "(B) Groundwater within a state is not itself an article of interstate commerce, and state regulation of its withdrawal does not implicate the Commerce Clause.", "(C) The Tenth Amendment reserves to the states plenary authority over natural resources within their borders.", "(D) The federal statute explicitly consents to a state's regulation of its groundwater in a way that would otherwise violate the negative implications of the Commerce Clause."], correct: "D" },
+  { id: 29, category: "Constitutional Law", question: "Congress passed a statute providing that parties could no longer seek review in the U.S. Supreme Court of final judgments in criminal matters made by the highest court in each state. What is the best argument supporting the constitutionality of the statute?", answers: ["(A) Congress has the power to make exceptions to the appellate jurisdiction of the Supreme Court.", "(B) Criminal matters are traditionally governed by state law.", "(C) The proper means of federal judicial review of state criminal matters is by habeas corpus.", "(D) The review of state court judgments is not within the original jurisdiction of the Supreme Court."], correct: "A" },
+  { id: 30, category: "Constitutional Law", question: "A state denied bar admission to an applicant who refused to answer a question on the bar application asking whether the applicant was or had previously been a member of any subversive organization. The applicant challenged this as a violation of freedom of association. Is the applicant likely to prevail?", answers: ["(A) No, because membership in a subversive group constitutes endorsement of the group's illegal activities.", "(B) No, because the Constitution does not apply to the bar.", "(C) Yes, because denying bar admission based on any association with a subversive organization violates the First Amendment.", "(D) Yes, because denying bar admission based solely on past membership in a subversive organization violates the First Amendment."], correct: "D" },
+  { id: 31, category: "Constitutional Law", question: "A state statute prohibits publicly displaying or selling to any person material 'that may be harmful to minors because of the violent or sexually explicit nature of its pictorial content.' A store owner is prosecuted for displaying and selling such magazines. What is the best defense?", answers: ["(A) First Amendment as incorporated into the Fourteenth Amendment, because the statute is excessively vague and overbroad.", "(B) First Amendment as incorporated into the Fourteenth Amendment, because a state may not prohibit the sale of violent or sexually explicit material without proof that the material is utterly without any redeeming value.", "(C) Equal Protection of the Laws Clause, because the statute irrationally treats violent and sexually explicit material that is pictorial differently from such material that is composed wholly of printed words.", "(D) Equal Protection of the Laws Clause, because the statute irrationally distinguishes between violent and sexually explicit pictorial material that may harm minors and such material that may harm only adults."], correct: "A" },
+  { id: 32, category: "Constitutional Law", question: "A state passed a Coyote Bounty Bill offering $25 for each coyote killed within the state. A hunter shot coyotes in a National Forest without permission from the Bureau of Land Management and collected the bounty. The hunter was convicted under the National Ecological Balance Act and appealed. On appeal, the court of appeals should hold the National Ecological Balance Act, as applied to the hunter, to be:", answers: ["(A) Constitutional, because the Property Clause of Article IV, Section 3 authorizes such federal statutory controls and sanctions.", "(B) Constitutional, because Article I, Section 8 authorizes Congress to enact all laws necessary and proper to advance the general welfare.", "(C) Unconstitutional, because Congress may not use its delegated powers to override the Tenth Amendment right of the state to legislate in areas of traditional state governmental functions.", "(D) Unconstitutional, because Congress violates the Full Faith and Credit Clause of Article IV when it punishes conduct authorized by state action."], correct: "A" },
+  { id: 33, category: "Constitutional Law", question: "A purchaser bought land in mountain foothills to build a housing development. The county then prohibited all construction in the area to 'conserve for future generations the unique natural wildlife and plant habitats.' The purchaser cannot sell or lease the property at any price, and realtors have advised the property is now worthless. The purchaser sued the county for just compensation. Is the court likely to rule in favor of the purchaser?", answers: ["(A) No, because the county did not take title to the property from the purchaser.", "(B) No, because the regulation has not caused or authorized any uninvited physical invasion or intrusion onto the property.", "(C) Yes, because the conservation objective of the county ordinance is not sufficiently compelling to justify the substantial diminution in the property value.", "(D) Yes, because the effect of the county's regulation is to deny the purchaser's investment-backed expectation and essentially all economically beneficial use of the property."], correct: "D" },
+  { id: 34, category: "Constitutional Law", question: "Congress enacted a statute imposing severe criminal penalties on stock market traders who take 'unfair advantage' of other investors. The statute does not define 'unfair advantage.' An association of law professors who do not trade in stocks sued to enjoin enforcement of the statute as unconstitutionally vague. May the federal court determine the merits of this suit?", answers: ["(A) Yes, because the suit involves a dispute over the constitutionality of a federal statute.", "(B) Yes, because the plaintiffs seek real relief of a conclusive nature — an injunction against enforcement of this statute.", "(C) No, because the plaintiffs do not have an interest in the invalidation of this statute that is adequate to ensure that the suit presents an Article III controversy.", "(D) No, because a suit for an injunction against enforcement of a criminal statute may not be brought in federal court at any time prior to a bona fide effort to enforce that statute."], correct: "C" },
+  { id: 35, category: "Constitutional Law", question: "Congress enacted a $100 tax on each ton of a mineral mined in the United States — a mineral currently mined only in one state that is added to fresh water to prevent freshwater parasites. The mineral producers challenged the tax on constitutional grounds. Is this tax constitutional?", answers: ["(A) No, because producers in only one state will pay the tax, so it is not uniform among the states and denies equal protection.", "(B) No, because it is likely to have an adverse effect on the freshwater commercial fishing industry and Congress has a responsibility under the Commerce Clause to protect such industries.", "(C) Yes, because the tax is a necessary and proper means of exercising federal authority over the navigable waters of the United States.", "(D) Yes, because the power of Congress to impose taxes is plenary, this tax contains no provisions extraneous to tax needs or purposes, and it is not barred by any prohibitory language in the Constitution."], correct: "D" },
+  { id: 36, category: "Constitutional Law", question: "The U.S. government demonstrated that terrorist attacks involving commercial airliners were perpetrated exclusively by individuals of one particular race. Congress enacted a statute imposing stringent new airport and airline security measures only on individuals of that race. Which of the following provides the best ground for challenging the constitutionality of the statute?", answers: ["(A) The Commerce Clause of Article I, Section 8.", "(B) The Due Process Clause of the Fifth Amendment.", "(C) The Privileges and Immunities Clause of Article IV.", "(D) The Privileges or Immunities Clause of the Fourteenth Amendment."], correct: "B" },
+  { id: 37, category: "Constitutional Law", question: "A state law forbids aliens from owning more than 100 acres of land within the state. A resident alien purchased 200 acres after the law's passage and brought a federal court action to enjoin enforcement. The defendant moves to dismiss. The federal court should:", answers: ["(A) Dismiss the action, because under the Constitution aliens may not sue in federal court.", "(B) Dismiss the action, because a state has unlimited power to determine the qualifications for landholding within its boundaries.", "(C) Hear the action, because the United Nations Charter forbids such discrimination.", "(D) Hear the action, because a federal question is presented."], correct: "D" },
+  { id: 38, category: "Constitutional Law", question: "In a state employee sexual harassment grievance proceeding, the state's attorney used all five strikes to eliminate five of the six female arbitrators, stating she believed women as a group would be biased in favor of another woman claiming harassment. The resulting all-male panel ruled against the employee. The employee challenged the panel selection process as a gender-based denial of equal protection. In this case, the court should hold that the panel selection process is:", answers: ["(A) Unconstitutional, because the gender classification used by the state's attorney does not satisfy the requirements of intermediate scrutiny.", "(B) Unconstitutional, because the gender classification denies the grievant the right to a jury made up of her peers.", "(C) Constitutional, because the gender classification satisfies the requirements of the strict scrutiny test.", "(D) Constitutional, because the gender classification satisfies the requirements of the rational basis test."], correct: "A" },
+  { id: 39, category: "Constitutional Law", question: "A city ordinance imposes a license tax on computer assemblers as a percentage of gross receipts, but reduces the tax by a percentage equal to the proportion of components manufactured in-state. A company whose components all come from outside the state pays the full tax, while competitors using in-state components pay less. The company challenges the tax under the negative implications of the Commerce Clause. The court should rule:", answers: ["(A) Against the company, because the tax falls only on companies resident in the city and does not discriminate against interstate commerce.", "(B) Against the company, because the Commerce Clause does not interfere with the right of a state to foster and support businesses located within its borders.", "(C) For the company, because any tax on a company engaged in interstate commerce, measured in whole or in part by its gross receipts, is a per se violation of the negative implications of the Commerce Clause.", "(D) For the company, because the tax improperly discriminates against interstate commerce by treating in-state products more favorably than out-of-state products."], correct: "D" },
+  { id: 40, category: "Constitutional Law", question: "A federal statute required a federal agency to establish minimum quality standards for all beer sold in the United States. No standards have yet been adopted. A brewery that produces unpasteurized beer sued to enjoin the agency from adopting any standards that would prohibit the sale of unpasteurized beer. How should the district court dispose of the suit?", answers: ["(A) Determine whether the agency could reasonably believe that pasteurization is the safest process, and if so, refuse to issue the injunction.", "(B) Determine whether the process used by the brewery is as safe as pasteurization and, if it is, issue the injunction against the agency.", "(C) Refuse to adjudicate the merits of the suit at this time and stay the action until the agency has actually issued beer quality standards.", "(D) Refuse to adjudicate the merits of the suit, because it does not involve a justiciable case or controversy."], correct: "D" },
+  { id: 41, category: "Constitutional Law", question: "A city ordinance allows cemetery lot owners to erect a memorial monument or marker of their choice on their lot, subject to size restrictions. The city maintains the cemetery using lot sale revenues, supplemented by a small amount of city tax funds. City taxpayers challenged the ordinance insofar as it permits the erection of religious memorial monuments on lots in the city-operated cemetery. Is this suit likely to be successful?", answers: ["(A) No, because only a small amount of city tax funds has been used to maintain the cemetery.", "(B) No, because the purpose of the ordinance is entirely secular, its primary effect neither advances nor inhibits religion, and it does not foster excessive government entanglement with religion.", "(C) Yes, because city maintenance of any religious object is a violation of the Establishment Clause.", "(D) Yes, because no compelling governmental interest justifies authorizing private persons to erect religious monuments in a city-operated cemetery."], correct: "B" },
+  { id: 42, category: "Constitutional Law", question: "The governor of a state proposes to place a Christmas nativity scene donated by private citizens in the state capitol rotunda, displayed annually from December 1–31, next to permanent displays depicting the state's manufactured products. If challenged on Establishment Clause grounds, the proposed nativity scene display would be held:", answers: ["(A) Unconstitutional, because the components of the nativity scene would be owned by the state rather than by private persons.", "(B) Unconstitutional, because the nativity scene would not be displayed in a context that appeared to depict and commemorate the Christmas season as a primarily secular holiday.", "(C) Constitutional, because the components of the nativity scene would be donated to the state by private citizens rather than purchased with state funds.", "(D) Constitutional, because the nativity scene would be displayed alongside an exhibit of various products manufactured in the state."], correct: "B" },
+  { id: 43, category: "Constitutional Law", question: "A private organization that permits only males to serve in its highest offices rented a city-owned public auditorium for its national convention, inviting the general public to attend an officer installation ceremony. A plaintiff sued the organization seeking to enjoin its use of the auditorium for the installation, solely because the organization disqualifies women from its highest offices. Will the plaintiff prevail?", answers: ["(A) Yes, because the Fourteenth Amendment prohibits such an organization from discriminating against women in any of its activities to which it has invited members of the general public.", "(B) Yes, because the organization's use of the city auditorium subjects its conduct to the provisions of the Fourteenth Amendment.", "(C) No, because the freedom of association protected by the Fourteenth Amendment prohibits the city from interfering in any way with the organization's use of city facilities.", "(D) No, because this organization is not a state actor and, therefore, its activities are not subject to the provisions of the Fourteenth Amendment."], correct: "D" },
+  { id: 44, category: "Constitutional Law", question: "A county ordinance states that only taxicabs registered in the county may pick up or discharge passengers in the county, and that only county residents may register taxicabs in the county. The stated purpose is to reduce traffic congestion. Taxicab owners from a neighboring state challenged the ordinance. What is the proper result?", answers: ["(A) Judgment for the taxicab owners, because private passenger automobiles contribute more to traffic congestion than taxicabs, indicating the ordinance is not a reasonable means to solve that problem.", "(B) Judgment for the taxicab owners, because the ordinance unduly burdens interstate commerce by insulating county taxicab owners from out-of-state competition without adequate justification.", "(C) Judgment for the county, because the ordinance forbids taxicabs registered in other counties as well as in other states, and therefore it does not discriminate against interstate commerce.", "(D) Judgment for the county, because taxicab owners do not constitute a suspect class and the ordinance is reasonably related to the legitimate governmental purpose of reducing traffic congestion."], correct: "B" },
+  { id: 45, category: "Constitutional Law", question: "A city enacted an ordinance banning from its public sidewalks all machines dispensing publications consisting wholly of commercial advertisements, due to concerns about aesthetic effects of litter. The city continued to allow machines dispensing other types of publications. 30 of 300 sidewalk machines were removed. Is this ordinance constitutional?", answers: ["(A) Yes, because regulations of commercial speech are subject only to the requirement that they be rationally related to a legitimate state goal, and that requirement is satisfied here.", "(B) Yes, because the city has a compelling interest in protecting the aesthetics of its sidewalks and streets, and such a ban is necessary to vindicate this interest.", "(C) No, because it does not constitute the least restrictive means with which to protect the aesthetics of the city's sidewalks and streets.", "(D) No, because there is not a reasonable fit between the legitimate interest of the city in preserving the aesthetics of its sidewalks and streets and the means it chose to advance that interest."], correct: "D" },
+  { id: 46, category: "Constitutional Law", question: "A barber's license was revoked based solely on affidavits by unnamed informants who claimed to have purchased cocaine from the barber in his barbershop, but who were not present or available for cross-examination. In a suit to have this revocation set aside, the barber's best constitutional argument is that:", answers: ["(A) The barber's inability to cross-examine his accusers denied him a fair hearing and caused him to be deprived of his barber license without due process of law.", "(B) The administrative license revocation proceeding was invalid, because it denied full faith and credit to the dismissal of the criminal charges by the U.S. attorney.", "(C) Article III requires a penalty of the kind imposed on him to be imposed by a court rather than an administrative agency.", "(D) The existence of federal laws penalizing the illegal sale of cocaine preempts state action relating to drug trafficking of the kind involved in this case."], correct: "A" },
+  { id: 47, category: "Constitutional Law", question: "An attorney contracted for cable TV service solely to view a televised murder trial. When the judge banned cameras mid-trial as disruptive, the attorney sued for an injunction requiring the judge to resume televising, alleging deprivation of property without due process. The criminal trial ended in conviction before the attorney's case came to trial. The defendant moved to dismiss. The most proper disposition of this motion would be to:", answers: ["(A) Defer action on the motion until after any appellate proceedings in the suspect's case have concluded.", "(B) Defer action on the motion until after the state supreme court expresses a view on its proper disposition.", "(C) Grant the motion, because the subject matter of the controversy has ceased to exist and there is no strong likelihood that it will be revived.", "(D) Deny the motion, because the attorney has raised an important constitutional question about whether his investment in cable service is property protected by the Due Process Clause."], correct: "C" },
+  { id: 48, category: "Constitutional Law", question: "A state imposes a tax on income that includes the fair rental value of any automobile provided by an employer for an employee's personal use. The federal government supplies automobiles to employees who may also use them personally. No federal legislation addresses this subject. May the state collect this tax on the fair rental value of the personal use of the automobiles furnished by the federal government to these employees?", answers: ["(A) No, because such a tax would be a tax on the United States.", "(B) No, because such a tax would be a tax upon activities performed on behalf of the United States, since the automobiles are primarily used by federal employees in the discharge of their official duties.", "(C) Yes, because the tax is imposed on the employees rather than on the United States, and the tax does not discriminate against persons who are employed by the United States.", "(D) Yes, because an exemption from such state taxes for federal employees would be a denial to others of the equal protection of the laws."], correct: "C" },
+  { id: 49, category: "Constitutional Law", question: "A city taxicab operator's license ordinance provides that any citizen may file an objection to the issuance of a particular license, but only on the ground that an applicant does not possess the required qualifications. A licensed taxicab driver filed an objection solely on the ground that the grant of a license to a qualified applicant would impair the value of his existing license. City officials refused to hold a hearing. In this case, the court should rule for:", answers: ["(A) The taxicab driver, because the Due Process Clause of the Fourteenth Amendment requires all persons whose property may be adversely affected by governmental action to be given an opportunity for a hearing before such action occurs.", "(B) The taxicab driver, because the determination of whether to hold a hearing may not constitutionally be left to the discretion of the same officials whose action is being challenged.", "(C) The city officials, because the taxicab driver had the benefit of the licensing ordinance and, therefore, may not now question actions taken under it.", "(D) The city officials, because the licensing ordinance does not give the taxicab driver any property interest in being free of competition from additional licensees."], correct: "D" },
+  { id: 50, category: "Constitutional Law", question: "Congress enacted a statute requiring each state legislature to enact a state law making it a state crime for any person to possess, use, or distribute, within 1,000 feet of any elementary or secondary school, any controlled substance that has previously been transported in interstate commerce and is not possessed pursuant to a proper physician's prescription. This federal statute is:", answers: ["(A) Unconstitutional, because Congress has no authority to require a state legislature to enact any specified legislation.", "(B) Unconstitutional, because the possession, use, or distribution in close proximity to a school of a controlled substance that has previously been transported in interstate commerce does not have a sufficiently close nexus to such commerce to justify its regulation by Congress.", "(C) Constitutional, because it contains a jurisdictional provision that will ensure, on a case-by-case basis, that any particular controlled substance subject to the terms of this statute will affect interstate commerce.", "(D) Constitutional, because Congress possesses broad authority under both the General Welfare Clause and the Commerce Clause to regulate any activities affecting education that also have, in inseverable aggregates, a substantial effect on interstate commerce."], correct: "A" },
+  { id: 51, category: "Constitutional Law", question: "The President proposes to appoint a Presidential Advisory Commission on Vaccination to conduct a national publicity campaign to encourage vaccination. No federal statute authorizes or prohibits this action. The Commission's activities would be financed from funds appropriated by Congress to the office of the president for 'such other purposes as the President may think appropriate.' May the President constitutionally create such a commission?", answers: ["(A) Yes, because the President has plenary authority to provide for the health, safety, and welfare of the people of the United States.", "(B) Yes, because this action is within the scope of executive authority vested in the President by the Constitution, and no federal statute prohibits it.", "(C) No, because the protection of children against common diseases by vaccination is a traditional state function and therefore reserved to the states by the Tenth Amendment.", "(D) No, because Congress has not specifically authorized the creation and support of such a new federal agency."], correct: "B" },
+  { id: 52, category: "Constitutional Law", question: "A proposed federal statute would prohibit all types of discrimination against black persons on the basis of their race in every business transaction executed anywhere in the United States by any person or entity, governmental or private. Is this proposed federal statute likely to be constitutional?", answers: ["(A) Yes, because it could reasonably be viewed as an exercise of Congress's authority to enact laws for the general welfare.", "(B) Yes, because it could reasonably be viewed as a means of enforcing the provisions of the Thirteenth Amendment.", "(C) No, because it would regulate purely local transactions that are not in interstate commerce.", "(D) No, because it would invade the powers reserved to the states by the Tenth Amendment."], correct: "B" },
+  { id: 53, category: "Constitutional Law", question: "An independent municipal water-supply district adopted a rule unqualifiedly setting aside 25 percent of all staff positions and 25 percent of all contracts to members of racial minority groups, to help redress historical discrimination and help them achieve economic parity. No federal statute applies. The set-asides are:", answers: ["(A) Unconstitutional, because they would deny other potential employees or potential contractors the equal protection of the laws.", "(B) Unconstitutional, because they would impermissibly impair the right to contract of other potential employees or potential contractors.", "(C) Constitutional, because they would assure members of racial minority groups the equal protection of the laws.", "(D) Constitutional, because the function and activities of the water district are of a proprietary nature rather than a governmental nature and therefore not subject to the usual requirements of the Fourteenth Amendment."], correct: "A" },
+  { id: 54, category: "Constitutional Law", question: "A state statute permits a woman to have an abortion on demand during the first trimester of pregnancy but prohibits abortion after that time unless her physician determines it is necessary to protect the woman's life or health. If challenged on constitutional grounds, this statute will probably be held:", answers: ["(A) Constitutional, because the state has made a rational policy choice that creates an equitable balance between the compelling state interest in protecting fetal life and the fundamental right of a woman to reproductive choice.", "(B) Constitutional, because recent rulings indicate that after the first trimester a fetus may be characterized as a person whose right to life is protected by the Due Process Clause.", "(C) Unconstitutional, because the state has, without adequate justification, placed an undue burden on the fundamental right of a woman to reproductive choice prior to fetal viability.", "(D) Unconstitutional, because a statute unqualifiedly permitting abortion at one stage of pregnancy and denying it at another with only minor exceptions establishes an arbitrary classification in violation of the Equal Protection Clause."], correct: "C" },
+  { id: 55, category: "Constitutional Law", question: "Companies adversely affected by an EPA rule filed a petition for review in a court of appeals before the court decided the case, then sought immediate Supreme Court review via certiorari before the court of appeals ruled. The EPA asked the Supreme Court to dismiss the petition on jurisdictional grounds. The best constitutional argument in support of the EPA's request is that:", answers: ["(A) The case is not within the original jurisdiction of the Supreme Court as defined by Article III, and it is not a proper subject of that court's appellate jurisdiction because it has not yet been decided by any lower court.", "(B) The case is appellate in nature, but it is beyond the appellate jurisdiction of the Supreme Court, because Article III states that its jurisdiction extends only to cases arising under the Constitution.", "(C) Article III precludes federal courts from reviewing the validity of any federal agency rule in any proceeding other than an action to enforce the rule.", "(D) Article III provides that all federal cases, except those within the original jurisdiction of the Supreme Court, must be initiated by an action in a federal district court."], correct: "A" },
+  { id: 56, category: "Constitutional Law", question: "A newly elected President recognized a rebel group as the government of a foreign country and ordered the ambassador from the previously recognized ruling faction to leave the United States within ten days. The ambassador filed an action in federal district court for a declaration that the ruling faction was the true government. The United States moved to dismiss. If the court dismisses the action, what will be the most likely reason?", answers: ["(A) The action involves a nonjusticiable political question.", "(B) The action is not ripe.", "(C) The action is within the original jurisdiction of the U.S. Supreme Court.", "(D) The ambassador does not have standing."], correct: "A" },
+  { id: 57, category: "Constitutional Law", question: "A state statute requires an autopsy by the county coroner in all cases of death that are not obviously of natural causes. A man's parents, whose religion requires burial without invasive procedures, sought to enjoin an autopsy after the man died of mysterious causes. They claimed only that the application of this statute would violate their right to free exercise of religion. Assume that no federal statutes apply. The court should rule that the state's autopsy statute is:", answers: ["(A) Constitutional, because a dead individual is not a person protected by the Due Process Clause of the Fourteenth Amendment.", "(B) Constitutional, because it is a generally applicable statute and is rationally related to a legitimate state purpose.", "(C) Unconstitutional, because it is not necessary to vindicate a compelling state interest.", "(D) Unconstitutional, because it is not substantially related to an important state interest."], correct: "B" },
+  { id: 58, category: "Constitutional Law", question: "A federal statute appropriated $7 million for a nationwide essay contest on 'How the United States Can Best Stop Drug Abuse.' The statute provides adequate criteria for selecting winners and states that judges are to be appointed by the president with the advice and consent of the Senate. A provision authorizes any taxpayer to challenge its constitutionality. In a suit by a federal taxpayer, the court should:", answers: ["(A) Refuse to decide its merits, because the suit involves policy questions that are inherently political and therefore nonjusticiable.", "(B) Hold the statute unconstitutional, because it does not provide sufficient guidelines for awarding the prize money and therefore unconstitutionally delegates legislative power.", "(C) Hold the statute unconstitutional, because its relationship to legitimate purposes of the spending power of Congress is too tenuous and conjectural.", "(D) Hold the statute constitutional, because it is reasonably related to the general welfare, it states concrete objectives, and it provides adequate criteria for conducting the essay contest and awarding the prize money."], correct: "D" },
+  { id: 59, category: "Constitutional Law", question: "A senator made a speech on the floor of the U.S. Senate falsely accusing a federal civil servant of fraud, based on careless research by her legislative assistant. No legislation affecting the civil servant's agency was pending. The civil servant sued both the senator and her legislative assistant for defamation. As a matter of constitutional law, the court should:", answers: ["(A) Grant it as to the legislative assistant; deny it as to the senator because as an officer of the United States she has no freedom of speech rights in that capacity.", "(B) Grant it as to both defendants, because the senator is immune to suit for any speech she makes in the Senate under the Speech or Debate Clause, and the legislative assistant may assert the senator's immunity for his assistance in preparing the speech.", "(C) Deny it as to both defendants, because any immunity of the senator under the Speech or Debate Clause does not attach to a speech not germane to pending legislative business, and the legislative assistant is entitled to no greater immunity than the legislator he was assisting.", "(D) Deny it as to the legislative assistant; grant it as to the senator because she is immune from suit for her speech by virtue of the Speech or Debate Clause."], correct: "B" },
+  { id: 60, category: "Constitutional Law", question: "A city zoning board denied an individual's application for a special use permit to operate a group home for convicts in transition from prison to parole, even though the proposed group home met all requirements, solely because of the nature of the proposed use. The individual sued seeking declaratory and injunctive relief on constitutional grounds. Which of the following best states the appropriate burden of persuasion in this action?", answers: ["(A) Because housing is a fundamental right, the zoning board must demonstrate that denial of the permit is necessary to serve a compelling state interest.", "(B) Because the zoning board's action has the effect of discriminating against a quasi-suspect class in regard to a basic subsistence right, the zoning board must demonstrate that the denial of the permit is substantially related to an important state interest.", "(C) Because the zoning board's action invidiously discriminates against a suspect class, the zoning board must demonstrate that denial of the permit is necessary to serve a compelling state interest.", "(D) Because the zoning board's action is in the nature of an economic or social welfare regulation, the individual seeking the permit must demonstrate that the denial of the permit is not rationally related to a legitimate state interest."], correct: "D" },
+  { id: 61, category: "Constitutional Law", question: "After extensive hearings, Congress concluded that the sale of look-alike drugs was widespread and was creating severe health and law enforcement problems. To combat these problems, Congress enacted a comprehensive statute that regulates the manufacture, distribution, and sale of all nonprescription drugs in the United States. Which of the following sources of constitutional authority can most easily be used to justify the authority of Congress to enact this statute?", answers: ["(A) The spending power.", "(B) The Commerce Clause.", "(C) The general welfare clause.", "(D) The enforcement powers of the Fourteenth Amendment."], correct: "B" },
+  { id: 62, category: "Constitutional Law", question: "Congress created a program making federal loans available to family farmers who had been unable to obtain loans from private lenders. Congress gave a designated federal agency discretion to decide which applicants receive the loans. A family farmer's application was summarily denied without a hearing. The farmer sued claiming this violated the due process clause of the Fifth Amendment. Should the court uphold the agency's decision?", answers: ["(A) No, because due process requires federal agencies to provide a hearing before making any factual determination that adversely affects an identified individual on the basis of his or her particular circumstances.", "(B) No, because the denial of a loan may deprive the farmer of an established liberty interest to pursue her chosen occupation.", "(C) Yes, because the applicable statute gives the farmer no legitimate claim of entitlement to receive a loan.", "(D) Yes, because the spending clause of Article I, Section 8 gives Congress plenary power to control the distribution of appropriated funds in any manner it wishes."], correct: "C" },
+  { id: 63, category: "Constitutional Law", question: "A city passed an ordinance requiring individuals to obtain a license in order to care for children under the age of 12 for pay, requiring ten hours of instruction, a background check, and a $100 fee. The ordinance affected women disproportionately to men. Is the ordinance constitutional?", answers: ["(A) No, because it has a disparate impact on women without a showing that the ordinance is necessary to advance a compelling government interest.", "(B) No, because it infringes on the freedom of contract without a compelling government interest.", "(C) Yes, because any burden it imposes is clearly outweighed by an important government objective.", "(D) Yes, because it is rationally related to a legitimate government objective."], correct: "D" },
+  { id: 64, category: "Constitutional Law", question: "A federal statute required that any individual or entity owning more than 100 cars had to ensure that at least 10 percent of those cars were electric powered. A city filed suit in federal district court against the federal official who enforced this requirement, seeking an injunction prohibiting enforcement of the statute on the ground that it was unconstitutional. Should the court grant the injunction?", answers: ["(A) No, because the statute is valid under the Commerce Clause and does not violate the Tenth Amendment.", "(B) No, because the federal government has sovereign immunity and cannot be sued without its explicit consent.", "(C) Yes, because the statute violates the reserved rights of the states under the Tenth Amendment.", "(D) Yes, because as applied to state and local governments, the statute exceeds Congress's power under the Commerce Clause."], correct: "A" },
 ];
 
 const EVIDENCE_QUESTIONS = [
-{ id: 1001, category: "Evidence", question: "A plaintiff, a management trainee, brought a sex discrimination lawsuit against her employer for wrongful termination. At trial, the plaintiff is prepared to testify that a janitor told her that he had heard her supervisor say to male coworkers about her, \"Make it hard for her. Maybe she'll go home where she belongs.\" Is the plaintiff's proposed testimony admissible?", answers: ["(A) No, because the janitor's statement is hearsay not within any exception.", "(B) No, because the statements of both the janitor and the supervisor are hearsay not within any exception.", "(C) Yes, because the janitor's statement is a present sense impression, and the supervisor's statement is a statement of his then-existing state of mind.", "(D) Yes, because the statements of both the janitor and the supervisor are statements concerning a matter within the scope of their employment."], correct: "A" },
-{ id: 1002, category: "Evidence", question: "A plaintiff sued a defendant in federal court for assault and battery. The court allowed the plaintiff to introduce the deposition testimony of a witness, now deceased, that he was with the plaintiff at the time of the incident. The defendant seeks to impeach the testimony with the witness's 13-year-old conviction for burglary (18 months served) for breaking into a neighbor's home while she was away and taking valuable jewelry. Should the court allow evidence of the conviction?", answers: ["(A) No, because the witness did not testify at trial.", "(B) No, unless the court finds, in the interests of justice, that the probative value of the conviction, supported by specific facts and circumstances, substantially outweighs its prejudicial effect.", "(C) Yes, because prior convictions are probative to impeach the witness's character for truthfulness.", "(D) Yes, because the crime involved an act of dishonesty."], correct: "B" },
-{ id: 1003, category: "Evidence", question: "A plaintiff sued a department store for injuries sustained when she slipped and fell. At trial, the plaintiff proposes to testify that when the store manager rushed to the scene, he said, \"I'm so sorry about the water on the floor there, but don't worry — the store will pay for the ambulance and your hospital bill.\" How should the court rule on admissibility?", answers: ["(A) The testimony is admissible in its entirety as the statement of an opposing party.", "(B) The testimony about the water is an admissible statement of an opposing party, but the rest is inadmissible as an offer to pay medical expenses.", "(C) The testimony is inadmissible in its entirety, because it is hearsay not within any exception.", "(D) The testimony is inadmissible in its entirety, because the manager's statement is in the context of an offer to pay medical expenses."], correct: "B" },
-{ id: 1004, category: "Evidence", question: "A defendant is on trial for theft of a used car he took for a test drive and did not return. He was arrested in the car two days later. In his defense, the defendant testified he had no intention of keeping the car but delayed returning it due to marital problems. The defendant calls a witness to testify that the defendant told him during those two days, \"I'm going to return this car as soon as I work things out with my wife.\" Is the witness's testimony admissible?", answers: ["(A) No, because it is a self-serving statement by an accused.", "(B) No, because it is hearsay not within any exception.", "(C) Yes, as a prior consistent statement of the defendant.", "(D) Yes, as a statement by the defendant of his then-existing state of mind."], correct: "D" },
-{ id: 1005, category: "Evidence", question: "A plaintiff sued an industrial facility for injuries caused by air pollution. She testified she could not remember specific times she observed large amounts of dust but maintained a diary in which she accurately recorded this information daily. When her attorney sought to refresh her recollection with her diary, she still could not remember. The plaintiff's attorney seeks to have the diary information admitted at trial. Is the information admissible?", answers: ["(A) No, because reviewing it did not refresh the plaintiff's recollection.", "(B) No, unless it is offered by the defendant.", "(C) Yes, and the plaintiff should be allowed the option of reading it into evidence or having the diary received as an exhibit.", "(D) Yes, and the plaintiff should be allowed to read the diary into evidence."], correct: "D" },
-{ id: 1006, category: "Evidence", question: "At trial in a criminal prosecution for theft, the defendant calls a witness to testify that he formerly knew the defendant as an army supply sergeant and that the defendant had turned down many opportunities for black marketeering. Is the witness's testimony admissible?", answers: ["(A) No, because it is irrelevant to the present charge.", "(B) No, because the defendant may not prove his good character by specific instances of good conduct.", "(C) Yes, because a criminal defendant may prove his good character as a basis for inferring conduct.", "(D) Yes, because, by accusing the defendant of being a thief, the prosecution has put his character in issue."], correct: "B" },
-{ id: 1007, category: "Evidence", question: "A plaintiff and defendant dissolved a business partnership. Both hired new counsel. The plaintiff calls the business attorney they had jointly consulted to testify to representations the defendant made in meetings with the plaintiff and business attorney. The defendant objects invoking the attorney-client privilege. Should the court uphold the defendant's privilege claim?", answers: ["(A) No, because the business attorney's professional relationship with the plaintiff and the defendant has ended.", "(B) No, because the plaintiff and the defendant consulted the business attorney jointly.", "(C) Yes, because either the plaintiff or the defendant may block disclosure of statements made during such meetings.", "(D) Yes, because either the plaintiff or the defendant may claim the privilege on behalf of the partnership."], correct: "B" },
-{ id: 1008, category: "Evidence", question: "A defendant is on trial for kidnapping. The victim testified that one of the kidnappers referred to the other as \"Speed.\" The prosecutor calls a jail employee to testify that, while the defendant was in jail awaiting trial, other inmates addressed the defendant as \"Speed.\" Is the jail employee's testimony admissible?", answers: ["(A) No, because it is hearsay not within any exception.", "(B) No, because it is substantially more prejudicial than probative.", "(C) Yes, as circumstantial evidence that the defendant was one of the kidnappers.", "(D) Yes, to corroborate the truthfulness of the victim."], correct: "C" },
-{ id: 1009, category: "Evidence", question: "A defendant accountant was charged with fraud for helping a client file false tax returns by shifting medical expenses from one year to another. He pleaded not guilty, claiming an honest mistake as to the date expenses were paid. The prosecutor offers evidence of the defendant's involvement in an earlier scheme to help a different client falsify tax returns the same way. Is the evidence of the defendant's involvement in the earlier scheme admissible?", answers: ["(A) No, because it is impermissible character evidence.", "(B) No, because it is not relevant to the issues in this case.", "(C) Yes, to show absence of mistake.", "(D) Yes, to show the defendant's propensity to commit the crime."], correct: "C" },
-{ id: 1010, category: "Evidence", question: "At a defendant's burglary trial, a witness testified without objection that the defendant said shortly after his arrest, \"They've got the wrong person for this, because I have an alibi.\" The prosecutor seeks to cross-examine the witness about why she did not mention that statement when the police asked her whether the defendant had said anything about having an alibi. Is the prosecutor's proposed cross-examination proper?", answers: ["(A) No, because the witness's character for truthfulness cannot be attacked by specific instances of conduct.", "(B) No, because the witness's failure to mention the alibi is collateral and ambiguous.", "(C) Yes, as impeachment for bias and interest.", "(D) Yes, as impeachment for prior inconsistency."], correct: "D" },
-{ id: 1011, category: "Evidence", question: "A plaintiff sued over title to riverbank land. A commercial fisherman had kept a daily log of water levels at his dock for 15 years to forecast fishing conditions. The plaintiff hired a draftsman to graph the data from the logs as a trial exhibit. The fisherman testified to the care with which he had made and recorded measurements, and the draftsman testified to how he prepared the graphs. With this foundation, are the graphs admissible?", answers: ["(A) No, because they are hearsay not within any exception.", "(B) No, because they violate the \"best evidence\" rule.", "(C) Yes, as summaries of voluminous business records.", "(D) Yes, as the draftsman's expert opinion of the water levels."], correct: "C" },
-{ id: 1012, category: "Evidence", question: "A plaintiff sued a slicing machine manufacturer for negligent design after the machine cut off his finger. The manufacturer offered evidence that it was unreasonably expensive to prevent the wires from coming into contact. In rebuttal, the plaintiff offers evidence that after this action was filed, the manufacturer redesigned the machine to prevent the wires from coming into contact. Is evidence of this change in design admissible?", answers: ["(A) No, because the change in design may have been unrelated to this type of accident.", "(B) No, under the rule regarding remedial measures that encourages manufacturers to make their products safer.", "(C) Yes, as evidence tending to show that the machine could be designed to keep the wires from coming into contact.", "(D) Yes, as evidence tending to show that the manufacturer was negligent because its initial design failed to prevent the wires from coming into contact."], correct: "C" },
-{ id: 1013, category: "Evidence", question: "A plaintiff sued a lawn mower manufacturer alleging a design defect caused the blade to fly off. The manufacturer called a product safety engineer who testified he was retained for a fee to test identical mowers and, if his opinion was helpful, to testify. He testified that the blade, as designed and installed, could not fly off in the manner claimed. Assume he used a reliable method. Should the court admit the expert's testimony?", answers: ["(A) No, because it goes to an ultimate issue that only the jury can decide.", "(B) No, because the manufacturer paid the expert to render a certain opinion, in violation of rules barring paid testimony.", "(C) Yes, because expert testimony on such issues of causation is relevant and helpful to the jury.", "(D) Yes, provided that the plaintiff had notice and an opportunity to participate in the testing process."], correct: "C" },
-{ id: 1014, category: "Evidence", question: "A defendant is on trial for bribing a government procurement officer by providing free vacation facilities. The defendant also said to an FBI investigator that she would reveal some \"hot\" information on a large-scale fraud in exchange for the investigator's promise to \"stop worrying about a little vacation.\" Is the investigator's testimony about the defendant's offer to give information admissible?", answers: ["(A) No, because it is hearsay not within any exception.", "(B) No, because the defendant made the offer in a negotiation for settlement of a criminal investigation.", "(C) Yes, as a matter observed and reported by the investigator pursuant to a duty imposed by law.", "(D) Yes, as a statement of an opposing party."], correct: "D" },
-{ id: 1015, category: "Evidence", question: "A plaintiff, a former city employee, sued the city for wrongful discharge. At trial, the plaintiff called the supervisor as an adverse witness, who testified the plaintiff was fired for incompetence. The plaintiff's attorney then asks the supervisor, \"Isn't it true that before the discharge you were told that [the plaintiff] had reported to the police that you were pilfering money from the office coffee fund?\" For what purpose(s) is the plaintiff's question permissible?", answers: ["(A) Only to establish the supervisor's improper motive in discharging the plaintiff.", "(B) Only to impeach the supervisor's veracity as a witness because of her dishonesty.", "(C) Only to impeach the supervisor's veracity as a witness because of her personal bias against her accuser, the plaintiff.", "(D) Both to impeach by showing bias and to establish improper motive in discharging the plaintiff."], correct: "D" },
-{ id: 1016, category: "Evidence", question: "A defendant is on trial for the murder of a woman who disappeared ten years ago and has not been heard from since. Her body has never been found. The prosecutor has requested the following instruction based on a recognized presumption in the jurisdiction: \"A person missing and not heard from in the last seven years shall be presumed to be deceased.\" Is the instruction proper?", answers: ["(A) No, because the fact that someone has not been heard from in seven years does not necessarily lead to a conclusion that the person is dead.", "(B) No, because mandatory presumptions are not allowed against a criminal defendant on an element of the charged crime.", "(C) Yes, because it expresses a rational conclusion that the jury should be required to accept.", "(D) Yes, because the defendant has a chance to rebut the presumption by offering evidence that the woman is alive or has been heard from in the last seven years."], correct: "B" },
-{ id: 1017, category: "Evidence", question: "Several defendants were charged with securities fraud. The government called an executive who had not been charged and had been given immunity to authenticate handwritten notes she made after management meetings at which the alleged fraud was discussed. The witness testified she prepared the notes on her own initiative to help her remember what had happened. The government offered the notes to establish what happened at the meetings. Should the notes be admitted?", answers: ["(A) No, because the notes are hearsay not within any exception.", "(B) No, because the witness's immunity agreement makes her notes untrustworthy and substantially more prejudicial than probative.", "(C) Yes, because they are business records.", "(D) Yes, because they are past recollections recorded."], correct: "A" },
-{ id: 1018, category: "Evidence", question: "A plaintiff sued a defendant, alleging she was seriously injured when the defendant ran a red light and struck her in a crosswalk. During the defendant's case, a witness testified that the plaintiff had told him that she was \"barely touched\" by the defendant's car. On cross-examination, should the court allow the plaintiff to elicit from the witness the fact that he is an adjuster for the defendant's insurance company?", answers: ["(A) No, because testimony about liability insurance is barred by the rules of evidence.", "(B) No, because the reference to insurance raises a collateral issue.", "(C) Yes, for both substantive and impeachment purposes.", "(D) Yes, for impeachment purposes only."], correct: "D" },
-{ id: 1019, category: "Evidence", question: "A plaintiff sued his insurance company for the proceeds of a casualty policy covering his 60-foot yacht, claiming the yacht was destroyed by accidental fire. The company claimed the plaintiff hired his friend to set the fire. In the hospital the day after the fire, the friend said to his wife in the presence of a nurse, \"I was paid to set the fire.\" Two weeks later, the friend died of an infection from the burns. At trial, the insurance company called the wife to testify to the friend's statement. Is the wife's testimony admissible over the plaintiff's objection?", answers: ["(A) No, because the marital privilege survives the communicating spouse's death.", "(B) No, because the statement was made after the conspiracy ended.", "(C) Yes, because it is a statement against interest.", "(D) Yes, because it is a statement by a co-conspirator."], correct: "C" },
-{ id: 1020, category: "Evidence", question: "A defendant charged with possession of marijuana with intent to distribute testified on direct that he worked with disadvantaged children as a drug counselor, that he hated drugs, that he would \"never possess or distribute drugs,\" and had never used drugs and would not touch them. The government offered a police officer to testify that three years earlier he saw the defendant buy cocaine from a street dealer. Is the officer's testimony admissible to impeach the defendant?", answers: ["(A) No, because the bad act of buying drugs is not sufficiently probative of a witness's character for truthfulness.", "(B) No, because it is contradiction on a collateral matter.", "(C) Yes, because it is proper contradiction.", "(D) Yes, because the bad act shows a disregard for the law and makes it less likely that the defendant would respect the oath of truthfulness."], correct: "C" },
-{ id: 1021, category: "Evidence", question: "A woman sued her friend for injuries she received as a passenger in the friend's car. She testified the friend had been speeding and ran a red light. On cross-examination, the woman was asked whether she was under the influence of drugs at the time of the accident. The woman invoked the privilege against self-incrimination. How should the court treat the woman's claim of privilege?", answers: ["(A) Deny it, because the woman waived the privilege by voluntarily testifying.", "(B) Deny it, because evidence of the woman's drug intoxication is essential to assessing the accuracy of her observations.", "(C) Uphold it, because the privilege applies in both civil and criminal cases.", "(D) Uphold it, because the woman's credibility cannot be impeached by a crime for which she has not been convicted."], correct: "C" },
-{ id: 1022, category: "Evidence", question: "A consumer sued a microwave oven manufacturer for burn injuries from negligent failure to warn. The consumer offered three letters, all received by the manufacturer before the oven was shipped, in which customers complained of serious burns under similar circumstances. The manufacturer objected on hearsay grounds and alternatively asked for a limiting instruction that the letters be considered only for notice, not for the truth of the assertions. How should the court respond?", answers: ["(A) The court should sustain the objection and treat the request for a limiting instruction as moot.", "(B) The court should overrule the objection and deny the request for a limiting instruction.", "(C) The court should overrule the objection and give the limiting instruction.", "(D) The court should overrule the objection but allow only that the letters be read to the jury, not received as exhibits."], correct: "C" },
-{ id: 1023, category: "Evidence", question: "A plaintiff sued for injuries arising from a car accident, claiming a back injury. At trial, she wishes to testify that prior to the accident she had never had any problems with her back. Is the plaintiff's proposed testimony admissible?", answers: ["(A) No, because the plaintiff has not been qualified as an expert.", "(B) No, because the plaintiff's pain could have been caused by factors arising after the accident, such as an injury at work.", "(C) Yes, because it is probative evidence of the plaintiff's injury.", "(D) Yes, because the testimony of parties is not subject to the lay opinion rule."], correct: "C" },
-{ id: 1024, category: "Evidence", question: "A plaintiff offered in evidence a color photograph of himself made from a videotape taken by a television news crew at the accident scene. The plaintiff demonstrated that the videotape had since been routinely reused by the station and the footage was erased. The photograph shows the plaintiff moments after the collision, with his bloodied head protruding at a grotesque angle through the broken windshield. Should the photograph be admitted over the defendant's objection?", answers: ["(A) No, because the plaintiff has failed to establish that a duplicate could not be found.", "(B) No, because the plaintiff has failed to produce the original videotape or a duplicate.", "(C) Yes, because it tends to prove a controverted fact.", "(D) Yes, because a photograph that establishes a disputed fact cannot be excluded as prejudicial."], correct: "C" },
-{ id: 1025, category: "Evidence", question: "A cyclist sued a corporation for injuries when she was hit by the defendant's truck during deliveries. The day after the accident, the employee visited the cyclist in the hospital and said, \"I'm sorry for what I did.\" At trial, the employee testified that he had exercised due care. Why is the cyclist's testimony relating what the defendant's employee said at the hospital admissible to prove negligence?", answers: ["(A) It is a prior inconsistent statement.", "(B) It is a statement against interest.", "(C) It is a statement by a party-opponent's agent.", "(D) It is a statement of then-existing state of mind."], correct: "C" },
-{ id: 1026, category: "Evidence", question: "A defendant is on trial for bank robbery. A bank teller testified for the prosecution after refreshing her memory by looking at an FBI agent's investigative report created shortly after the robbery. The defendant has asked to examine the report. How should the court respond?", answers: ["(A) The court may allow the examination if the report was used by the teller to refresh her memory before testifying, and must allow it if she used it during her testimony.", "(B) The court must allow the examination, but only to the extent that the report contains the teller's own statement to the FBI agent.", "(C) The court should not allow the examination, unless the report was used by the teller to refresh her memory while on the witness stand.", "(D) The court should not allow the examination, because the report was not shown to have been read and approved by the teller while the matter was fresh in her mind."], correct: "A" },
-{ id: 1027, category: "Evidence", question: "A patient sued a hospital for medical negligence, claiming a nurse failed to administer critical medication. To prove the nurse's failure, the patient called the medical records librarian who authenticated the hospital's record of treatment, which contained no entry showing that the medication had been administered. Is the hospital record admissible?", answers: ["(A) No, because it is hearsay not within any exception.", "(B) No, because the nurse's testimony would be the best evidence of her actions in treating the plaintiff.", "(C) Yes, although hearsay, because it is a statement against interest by agents of the hospital.", "(D) Yes, because it is within the hearsay exception covering the absence of entries in business records."], correct: "D" },
-{ id: 1028, category: "Evidence", question: "A college student sued an amusement company for injuries when the roller coaster allegedly malfunctioned and he fell out. The amusement company called a witness who testified that just before the accident he heard a bystander say, \"That crazy fool is standing up in the car.\" The student then offered the testimony of another witness who would testify that the day after the accident the same bystander described the accident and said the car jerked suddenly and \"just threw the guy out of his seat.\" How should the court rule?", answers: ["(A) Rule it admissible only to impeach the bystander's credibility.", "(B) Rule it admissible to impeach the bystander's credibility and to prove the amusement company's negligence.", "(C) Rule it inadmissible, because the bystander was given no opportunity to deny or explain her apparently inconsistent statement.", "(D) Rule it inadmissible, because the bystander herself was not called as a witness."], correct: "A" },
-{ id: 1029, category: "Evidence", question: "A defendant was charged with robbery. An hour after the robbery, the officer videotaped an interview with an eyewitness who described the crime and the robber. The teller who was robbed identified the defendant in a lineup. The officer obtained computerized records of that day's deposits and withdrawals. A month later, the teller testified before a grand jury. The teller and eyewitness both died afterward. At trial, which evidence, if properly authenticated, may be admitted over an objection that it would violate the confrontation clause?", answers: ["(A) A transcript of the teller's sworn grand jury testimony.", "(B) The computerized records from the savings and loan.", "(C) The officer's testimony that the teller picked the defendant out of the lineup.", "(D) The videotape of the eyewitness's statement."], correct: "B" },
-{ id: 1030, category: "Evidence", question: "A defendant is being prosecuted for conspiracy to possess cocaine with intent to distribute. The government seeks to have its agent testify to a conversation he overheard between the defendant and a co-conspirator regarding an incoming cocaine shipment. That conversation was also audiotaped, though critical portions are inaudible. The defendant objects that the testimony is not the best evidence of the conversation. Is the testimony admissible?", answers: ["(A) No, because the testimony of the agent is not the best evidence of the conversation.", "(B) No, because the testimony of the agent reports hearsay not within any exception.", "(C) Yes, because the best evidence rule does not require proof of the conversation through the audiotape.", "(D) Yes, because the audiotape is partly inaudible."], correct: "C" },
-{ id: 1031, category: "Evidence", question: "A plaintiff sued his employer for illegal racial discrimination. He called a witness expecting him to testify that the employer had admitted the racial motivation. Instead, the witness testified that the employer said he fired the plaintiff for frequent absenteeism. While the witness is still on the stand, the plaintiff offers a properly authenticated secret tape recording made at a meeting with the witness in which the witness related the employer's admissions of racial motivation. The tape recording is:", answers: ["(A) admissible as evidence of the employer's racial motivation and to impeach the witness's testimony.", "(B) admissible only to impeach the witness's testimony.", "(C) inadmissible, because it is hearsay not within any exception.", "(D) inadmissible, because a secret recording is an invasion of the witness's right of privacy under the U.S. Constitution."], correct: "B" },
-{ id: 1032, category: "Evidence", question: "At a defendant's burglary trial, a witness supported the defendant's alibi that they were fishing together at the time of the crime. On cross-examination, the witness was asked whether his statement on a credit card application that he had worked for his present employer for the last five years was false. The witness denied it. The prosecutor then calls the manager to testify that although the witness was first employed five years earlier, there was a three-year gap when he had not been employed there. The manager's testimony is:", answers: ["(A) admissible, in the judge's discretion, because the witness's credibility is a fact of major consequence to the case.", "(B) admissible, as a matter of right, because the witness \"opened the door\" by his denial on cross-examination.", "(C) inadmissible, because whether the witness lied in his application is a matter that cannot be proved by extrinsic evidence.", "(D) inadmissible, because the misstatement by the witness could have been caused by misunderstanding of the application form."], correct: "C" },
-{ id: 1033, category: "Evidence", question: "A defendant was charged with attempted murder of a victim in a sniping incident. The prosecutor offers evidence that seven years earlier the defendant had fired a shotgun into a woman's home and had once pointed a handgun at another driver while driving on the street. This evidence should be:", answers: ["(A) excluded, because such evidence can be elicited only during cross-examination.", "(B) excluded, because it is improper character evidence.", "(C) admitted as evidence of the defendant's propensity toward violence.", "(D) admitted as relevant evidence of the defendant's identity, plan, or motive."], correct: "B" },
-{ id: 1034, category: "Evidence", question: "In a federal investigation for tax fraud, the grand jury seeks a letter written by the defendant to her attorney stating: \"Please prepare a deed giving my ranch to the local university but, in order to get around the tax law, I want it back-dated to December 15.\" The attorney refuses to produce the letter on grounds of privilege. Production of the letter should be:", answers: ["(A) prohibited, because the statement is protected by the attorney-client privilege.", "(B) prohibited, because the statement is protected by the client's privilege against self-incrimination.", "(C) required, because the statement was in furtherance of crime or fraud.", "(D) required, because the attorney-client privilege belongs to the client and can be claimed only by her."], correct: "C" },
-{ id: 1035, category: "Evidence", question: "A plaintiff sued a defendant auto manufacturer for his wife's death, claiming a defective steering mechanism caused the car to veer off the road. The manufacturer claims the steering mechanism was damaged in the collision and offers testimony that the deceased wife was intoxicated at the time of the accident. Testimony concerning the wife's intoxication is:", answers: ["(A) admissible to provide an alternate explanation of the accident's cause.", "(B) admissible as proper evidence of the wife's character.", "(C) inadmissible, because it is improper to prove character evidence by specific conduct.", "(D) inadmissible, because it is substantially more prejudicial than probative."], correct: "A" },
-{ id: 1036, category: "Evidence", question: "The prosecution calls Witness, an undercover officer, to testify that when Seller sold the drugs to Witness, Seller introduced Defendant to Witness as \"my partner in this\" and Defendant shook hands with Witness but said nothing. Witness's testimony is:", answers: ["(A) inadmissible, because there is no evidence that Seller was authorized to speak for Defendant.", "(B) inadmissible, because the statement of Seller is hearsay not within any exception.", "(C) admissible as a statement against Defendant's penal interest.", "(D) admissible as Defendant's adoption of Seller's statement."], correct: "D" },
-{ id: 1037, category: "Evidence", question: "A guard was convicted of manslaughter for killing the plaintiff. At his criminal trial, the guard, no longer working for the defendant, testified that the defendant's security director had instructed him to stop shoplifters \"at all costs.\" Because the guard's criminal conviction is on appeal, he refuses to testify at the civil trial. The plaintiff's estate then offers an authenticated transcript of the guard's criminal trial testimony concerning the instructions. This evidence is:", answers: ["(A) admissible as a statement of an agent of a party opponent.", "(B) admissible, because the instruction from the security director is not hearsay.", "(C) admissible, although hearsay, as former testimony.", "(D) inadmissible, because it is hearsay not within any exception."], correct: "D" },
-{ id: 1038, category: "Evidence", question: "An undercover officer testifies that when the drug dealer sold drugs to the witness, the dealer introduced the defendant as \"my partner in this,\" and the defendant shook hands but said nothing. The witness's testimony is:", answers: ["(A) inadmissible, because there is no evidence that the dealer was authorized to speak for the defendant.", "(B) inadmissible, because the statement of the dealer is hearsay not within any exception.", "(C) admissible as a statement against the defendant's penal interest.", "(D) admissible as the defendant's adoption of the dealer's statement."], correct: "D" },
-{ id: 1039, category: "Evidence", question: "In a federal civil trial, a plaintiff wishes to establish that the defendant had been convicted of fraud in state court, a fact the defendant denies. Which mode of proof of the conviction is LEAST likely to be permitted?", answers: ["(A) A certified copy of the judgment of conviction, offered as a self-authenticating document.", "(B) Testimony of the plaintiff, who was present at the time of the sentence.", "(C) Testimony by a witness to whom the defendant made an oral admission that he had been convicted.", "(D) Judicial notice of the conviction, based on the court's telephone call to the clerk of the state court, whom the judge knows personally."], correct: "D" },
-{ id: 1040, category: "Evidence", question: "A widow offers to testify that the day before her husband was killed, he described a chance meeting with the defendant in which the defendant said, \"I'm going to blow your head off one of these days.\" The widow's testimony concerning her husband's statement is:", answers: ["(A) admissible, to show the defendant's state of mind.", "(B) admissible, because the defendant's statement is that of a party-opponent.", "(C) inadmissible, because it is improper evidence of a prior bad act.", "(D) inadmissible, because it is hearsay not within any exception."], correct: "B" },
-{ id: 1041, category: "Evidence", question: "A defendant entered a guilty plea to embezzlement. Her attorney hired a retired probation officer as a consultant to gather information for a sentencing plan to avoid jail. For that purpose, the consultant interviewed the defendant for three hours. Later, the prosecution began investigating other acts of embezzlement. The consultant was subpoenaed to testify before a grand jury and refused to answer any questions about her conversation with the defendant. The prosecution moved for an order requiring her to answer. The motion should be:", answers: ["(A) denied, on the basis of the attorney-client privilege.", "(B) denied, in the absence of probable cause to believe the interview developed evidence relevant to the grand jury's inquiry.", "(C) granted, because the consultant is not an attorney.", "(D) granted, because exclusionary evidentiary rules do not apply in grand jury proceedings."], correct: "A" },
-{ id: 1042, category: "Evidence", question: "A defendant is on trial for the murder of his father. The defendant's defense is that he shot his father accidentally. The prosecutor calls a police officer to testify that on two occasions in the prior year, he had been called to the defendant's home because of complaints of loud arguments and had found it necessary to stop the defendant from beating his father. The evidence is:", answers: ["(A) inadmissible, because it is improper character evidence.", "(B) inadmissible, because the officer lacks firsthand knowledge of who started the quarrels.", "(C) admissible to show that the defendant killed his father intentionally.", "(D) admissible to show that the defendant is a violent person."], correct: "C" },
-{ id: 1043, category: "Evidence", question: "A plaintiff sued a defendant under an age discrimination statute, alleging the defendant refused to hire her because she was over age 65. The defendant seeks to testify that the plaintiff's former employer advised him not to hire the plaintiff because she was unable to perform productively for more than four hours a day. The testimony of the defendant is:", answers: ["(A) inadmissible, because the defendant's opinion of the plaintiff's abilities is not based on personal knowledge.", "(B) inadmissible, because the plaintiff's former employer's statement is hearsay not within any exception.", "(C) admissible as evidence that the plaintiff would be unable to work longer than four hours per day.", "(D) admissible as evidence of the defendant's reason for refusing to hire the plaintiff."], correct: "D" },
-{ id: 1044, category: "Evidence", question: "A plaintiff sued a defendant for personal injuries from an automobile accident. Which of the following would be an error?", answers: ["(A) The judge allows the defendant's attorney to ask the defendant questions on cross-examination that go well beyond the scope of direct examination by the plaintiff, who has called the defendant as an adverse witness.", "(B) The judge refuses to allow the defendant's attorney to cross-examine the defendant by leading questions.", "(C) The judge allows cross-examination about the credibility of a witness even though no question relating to credibility has been asked on direct examination.", "(D) The judge, despite the defendant's request for exclusion of witnesses, allows the plaintiff's eyewitness to remain in the courtroom after testifying, even though the eyewitness is expected to be recalled for further cross-examination."], correct: "B" },
-{ id: 1045, category: "Evidence", question: "A police officer testified that after the defendant was arrested and agreed to answer questions, the officer interrogated him with a stenographer present but could not now recall what the defendant had said. The prosecutor presented the officer with a photocopy of the stenographic transcript. The officer, after looking at it, was prepared to testify that he recalled the defendant admitted to being in the area of the burglary. The defendant objected that it violated the 'original document' rule. Should the officer's testimony be admitted?", answers: ["(A) No, because a photocopy cannot be used without a showing that the original is unavailable.", "(B) No, because the stenographer has not testified to the accuracy of the transcript.", "(C) Yes, because a photocopy is a duplicate of the original.", "(D) Yes, because the prosecutor is not attempting to prove the contents of the document."], correct: "D" },
-{ id: 1046, category: "Evidence", question: "A defendant is on trial for extorting $10,000 from a victim. The victim is prepared to testify that the caller had a distinctive accent like the defendant's, but cannot positively identify the voice as the defendant's. The victim recorded the call but has not brought the tape to court, although its existence is known to the defendant. The victim's testimony is:", answers: ["(A) inadmissible, because the victim cannot sufficiently identify the caller.", "(B) inadmissible, because the tape recording of the conversation is the best evidence.", "(C) admissible, because the defendant waived the \"best evidence\" rule by failing to subpoena the tape.", "(D) admissible, because the victim's lack of certainty goes to the weight to be given the victim's testimony, not to its admissibility."], correct: "D" },
-{ id: 1047, category: "Evidence", question: "A plaintiff construction company sued a defendant development company for money owed on a cost-plus contract. The plaintiff's general manager offers to testify that it is the plaintiff's routine practice to send cost overrun notices as required by the contract. He also offers a photocopy of the cost overrun notice letter to the defendant taken from the plaintiff's regular business files. On the issue of giving notice, the letter copy is:", answers: ["(A) admissible, though hearsay, under the business record exception.", "(B) admissible, because of the routine practices of the company.", "(C) inadmissible, because it is hearsay not within any exception.", "(D) inadmissible, because it is not the best evidence of the notice."], correct: "B" },
-{ id: 1048, category: "Evidence", question: "A defendant has pleaded not guilty to federal bank robbery. The principal issue is the identity of the robber. The prosecutor calls the defendant's wife to testify to the clothing the defendant wore as he left their house on the day of the robbery, expecting her description to match that of eyewitnesses. Both the defendant and his wife object to her testifying against the defendant. Should the wife be required to testify?", answers: ["(A) No, because the defendant has a privilege to prevent his wife from testifying against him in a criminal case.", "(B) No, because the wife has a privilege not to testify against her husband in a criminal case.", "(C) Yes, because the interspousal privilege does not apply in criminal cases.", "(D) Yes, because the wife's viewing of the defendant's clothing was not a confidential communication."], correct: "B" },
-{ id: 1049, category: "Evidence", question: "A defendant was charged with conspiracy to possess cocaine with intent to distribute. While on bail with travel restricted to his home state, he purchased an airplane ticket to another country using an alias. At trial, the prosecution seeks to introduce evidence of the defendant's ticket purchase. Should the court admit this evidence?", answers: ["(A) No, because the evidence does not make any fact of consequence to the trial more or less probable.", "(B) Yes, because the evidence is relevant both to show the defendant's consciousness of guilt and to show his motive to commit the crime.", "(C) Yes, because the evidence is relevant to show the defendant's consciousness of guilt.", "(D) Yes, because the evidence is relevant to show the defendant's motive to commit the crime."], correct: "C" },
-{ id: 1050, category: "Evidence", question: "A defendant is charged with falsely claiming deductions on her federal income tax return. A witness testified for the defendant that she has a reputation in the community for complete honesty. After a sidebar conference at which the prosecutor gave the judge a record showing the defendant's medical school had disciplined her for altering her transcript, the prosecutor proposes to ask the witness on cross-examination: \"Have you ever heard that the defendant falsified her medical school transcript?\" Is the prosecutor's question proper?", answers: ["(A) No, because it calls for hearsay not within any exception.", "(B) No, because its minimal relevance on the issue of income tax fraud is substantially outweighed by the danger of unfair prejudice.", "(C) Yes, because an affirmative answer will be probative of the defendant's bad character for honesty and, therefore, her guilt.", "(D) Yes, because an affirmative answer will impeach the witness's credibility."], correct: "D" },
-{ id: 1051, category: "Evidence", question: "A plaintiff's attorney calls the investigator, who offers to testify that the witness told him, \"I never saw [the plaintiff] fall.\" The plaintiff objects to admission of the investigator's testimony about the witness's out-of-court statement. Should the court admit the investigator's testimony about the witness's out-of-court statement?", answers: ["(A) No, because the statement is inadmissible hearsay not within any hearsay exception.", "(B) No, because the witness denied making the statement.", "(C) Yes, to prove that the plaintiff did not fall and to impeach the witness.", "(D) Yes, but only for the limited purpose of impeaching the witness's trial testimony."], correct: "D" },
-{ id: 1052, category: "Evidence", question: "A plaintiff called an eyewitness who testified that the train was going 20 miles per hour. The defendant then offers the testimony of an experienced police accident investigator that, based on his training and experience and his examination of the physical evidence, the train was going between five and ten miles per hour. Testimony by the investigator is:", answers: ["(A) improper, because there cannot be both lay and expert opinion on the same issue.", "(B) improper, because the investigator is unable to establish the speed with a sufficient degree of scientific certainty.", "(C) proper, because a police accident investigator has sufficient expertise to express an opinion on speed.", "(D) proper, because the plaintiff first introduced opinion evidence as to speed."], correct: "C" },
-{ id: 1053, category: "Evidence", question: "A defendant is charged with murder in connection with a carjacking. The prosecutor calls the victim's four-year-old son, whose face was horribly disfigured by the same bullet, to testify that the defendant shot his father and him. The son's testimony should be:", answers: ["(A) admitted, provided the prosecutor first provides evidence that persuades the judge that the son is competent to testify despite his tender age.", "(B) admitted, provided there is sufficient basis for believing that the son has personal knowledge and understands his obligation to testify truthfully.", "(C) excluded, because it is insufficiently probative in view of the son's tender age.", "(D) excluded, because it is more unfairly prejudicial than probative."], correct: "B" },
-{ id: 1054, category: "Evidence", question: "A drug enforcement agent informed that a person arriving from Europe on a particular flight answering a particular description would be carrying cocaine. He found a small brass statue with a false bottom containing one ounce of cocaine. At trial, the defendant claimed he was unaware cocaine was hidden in the statue's base. The prosecution offers to prove the defendant was convicted fifteen years earlier of illegally importing cocaine by hiding it in the base of a brass statue. The court should rule proof of this prior conviction is:", answers: ["(A) admissible, as evidence of habit.", "(B) admissible, because it is evidence of a distinctive method of operation.", "(C) inadmissible, because evidence of previous conduct by a defendant may not be used against him.", "(D) inadmissible, because the prior conviction occurred more than ten years before the trial."], correct: "B" },
-{ id: 1055, category: "Evidence", question: "A priest apologized to a woman struck by a vehicle, saying, \"I'm sorry. It isn't my car. I didn't know that the brakes were bad.\" The woman instituted an action against an accountant asserting he owned the vehicle and was negligent in permitting the vehicle to be driven while he knew the brakes needed repair. The accountant denied ownership. At trial, the plaintiff offered testimony by a car mechanic that on the day after the accident the accountant hired him to completely overhaul the brakes. Upon objection, the evidence is:", answers: ["(A) admissible, to show that the accountant was the owner of the vehicle.", "(B) admissible, to show that the brakes were in need of repair on the day of the accident.", "(C) inadmissible, because the condition of the vehicle on any day other than that of the accident is irrelevant to show its condition at the time the accident occurred.", "(D) inadmissible, under a policy which encourages safety precautions."], correct: "A" },
-{ id: 1056, category: "Evidence", question: "At a defendant's trial for theft, a witness testified that he saw thieves break a jewelry store window and take jewelry and leave in a car. His wife telephoned the police and relayed to them the license number of the thieves' car as the witness read it to her through binoculars. He has no present memory of the number, but immediately afterward he listened to a playback of the police tape recording and verified his wife had relayed the number accurately. Playing the tape recording for the jury would be:", answers: ["(A) proper, because it is recorded recollection.", "(B) proper, because it is a public record or report.", "(C) improper, because it is hearsay not within any exception.", "(D) improper, because the witness's wife lacked firsthand knowledge of the license number."], correct: "A" },
-{ id: 1057, category: "Evidence", question: "In an automobile negligence action, a co-worker of the plaintiff testified for the plaintiff. The defendant later called a neighbor of the co-worker, who testified that the co-worker's reputation for truthfulness was bad. On cross-examination of the neighbor, the plaintiff's counsel asks, \"Isn't it a fact that when you bought your new car last year, you made a false affidavit to escape paying the sales tax?\" This question is:", answers: ["(A) proper, because it will indicate the neighbor's standard of judgment as to reputation for truthfulness.", "(B) proper, because it bears on the neighbor's credibility.", "(C) improper, because character cannot be proved by specific instances of conduct.", "(D) improper, because one cannot impeach an impeaching witness."], correct: "B" },
-{ id: 1058, category: "Evidence", question: "A plaintiff called a male tenant to testify that a woman who was also a tenant in the building had said to the man, a week before the plaintiff's fall, \"When I paid my rent this morning, I told the manager that he had better fix that torn carpet.\" The statement by the woman tenant, reported by the male tenant, is:", answers: ["(A) admissible, to prove that the carpet was defective.", "(B) admissible, to prove that the defendant had notice of the defect.", "(C) admissible, to prove both that the carpet was defective and that the defendant had notice of the defect.", "(D) inadmissible, because it is hearsay not within any exception."], correct: "D" },
-{ id: 1059, category: "Evidence", question: "A plaintiff's doctor testified that the disability was caused by trauma. On cross-examination, the plaintiff's doctor agreed that a medical textbook was authoritative and agreed with passages shown to her, but stated they were inapplicable to the plaintiff's condition because they dealt with rheumatoid arthritis rather than the osteoarthritis at issue. The defendant's expert testified there is no difference between the two kinds of arthritis for this issue. The defendant's counsel then asks permission to read to the jury the textbook passages. The judge should rule the textbook passages:", answers: ["(A) admissible only for the purpose of impeaching the plaintiff's doctor.", "(B) admissible as substantive evidence if the judge determines that the passages are relevant.", "(C) inadmissible, because they are hearsay not within any exception.", "(D) inadmissible, because the plaintiff's doctor contended that they are not relevant to the plaintiff's condition."], correct: "B" },
-{ id: 1060, category: "Evidence", question: "A carpenter and an electrician are charged with burgling a warehouse together, tried separately. At the carpenter's trial, the electrician testified that he saw the carpenter commit the burglary. While the electrician is still subject to recall, the carpenter calls a person who was recently the electrician's cellmate, and proposes to have the cellmate testify that the electrician told him, \"I broke into the warehouse alone because the carpenter was too drunk to help.\" This evidence of the electrician's statement is:", answers: ["(A) admissible as a declaration against penal interest.", "(B) admissible as a prior inconsistent statement.", "(C) inadmissible, because it is hearsay not within any exception.", "(D) inadmissible, because the statement is not clearly corroborated."], correct: "B" },
-{ id: 1061, category: "Evidence", question: "A plaintiff sued a defendant for breach of a commercial contract. The plaintiff called an expert witness to testify as to damages. The defendant seeks to show that the expert witness had provided false testimony as a witness in his own divorce proceedings. This evidence should be:", answers: ["(A) admitted only if elicited from the expert witness on cross-examination.", "(B) admitted only if the false testimony is established by clear and convincing extrinsic evidence.", "(C) excluded, because it is impeachment on a collateral issue.", "(D) excluded, because it is improper character evidence."], correct: "A" },
-{ id: 1062, category: "Evidence", question: "A drug manufacturer inadvertently turned over two documents reflecting communications between the manufacturer's president and its counsel regarding a drug's possible side effects. There were 23 other similar documents not turned over. Although the manufacturer learned of the disclosure during the discovery period, it did not seek return of the two documents until the day before trial. The woman claimed the manufacturer had waived attorney-client privilege as to all 25 documents. How should the court rule?", answers: ["(A) There was no waiver of the attorney-client privilege, because the disclosure was inadvertent.", "(B) There was a waiver of the attorney-client privilege regarding only the two disclosed documents.", "(C) There was a waiver of the attorney-client privilege regarding the disclosed documents as well as the other 23, because they all relate to the same subject matter.", "(D) There was a waiver of the attorney-client privilege for all 25 documents if the state law that supplies the rule of decision would support such a result."], correct: "B" },
-{ id: 1063, category: "Evidence", question: "A plaintiff's first witness testified that, although she did not see the accident, she heard her friend say just before the crash, \"Look at the crazy way [the defendant] is driving!\" The defendant offers evidence to impeach the witness's friend by asking the witness, \"Isn't it true that your friend beat up the defendant just the day before the collision?\" The question is:", answers: ["(A) proper, because it tends to show the possible bias of the witness's friend against the defendant.", "(B) proper, because it tends to show the character of the witness's friend.", "(C) improper, because the witness's friend has no opportunity to explain or deny.", "(D) improper, because impeachment cannot properly be by specific instances."], correct: "A" },
-{ id: 1064, category: "Evidence", question: "A defendant is on trial for nighttime breaking and entering of a warehouse. The warehouse owner had set up a camera to take infrared pictures of intruders. After an expert establishes the reliability of infrared photography, the prosecutor offers the authenticated infrared picture of the intruder to show similarities to the defendant. The photograph is:", answers: ["(A) admissible, provided an expert witness points out to the jury the similarities between the person in the photograph and the defendant.", "(B) admissible, allowing the jury to compare the person in the photograph and the defendant.", "(C) inadmissible, because there was no eyewitness to the scene available to authenticate the photograph.", "(D) inadmissible, because infrared photography deprives a defendant of the right to confront witnesses."], correct: "B" },
-{ id: 1065, category: "Evidence", question: "A plaintiff sued a factory owner alleging a toxin caused the plaintiff to suffer a respiratory disease. The plaintiff's expert based her opinion on several studies about another substance similar to the toxin, showing that prolonged exposure to high doses can cause the same respiratory disease. On cross-examination, the company elicits an admission that the expert did not consider two recent clinical studies concluding there was no connection between the toxin and any respiratory disease. Should the court allow the plaintiff's expert to testify at trial?", answers: ["(A) No, because the expert is relying on studies that she read for purposes of preparing her testimony in this litigation.", "(B) No, because the plaintiff has failed to show by a preponderance of the evidence that the expert based her opinion on sufficient facts and data and that she employed a reliable methodology.", "(C) Yes, because the company has not met its burden of showing that the expert's opinion is unreliable.", "(D) Yes, because the sufficiency of an expert's basis for an opinion and the reliability of an expert's methodology are questions of weight for the jury."], correct: "B" },
-{ id: 1066, category: "Evidence", question: "During a plaintiff's hospital stay, a staff physician examined the plaintiff's X rays and said, \"You have a fracture of two vertebrae, C4 and C5.\" An intern accompanying the physician on her rounds immediately wrote the diagnosis on the plaintiff's hospital record. At trial, the hospital records custodian testified that the plaintiff's hospital record was made and kept in the ordinary course of the hospital's business. The entry reporting the physician's diagnosis is:", answers: ["(A) inadmissible, because no foundation has been laid for the physician's competence as an expert.", "(B) inadmissible, because the physician's opinion is based upon data that are not in evidence.", "(C) admissible as a statement of then-existing physical condition.", "(D) admissible as a record of regularly conducted business activity."], correct: "D" },
-{ id: 1067, category: "Evidence", question: "At a defendant's trial for sale of drugs, the government called a witness to testify, but the witness refused to answer any questions about the defendant and was held in contempt. The government then calls an officer to testify that, when the witness was arrested for possession of drugs and offered leniency if he would identify his source, the witness had named the defendant as his source. The testimony offered concerning the witness's identification of the defendant is:", answers: ["(A) admissible as a prior inconsistent statement by the witness.", "(B) admissible as an identification of the defendant by the witness after having perceived him.", "(C) inadmissible, because it is hearsay not within any exception.", "(D) inadmissible, because the witness was not confronted with the statement while on the stand."], correct: "C" },
-{ id: 1068, category: "Evidence", question: "A company sued its former vice president for return of $230,000 that had been embezzled. Called as an adverse witness, the former vice-president testified that his annual salary had been $75,000, and he denied the embezzlement. The company calls a banker to show that, during the two-year period, the former vice-president had deposited $250,000 in his bank account. The witness's testimony is:", answers: ["(A) admissible as circumstantial evidence of the former vice-president's guilt.", "(B) admissible to impeach the former vice-president.", "(C) inadmissible, because its prejudicial effect substantially outweighs its probative value.", "(D) inadmissible, because the deposits could have come from legitimate sources."], correct: "A" },
-{ id: 1069, category: "Evidence", question: "A pedestrian died from injuries caused when a car struck him. At trial, the executor calls a nurse to testify that two days after the accident, the pedestrian said, \"The car that hit me ran the red light.\" Fifteen minutes thereafter, the pedestrian died. The executor offers to the court a doctor's affidavit that the doctor was the intern on duty the day of the pedestrian's death and that several times that day the pedestrian had said that he knew he was about to die. Is the affidavit properly considered by the court in ruling on the admissibility of the pedestrian's statement?", answers: ["(A) No, because it is hearsay not within any exception.", "(B) No, because it is irrelevant since dying declarations cannot be used except in prosecutions for homicide.", "(C) Yes, because, though hearsay, it is a statement of then-existing mental condition.", "(D) Yes, because the judge may consider hearsay in ruling on preliminary questions."], correct: "D" },
-{ id: 1070, category: "Evidence", question: "At a defendant's murder trial, the defendant calls a witness to testify that the defendant has a reputation in their community as a peaceable and truthful person. The prosecutor objects on the ground that the witness's testimony would constitute improper character evidence. The court should:", answers: ["(A) admit the testimony as to peaceableness, but exclude the testimony as to truthfulness.", "(B) admit the testimony as to truthfulness, but exclude the testimony as to peaceableness.", "(C) admit the testimony as to both character traits.", "(D) exclude the testimony as to both character traits."], correct: "A" },
+  { id: 1001, category: "Evidence", question: "A plaintiff, a management trainee, brought a sex discrimination lawsuit against her employer for wrongful termination. At trial, the plaintiff is prepared to testify that a janitor told her that he had heard her supervisor say to male coworkers about her, \"Make it hard for her. Maybe she'll go home where she belongs.\" Is the plaintiff's proposed testimony admissible?", answers: ["(A) No, because the janitor's statement is hearsay not within any exception.", "(B) No, because the statements of both the janitor and the supervisor are hearsay not within any exception.", "(C) Yes, because the janitor's statement is a present sense impression, and the supervisor's statement is a statement of his then-existing state of mind.", "(D) Yes, because the statements of both the janitor and the supervisor are statements concerning a matter within the scope of their employment."], correct: "A" },
+  { id: 1002, category: "Evidence", question: "A plaintiff sued a defendant in federal court for assault and battery. The court allowed the plaintiff to introduce the deposition testimony of a witness, now deceased, that he was with the plaintiff at the time of the incident. The defendant seeks to impeach the testimony with the witness's 13-year-old conviction for burglary (18 months served) for breaking into a neighbor's home while she was away and taking valuable jewelry. Should the court allow evidence of the conviction?", answers: ["(A) No, because the witness did not testify at trial.", "(B) No, unless the court finds, in the interests of justice, that the probative value of the conviction, supported by specific facts and circumstances, substantially outweighs its prejudicial effect.", "(C) Yes, because prior convictions are probative to impeach the witness's character for truthfulness.", "(D) Yes, because the crime involved an act of dishonesty."], correct: "B" },
+  { id: 1003, category: "Evidence", question: "A plaintiff sued a department store for injuries sustained when she slipped and fell. At trial, the plaintiff proposes to testify that when the store manager rushed to the scene, he said, \"I'm so sorry about the water on the floor there, but don't worry — the store will pay for the ambulance and your hospital bill.\" How should the court rule on admissibility?", answers: ["(A) The testimony is admissible in its entirety as the statement of an opposing party.", "(B) The testimony about the water is an admissible statement of an opposing party, but the rest is inadmissible as an offer to pay medical expenses.", "(C) The testimony is inadmissible in its entirety, because it is hearsay not within any exception.", "(D) The testimony is inadmissible in its entirety, because the manager's statement is in the context of an offer to pay medical expenses."], correct: "B" },
+  { id: 1004, category: "Evidence", question: "A defendant is on trial for theft of a used car he took for a test drive and did not return. He was arrested in the car two days later. In his defense, the defendant testified he had no intention of keeping the car but delayed returning it due to marital problems. The defendant calls a witness to testify that the defendant told him during those two days, \"I'm going to return this car as soon as I work things out with my wife.\" Is the witness's testimony admissible?", answers: ["(A) No, because it is a self-serving statement by an accused.", "(B) No, because it is hearsay not within any exception.", "(C) Yes, as a prior consistent statement of the defendant.", "(D) Yes, as a statement by the defendant of his then-existing state of mind."], correct: "D" },
+  { id: 1005, category: "Evidence", question: "A plaintiff sued an industrial facility for injuries caused by air pollution. She testified she could not remember specific times she observed large amounts of dust but maintained a diary in which she accurately recorded this information daily. When her attorney sought to refresh her recollection with her diary, she still could not remember. The plaintiff's attorney seeks to have the diary information admitted at trial. Is the information admissible?", answers: ["(A) No, because reviewing it did not refresh the plaintiff's recollection.", "(B) No, unless it is offered by the defendant.", "(C) Yes, and the plaintiff should be allowed the option of reading it into evidence or having the diary received as an exhibit.", "(D) Yes, and the plaintiff should be allowed to read the diary into evidence."], correct: "D" },
+  { id: 1006, category: "Evidence", question: "At trial in a criminal prosecution for theft, the defendant calls a witness to testify that he formerly knew the defendant as an army supply sergeant and that the defendant had turned down many opportunities for black marketeering. Is the witness's testimony admissible?", answers: ["(A) No, because it is irrelevant to the present charge.", "(B) No, because the defendant may not prove his good character by specific instances of good conduct.", "(C) Yes, because a criminal defendant may prove his good character as a basis for inferring conduct.", "(D) Yes, because, by accusing the defendant of being a thief, the prosecution has put his character in issue."], correct: "B" },
+  { id: 1007, category: "Evidence", question: "A plaintiff and defendant dissolved a business partnership. Both hired new counsel. The plaintiff calls the business attorney they had jointly consulted to testify to representations the defendant made in meetings with the plaintiff and business attorney. The defendant objects invoking the attorney-client privilege. Should the court uphold the defendant's privilege claim?", answers: ["(A) No, because the business attorney's professional relationship with the plaintiff and the defendant has ended.", "(B) No, because the plaintiff and the defendant consulted the business attorney jointly.", "(C) Yes, because either the plaintiff or the defendant may block disclosure of statements made during such meetings.", "(D) Yes, because either the plaintiff or the defendant may claim the privilege on behalf of the partnership."], correct: "B" },
+  { id: 1008, category: "Evidence", question: "A defendant is on trial for kidnapping. The victim testified that one of the kidnappers referred to the other as \"Speed.\" The prosecutor calls a jail employee to testify that, while the defendant was in jail awaiting trial, other inmates addressed the defendant as \"Speed.\" Is the jail employee's testimony admissible?", answers: ["(A) No, because it is hearsay not within any exception.", "(B) No, because it is substantially more prejudicial than probative.", "(C) Yes, as circumstantial evidence that the defendant was one of the kidnappers.", "(D) Yes, to corroborate the truthfulness of the victim."], correct: "C" },
+  { id: 1009, category: "Evidence", question: "A defendant accountant was charged with fraud for helping a client file false tax returns by shifting medical expenses from one year to another. He pleaded not guilty, claiming an honest mistake as to the date expenses were paid. The prosecutor offers evidence of the defendant's involvement in an earlier scheme to help a different client falsify tax returns the same way. Is the evidence of the defendant's involvement in the earlier scheme admissible?", answers: ["(A) No, because it is impermissible character evidence.", "(B) No, because it is not relevant to the issues in this case.", "(C) Yes, to show absence of mistake.", "(D) Yes, to show the defendant's propensity to commit the crime."], correct: "C" },
+  { id: 1010, category: "Evidence", question: "At a defendant's burglary trial, a witness testified without objection that the defendant said shortly after his arrest, \"They've got the wrong person for this, because I have an alibi.\" The prosecutor seeks to cross-examine the witness about why she did not mention that statement when the police asked her whether the defendant had said anything about having an alibi. Is the prosecutor's proposed cross-examination proper?", answers: ["(A) No, because the witness's character for truthfulness cannot be attacked by specific instances of conduct.", "(B) No, because the witness's failure to mention the alibi is collateral and ambiguous.", "(C) Yes, as impeachment for bias and interest.", "(D) Yes, as impeachment for prior inconsistency."], correct: "D" },
+  { id: 1011, category: "Evidence", question: "A plaintiff sued over title to riverbank land. A commercial fisherman had kept a daily log of water levels at his dock for 15 years to forecast fishing conditions. The plaintiff hired a draftsman to graph the data from the logs as a trial exhibit. The fisherman testified to the care with which he had made and recorded measurements, and the draftsman testified to how he prepared the graphs. With this foundation, are the graphs admissible?", answers: ["(A) No, because they are hearsay not within any exception.", "(B) No, because they violate the \"best evidence\" rule.", "(C) Yes, as summaries of voluminous business records.", "(D) Yes, as the draftsman's expert opinion of the water levels."], correct: "C" },
+  { id: 1012, category: "Evidence", question: "A plaintiff sued a slicing machine manufacturer for negligent design after the machine cut off his finger. The manufacturer offered evidence that it was unreasonably expensive to prevent the wires from coming into contact. In rebuttal, the plaintiff offers evidence that after this action was filed, the manufacturer redesigned the machine to prevent the wires from coming into contact. Is evidence of this change in design admissible?", answers: ["(A) No, because the change in design may have been unrelated to this type of accident.", "(B) No, under the rule regarding remedial measures that encourages manufacturers to make their products safer.", "(C) Yes, as evidence tending to show that the machine could be designed to keep the wires from coming into contact.", "(D) Yes, as evidence tending to show that the manufacturer was negligent because its initial design failed to prevent the wires from coming into contact."], correct: "C" },
+  { id: 1013, category: "Evidence", question: "A plaintiff sued a lawn mower manufacturer alleging a design defect caused the blade to fly off. The manufacturer called a product safety engineer who testified he was retained for a fee to test identical mowers and, if his opinion was helpful, to testify. He testified that the blade, as designed and installed, could not fly off in the manner claimed. Assume he used a reliable method. Should the court admit the expert's testimony?", answers: ["(A) No, because it goes to an ultimate issue that only the jury can decide.", "(B) No, because the manufacturer paid the expert to render a certain opinion, in violation of rules barring paid testimony.", "(C) Yes, because expert testimony on such issues of causation is relevant and helpful to the jury.", "(D) Yes, provided that the plaintiff had notice and an opportunity to participate in the testing process."], correct: "C" },
+  { id: 1014, category: "Evidence", question: "A defendant is on trial for bribing a government procurement officer by providing free vacation facilities. The defendant also said to an FBI investigator that she would reveal some \"hot\" information on a large-scale fraud in exchange for the investigator's promise to \"stop worrying about a little vacation.\" Is the investigator's testimony about the defendant's offer to give information admissible?", answers: ["(A) No, because it is hearsay not within any exception.", "(B) No, because the defendant made the offer in a negotiation for settlement of a criminal investigation.", "(C) Yes, as a matter observed and reported by the investigator pursuant to a duty imposed by law.", "(D) Yes, as a statement of an opposing party."], correct: "D" },
+  { id: 1015, category: "Evidence", question: "A plaintiff, a former city employee, sued the city for wrongful discharge. At trial, the plaintiff called the supervisor as an adverse witness, who testified the plaintiff was fired for incompetence. The plaintiff's attorney then asks the supervisor, \"Isn't it true that before the discharge you were told that [the plaintiff] had reported to the police that you were pilfering money from the office coffee fund?\" For what purpose(s) is the plaintiff's question permissible?", answers: ["(A) Only to establish the supervisor's improper motive in discharging the plaintiff.", "(B) Only to impeach the supervisor's veracity as a witness because of her dishonesty.", "(C) Only to impeach the supervisor's veracity as a witness because of her personal bias against her accuser, the plaintiff.", "(D) Both to impeach by showing bias and to establish improper motive in discharging the plaintiff."], correct: "D" },
+  { id: 1016, category: "Evidence", question: "A defendant is on trial for the murder of a woman who disappeared ten years ago and has not been heard from since. Her body has never been found. The prosecutor has requested the following instruction based on a recognized presumption in the jurisdiction: \"A person missing and not heard from in the last seven years shall be presumed to be deceased.\" Is the instruction proper?", answers: ["(A) No, because the fact that someone has not been heard from in seven years does not necessarily lead to a conclusion that the person is dead.", "(B) No, because mandatory presumptions are not allowed against a criminal defendant on an element of the charged crime.", "(C) Yes, because it expresses a rational conclusion that the jury should be required to accept.", "(D) Yes, because the defendant has a chance to rebut the presumption by offering evidence that the woman is alive or has been heard from in the last seven years."], correct: "B" },
+  { id: 1017, category: "Evidence", question: "Several defendants were charged with securities fraud. The government called an executive who had not been charged and had been given immunity to authenticate handwritten notes she made after management meetings at which the alleged fraud was discussed. The witness testified she prepared the notes on her own initiative to help her remember what had happened. The government offered the notes to establish what happened at the meetings. Should the notes be admitted?", answers: ["(A) No, because the notes are hearsay not within any exception.", "(B) No, because the witness's immunity agreement makes her notes untrustworthy and substantially more prejudicial than probative.", "(C) Yes, because they are business records.", "(D) Yes, because they are past recollections recorded."], correct: "A" },
+  { id: 1018, category: "Evidence", question: "A plaintiff sued a defendant, alleging she was seriously injured when the defendant ran a red light and struck her in a crosswalk. During the defendant's case, a witness testified that the plaintiff had told him that she was \"barely touched\" by the defendant's car. On cross-examination, should the court allow the plaintiff to elicit from the witness the fact that he is an adjuster for the defendant's insurance company?", answers: ["(A) No, because testimony about liability insurance is barred by the rules of evidence.", "(B) No, because the reference to insurance raises a collateral issue.", "(C) Yes, for both substantive and impeachment purposes.", "(D) Yes, for impeachment purposes only."], correct: "D" },
+  { id: 1019, category: "Evidence", question: "A plaintiff sued his insurance company for the proceeds of a casualty policy covering his 60-foot yacht, claiming the yacht was destroyed by accidental fire. The company claimed the plaintiff hired his friend to set the fire. In the hospital the day after the fire, the friend said to his wife in the presence of a nurse, \"I was paid to set the fire.\" Two weeks later, the friend died of an infection from the burns. At trial, the insurance company called the wife to testify to the friend's statement. Is the wife's testimony admissible over the plaintiff's objection?", answers: ["(A) No, because the marital privilege survives the communicating spouse's death.", "(B) No, because the statement was made after the conspiracy ended.", "(C) Yes, because it is a statement against interest.", "(D) Yes, because it is a statement by a co-conspirator."], correct: "C" },
+  { id: 1020, category: "Evidence", question: "A defendant charged with possession of marijuana with intent to distribute testified on direct that he worked with disadvantaged children as a drug counselor, that he hated drugs, that he would \"never possess or distribute drugs,\" and had never used drugs and would not touch them. The government offered a police officer to testify that three years earlier he saw the defendant buy cocaine from a street dealer. Is the officer's testimony admissible to impeach the defendant?", answers: ["(A) No, because the bad act of buying drugs is not sufficiently probative of a witness's character for truthfulness.", "(B) No, because it is contradiction on a collateral matter.", "(C) Yes, because it is proper contradiction.", "(D) Yes, because the bad act shows a disregard for the law and makes it less likely that the defendant would respect the oath of truthfulness."], correct: "C" },
+  { id: 1021, category: "Evidence", question: "A woman sued her friend for injuries she received as a passenger in the friend's car. She testified the friend had been speeding and ran a red light. On cross-examination, the woman was asked whether she was under the influence of drugs at the time of the accident. The woman invoked the privilege against self-incrimination. How should the court treat the woman's claim of privilege?", answers: ["(A) Deny it, because the woman waived the privilege by voluntarily testifying.", "(B) Deny it, because evidence of the woman's drug intoxication is essential to assessing the accuracy of her observations.", "(C) Uphold it, because the privilege applies in both civil and criminal cases.", "(D) Uphold it, because the woman's credibility cannot be impeached by a crime for which she has not been convicted."], correct: "C" },
+  { id: 1022, category: "Evidence", question: "A consumer sued a microwave oven manufacturer for burn injuries from negligent failure to warn. The consumer offered three letters, all received by the manufacturer before the oven was shipped, in which customers complained of serious burns under similar circumstances. The manufacturer objected on hearsay grounds and alternatively asked for a limiting instruction that the letters be considered only for notice, not for the truth of the assertions. How should the court respond?", answers: ["(A) The court should sustain the objection and treat the request for a limiting instruction as moot.", "(B) The court should overrule the objection and deny the request for a limiting instruction.", "(C) The court should overrule the objection and give the limiting instruction.", "(D) The court should overrule the objection but allow only that the letters be read to the jury, not received as exhibits."], correct: "C" },
+  { id: 1023, category: "Evidence", question: "A plaintiff sued for injuries arising from a car accident, claiming a back injury. At trial, she wishes to testify that prior to the accident she had never had any problems with her back. Is the plaintiff's proposed testimony admissible?", answers: ["(A) No, because the plaintiff has not been qualified as an expert.", "(B) No, because the plaintiff's pain could have been caused by factors arising after the accident, such as an injury at work.", "(C) Yes, because it is probative evidence of the plaintiff's injury.", "(D) Yes, because the testimony of parties is not subject to the lay opinion rule."], correct: "C" },
+  { id: 1024, category: "Evidence", question: "A plaintiff offered in evidence a color photograph of himself made from a videotape taken by a television news crew at the accident scene. The plaintiff demonstrated that the videotape had since been routinely reused by the station and the footage was erased. The photograph shows the plaintiff moments after the collision, with his bloodied head protruding at a grotesque angle through the broken windshield. Should the photograph be admitted over the defendant's objection?", answers: ["(A) No, because the plaintiff has failed to establish that a duplicate could not be found.", "(B) No, because the plaintiff has failed to produce the original videotape or a duplicate.", "(C) Yes, because it tends to prove a controverted fact.", "(D) Yes, because a photograph that establishes a disputed fact cannot be excluded as prejudicial."], correct: "C" },
+  { id: 1025, category: "Evidence", question: "A cyclist sued a corporation for injuries when she was hit by the defendant's truck during deliveries. The day after the accident, the employee visited the cyclist in the hospital and said, \"I'm sorry for what I did.\" At trial, the employee testified that he had exercised due care. Why is the cyclist's testimony relating what the defendant's employee said at the hospital admissible to prove negligence?", answers: ["(A) It is a prior inconsistent statement.", "(B) It is a statement against interest.", "(C) It is a statement by a party-opponent's agent.", "(D) It is a statement of then-existing state of mind."], correct: "C" },
+  { id: 1026, category: "Evidence", question: "A defendant is on trial for bank robbery. A bank teller testified for the prosecution after refreshing her memory by looking at an FBI agent's investigative report created shortly after the robbery. The defendant has asked to examine the report. How should the court respond?", answers: ["(A) The court may allow the examination if the report was used by the teller to refresh her memory before testifying, and must allow it if she used it during her testimony.", "(B) The court must allow the examination, but only to the extent that the report contains the teller's own statement to the FBI agent.", "(C) The court should not allow the examination, unless the report was used by the teller to refresh her memory while on the witness stand.", "(D) The court should not allow the examination, because the report was not shown to have been read and approved by the teller while the matter was fresh in her mind."], correct: "A" },
+  { id: 1027, category: "Evidence", question: "A patient sued a hospital for medical negligence, claiming a nurse failed to administer critical medication. To prove the nurse's failure, the patient called the medical records librarian who authenticated the hospital's record of treatment, which contained no entry showing that the medication had been administered. Is the hospital record admissible?", answers: ["(A) No, because it is hearsay not within any exception.", "(B) No, because the nurse's testimony would be the best evidence of her actions in treating the plaintiff.", "(C) Yes, although hearsay, because it is a statement against interest by agents of the hospital.", "(D) Yes, because it is within the hearsay exception covering the absence of entries in business records."], correct: "D" },
+  { id: 1028, category: "Evidence", question: "A college student sued an amusement company for injuries when the roller coaster allegedly malfunctioned and he fell out. The amusement company called a witness who testified that just before the accident he heard a bystander say, \"That crazy fool is standing up in the car.\" The student then offered the testimony of another witness who would testify that the day after the accident the same bystander described the accident and said the car jerked suddenly and \"just threw the guy out of his seat.\" How should the court rule?", answers: ["(A) Rule it admissible only to impeach the bystander's credibility.", "(B) Rule it admissible to impeach the bystander's credibility and to prove the amusement company's negligence.", "(C) Rule it inadmissible, because the bystander was given no opportunity to deny or explain her apparently inconsistent statement.", "(D) Rule it inadmissible, because the bystander herself was not called as a witness."], correct: "A" },
+  { id: 1029, category: "Evidence", question: "A defendant was charged with robbery. An hour after the robbery, the officer videotaped an interview with an eyewitness who described the crime and the robber. The teller who was robbed identified the defendant in a lineup. The officer obtained computerized records of that day's deposits and withdrawals. A month later, the teller testified before a grand jury. The teller and eyewitness both died afterward. At trial, which evidence, if properly authenticated, may be admitted over an objection that it would violate the confrontation clause?", answers: ["(A) A transcript of the teller's sworn grand jury testimony.", "(B) The computerized records from the savings and loan.", "(C) The officer's testimony that the teller picked the defendant out of the lineup.", "(D) The videotape of the eyewitness's statement."], correct: "B" },
+  { id: 1030, category: "Evidence", question: "A defendant is being prosecuted for conspiracy to possess cocaine with intent to distribute. The government seeks to have its agent testify to a conversation he overheard between the defendant and a co-conspirator regarding an incoming cocaine shipment. That conversation was also audiotaped, though critical portions are inaudible. The defendant objects that the testimony is not the best evidence of the conversation. Is the testimony admissible?", answers: ["(A) No, because the testimony of the agent is not the best evidence of the conversation.", "(B) No, because the testimony of the agent reports hearsay not within any exception.", "(C) Yes, because the best evidence rule does not require proof of the conversation through the audiotape.", "(D) Yes, because the audiotape is partly inaudible."], correct: "C" },
+  { id: 1031, category: "Evidence", question: "A plaintiff sued his employer for illegal racial discrimination. He called a witness expecting him to testify that the employer had admitted the racial motivation. Instead, the witness testified that the employer said he fired the plaintiff for frequent absenteeism. While the witness is still on the stand, the plaintiff offers a properly authenticated secret tape recording made at a meeting with the witness in which the witness related the employer's admissions of racial motivation. The tape recording is:", answers: ["(A) admissible as evidence of the employer's racial motivation and to impeach the witness's testimony.", "(B) admissible only to impeach the witness's testimony.", "(C) inadmissible, because it is hearsay not within any exception.", "(D) inadmissible, because a secret recording is an invasion of the witness's right of privacy under the U.S. Constitution."], correct: "B" },
+  { id: 1032, category: "Evidence", question: "At a defendant's burglary trial, a witness supported the defendant's alibi that they were fishing together at the time of the crime. On cross-examination, the witness was asked whether his statement on a credit card application that he had worked for his present employer for the last five years was false. The witness denied it. The prosecutor then calls the manager to testify that although the witness was first employed five years earlier, there was a three-year gap when he had not been employed there. The manager's testimony is:", answers: ["(A) admissible, in the judge's discretion, because the witness's credibility is a fact of major consequence to the case.", "(B) admissible, as a matter of right, because the witness \"opened the door\" by his denial on cross-examination.", "(C) inadmissible, because whether the witness lied in his application is a matter that cannot be proved by extrinsic evidence.", "(D) inadmissible, because the misstatement by the witness could have been caused by misunderstanding of the application form."], correct: "C" },
+  { id: 1033, category: "Evidence", question: "A defendant was charged with attempted murder of a victim in a sniping incident. The prosecutor offers evidence that seven years earlier the defendant had fired a shotgun into a woman's home and had once pointed a handgun at another driver while driving on the street. This evidence should be:", answers: ["(A) excluded, because such evidence can be elicited only during cross-examination.", "(B) excluded, because it is improper character evidence.", "(C) admitted as evidence of the defendant's propensity toward violence.", "(D) admitted as relevant evidence of the defendant's identity, plan, or motive."], correct: "B" },
+  { id: 1034, category: "Evidence", question: "In a federal investigation for tax fraud, the grand jury seeks a letter written by the defendant to her attorney stating: \"Please prepare a deed giving my ranch to the local university but, in order to get around the tax law, I want it back-dated to December 15.\" The attorney refuses to produce the letter on grounds of privilege. Production of the letter should be:", answers: ["(A) prohibited, because the statement is protected by the attorney-client privilege.", "(B) prohibited, because the statement is protected by the client's privilege against self-incrimination.", "(C) required, because the statement was in furtherance of crime or fraud.", "(D) required, because the attorney-client privilege belongs to the client and can be claimed only by her."], correct: "C" },
+  { id: 1035, category: "Evidence", question: "A plaintiff sued a defendant auto manufacturer for his wife's death, claiming a defective steering mechanism caused the car to veer off the road. The manufacturer claims the steering mechanism was damaged in the collision and offers testimony that the deceased wife was intoxicated at the time of the accident. Testimony concerning the wife's intoxication is:", answers: ["(A) admissible to provide an alternate explanation of the accident's cause.", "(B) admissible as proper evidence of the wife's character.", "(C) inadmissible, because it is improper to prove character evidence by specific conduct.", "(D) inadmissible, because it is substantially more prejudicial than probative."], correct: "A" },
+  { id: 1036, category: "Evidence", question: "The prosecution calls Witness, an undercover officer, to testify that when Seller sold the drugs to Witness, Seller introduced Defendant to Witness as \"my partner in this\" and Defendant shook hands with Witness but said nothing. Witness's testimony is:", answers: ["(A) inadmissible, because there is no evidence that Seller was authorized to speak for Defendant.", "(B) inadmissible, because the statement of Seller is hearsay not within any exception.", "(C) admissible as a statement against Defendant's penal interest.", "(D) admissible as Defendant's adoption of Seller's statement."], correct: "D" },
+  { id: 1037, category: "Evidence", question: "A guard was convicted of manslaughter for killing the plaintiff. At his criminal trial, the guard, no longer working for the defendant, testified that the defendant's security director had instructed him to stop shoplifters \"at all costs.\" Because the guard's criminal conviction is on appeal, he refuses to testify at the civil trial. The plaintiff's estate then offers an authenticated transcript of the guard's criminal trial testimony concerning the instructions. This evidence is:", answers: ["(A) admissible as a statement of an agent of a party opponent.", "(B) admissible, because the instruction from the security director is not hearsay.", "(C) admissible, although hearsay, as former testimony.", "(D) inadmissible, because it is hearsay not within any exception."], correct: "D" },
+  { id: 1038, category: "Evidence", question: "An undercover officer testifies that when the drug dealer sold drugs to the witness, the dealer introduced the defendant as \"my partner in this,\" and the defendant shook hands but said nothing. The witness's testimony is:", answers: ["(A) inadmissible, because there is no evidence that the dealer was authorized to speak for the defendant.", "(B) inadmissible, because the statement of the dealer is hearsay not within any exception.", "(C) admissible as a statement against the defendant's penal interest.", "(D) admissible as the defendant's adoption of the dealer's statement."], correct: "D" },
+  { id: 1039, category: "Evidence", question: "In a federal civil trial, a plaintiff wishes to establish that the defendant had been convicted of fraud in state court, a fact the defendant denies. Which mode of proof of the conviction is LEAST likely to be permitted?", answers: ["(A) A certified copy of the judgment of conviction, offered as a self-authenticating document.", "(B) Testimony of the plaintiff, who was present at the time of the sentence.", "(C) Testimony by a witness to whom the defendant made an oral admission that he had been convicted.", "(D) Judicial notice of the conviction, based on the court's telephone call to the clerk of the state court, whom the judge knows personally."], correct: "D" },
+  { id: 1040, category: "Evidence", question: "A widow offers to testify that the day before her husband was killed, he described a chance meeting with the defendant in which the defendant said, \"I'm going to blow your head off one of these days.\" The widow's testimony concerning her husband's statement is:", answers: ["(A) admissible, to show the defendant's state of mind.", "(B) admissible, because the defendant's statement is that of a party-opponent.", "(C) inadmissible, because it is improper evidence of a prior bad act.", "(D) inadmissible, because it is hearsay not within any exception."], correct: "B" },
+  { id: 1041, category: "Evidence", question: "A defendant entered a guilty plea to embezzlement. Her attorney hired a retired probation officer as a consultant to gather information for a sentencing plan to avoid jail. For that purpose, the consultant interviewed the defendant for three hours. Later, the prosecution began investigating other acts of embezzlement. The consultant was subpoenaed to testify before a grand jury and refused to answer any questions about her conversation with the defendant. The prosecution moved for an order requiring her to answer. The motion should be:", answers: ["(A) denied, on the basis of the attorney-client privilege.", "(B) denied, in the absence of probable cause to believe the interview developed evidence relevant to the grand jury's inquiry.", "(C) granted, because the consultant is not an attorney.", "(D) granted, because exclusionary evidentiary rules do not apply in grand jury proceedings."], correct: "A" },
+  { id: 1042, category: "Evidence", question: "A defendant is on trial for the murder of his father. The defendant's defense is that he shot his father accidentally. The prosecutor calls a police officer to testify that on two occasions in the prior year, he had been called to the defendant's home because of complaints of loud arguments and had found it necessary to stop the defendant from beating his father. The evidence is:", answers: ["(A) inadmissible, because it is improper character evidence.", "(B) inadmissible, because the officer lacks firsthand knowledge of who started the quarrels.", "(C) admissible to show that the defendant killed his father intentionally.", "(D) admissible to show that the defendant is a violent person."], correct: "C" },
+  { id: 1043, category: "Evidence", question: "A plaintiff sued a defendant under an age discrimination statute, alleging the defendant refused to hire her because she was over age 65. The defendant seeks to testify that the plaintiff's former employer advised him not to hire the plaintiff because she was unable to perform productively for more than four hours a day. The testimony of the defendant is:", answers: ["(A) inadmissible, because the defendant's opinion of the plaintiff's abilities is not based on personal knowledge.", "(B) inadmissible, because the plaintiff's former employer's statement is hearsay not within any exception.", "(C) admissible as evidence that the plaintiff would be unable to work longer than four hours per day.", "(D) admissible as evidence of the defendant's reason for refusing to hire the plaintiff."], correct: "D" },
+  { id: 1044, category: "Evidence", question: "A plaintiff sued a defendant for personal injuries from an automobile accident. Which of the following would be an error?", answers: ["(A) The judge allows the defendant's attorney to ask the defendant questions on cross-examination that go well beyond the scope of direct examination by the plaintiff, who has called the defendant as an adverse witness.", "(B) The judge refuses to allow the defendant's attorney to cross-examine the defendant by leading questions.", "(C) The judge allows cross-examination about the credibility of a witness even though no question relating to credibility has been asked on direct examination.", "(D) The judge, despite the defendant's request for exclusion of witnesses, allows the plaintiff's eyewitness to remain in the courtroom after testifying, even though the eyewitness is expected to be recalled for further cross-examination."], correct: "B" },
+  { id: 1045, category: "Evidence", question: "A police officer testified that after the defendant was arrested and agreed to answer questions, the officer interrogated him with a stenographer present but could not now recall what the defendant had said. The prosecutor presented the officer with a photocopy of the stenographic transcript. The officer, after looking at it, was prepared to testify that he recalled the defendant admitted to being in the area of the burglary. The defendant objected that it violated the 'original document' rule. Should the officer's testimony be admitted?", answers: ["(A) No, because a photocopy cannot be used without a showing that the original is unavailable.", "(B) No, because the stenographer has not testified to the accuracy of the transcript.", "(C) Yes, because a photocopy is a duplicate of the original.", "(D) Yes, because the prosecutor is not attempting to prove the contents of the document."], correct: "D" },
+  { id: 1046, category: "Evidence", question: "A defendant is on trial for extorting $10,000 from a victim. The victim is prepared to testify that the caller had a distinctive accent like the defendant's, but cannot positively identify the voice as the defendant's. The victim recorded the call but has not brought the tape to court, although its existence is known to the defendant. The victim's testimony is:", answers: ["(A) inadmissible, because the victim cannot sufficiently identify the caller.", "(B) inadmissible, because the tape recording of the conversation is the best evidence.", "(C) admissible, because the defendant waived the \"best evidence\" rule by failing to subpoena the tape.", "(D) admissible, because the victim's lack of certainty goes to the weight to be given the victim's testimony, not to its admissibility."], correct: "D" },
+  { id: 1047, category: "Evidence", question: "A plaintiff construction company sued a defendant development company for money owed on a cost-plus contract. The plaintiff's general manager offers to testify that it is the plaintiff's routine practice to send cost overrun notices as required by the contract. He also offers a photocopy of the cost overrun notice letter to the defendant taken from the plaintiff's regular business files. On the issue of giving notice, the letter copy is:", answers: ["(A) admissible, though hearsay, under the business record exception.", "(B) admissible, because of the routine practices of the company.", "(C) inadmissible, because it is hearsay not within any exception.", "(D) inadmissible, because it is not the best evidence of the notice."], correct: "B" },
+  { id: 1048, category: "Evidence", question: "A defendant has pleaded not guilty to federal bank robbery. The principal issue is the identity of the robber. The prosecutor calls the defendant's wife to testify to the clothing the defendant wore as he left their house on the day of the robbery, expecting her description to match that of eyewitnesses. Both the defendant and his wife object to her testifying against the defendant. Should the wife be required to testify?", answers: ["(A) No, because the defendant has a privilege to prevent his wife from testifying against him in a criminal case.", "(B) No, because the wife has a privilege not to testify against her husband in a criminal case.", "(C) Yes, because the interspousal privilege does not apply in criminal cases.", "(D) Yes, because the wife's viewing of the defendant's clothing was not a confidential communication."], correct: "B" },
+  { id: 1049, category: "Evidence", question: "A defendant was charged with conspiracy to possess cocaine with intent to distribute. While on bail with travel restricted to his home state, he purchased an airplane ticket to another country using an alias. At trial, the prosecution seeks to introduce evidence of the defendant's ticket purchase. Should the court admit this evidence?", answers: ["(A) No, because the evidence does not make any fact of consequence to the trial more or less probable.", "(B) Yes, because the evidence is relevant both to show the defendant's consciousness of guilt and to show his motive to commit the crime.", "(C) Yes, because the evidence is relevant to show the defendant's consciousness of guilt.", "(D) Yes, because the evidence is relevant to show the defendant's motive to commit the crime."], correct: "C" },
+  { id: 1050, category: "Evidence", question: "A defendant is charged with falsely claiming deductions on her federal income tax return. A witness testified for the defendant that she has a reputation in the community for complete honesty. After a sidebar conference at which the prosecutor gave the judge a record showing the defendant's medical school had disciplined her for altering her transcript, the prosecutor proposes to ask the witness on cross-examination: \"Have you ever heard that the defendant falsified her medical school transcript?\" Is the prosecutor's question proper?", answers: ["(A) No, because it calls for hearsay not within any exception.", "(B) No, because its minimal relevance on the issue of income tax fraud is substantially outweighed by the danger of unfair prejudice.", "(C) Yes, because an affirmative answer will be probative of the defendant's bad character for honesty and, therefore, her guilt.", "(D) Yes, because an affirmative answer will impeach the witness's credibility."], correct: "D" },
+  { id: 1051, category: "Evidence", question: "A plaintiff's attorney calls the investigator, who offers to testify that the witness told him, \"I never saw [the plaintiff] fall.\" The plaintiff objects to admission of the investigator's testimony about the witness's out-of-court statement. Should the court admit the investigator's testimony about the witness's out-of-court statement?", answers: ["(A) No, because the statement is inadmissible hearsay not within any hearsay exception.", "(B) No, because the witness denied making the statement.", "(C) Yes, to prove that the plaintiff did not fall and to impeach the witness.", "(D) Yes, but only for the limited purpose of impeaching the witness's trial testimony."], correct: "D" },
+  { id: 1052, category: "Evidence", question: "A plaintiff called an eyewitness who testified that the train was going 20 miles per hour. The defendant then offers the testimony of an experienced police accident investigator that, based on his training and experience and his examination of the physical evidence, the train was going between five and ten miles per hour. Testimony by the investigator is:", answers: ["(A) improper, because there cannot be both lay and expert opinion on the same issue.", "(B) improper, because the investigator is unable to establish the speed with a sufficient degree of scientific certainty.", "(C) proper, because a police accident investigator has sufficient expertise to express an opinion on speed.", "(D) proper, because the plaintiff first introduced opinion evidence as to speed."], correct: "C" },
+  { id: 1053, category: "Evidence", question: "A defendant is charged with murder in connection with a carjacking. The prosecutor calls the victim's four-year-old son, whose face was horribly disfigured by the same bullet, to testify that the defendant shot his father and him. The son's testimony should be:", answers: ["(A) admitted, provided the prosecutor first provides evidence that persuades the judge that the son is competent to testify despite his tender age.", "(B) admitted, provided there is sufficient basis for believing that the son has personal knowledge and understands his obligation to testify truthfully.", "(C) excluded, because it is insufficiently probative in view of the son's tender age.", "(D) excluded, because it is more unfairly prejudicial than probative."], correct: "B" },
+  { id: 1054, category: "Evidence", question: "A drug enforcement agent informed that a person arriving from Europe on a particular flight answering a particular description would be carrying cocaine. He found a small brass statue with a false bottom containing one ounce of cocaine. At trial, the defendant claimed he was unaware cocaine was hidden in the statue's base. The prosecution offers to prove the defendant was convicted fifteen years earlier of illegally importing cocaine by hiding it in the base of a brass statue. The court should rule proof of this prior conviction is:", answers: ["(A) admissible, as evidence of habit.", "(B) admissible, because it is evidence of a distinctive method of operation.", "(C) inadmissible, because evidence of previous conduct by a defendant may not be used against him.", "(D) inadmissible, because the prior conviction occurred more than ten years before the trial."], correct: "B" },
+  { id: 1055, category: "Evidence", question: "A priest apologized to a woman struck by a vehicle, saying, \"I'm sorry. It isn't my car. I didn't know that the brakes were bad.\" The woman instituted an action against an accountant asserting he owned the vehicle and was negligent in permitting the vehicle to be driven while he knew the brakes needed repair. The accountant denied ownership. At trial, the plaintiff offered testimony by a car mechanic that on the day after the accident the accountant hired him to completely overhaul the brakes. Upon objection, the evidence is:", answers: ["(A) admissible, to show that the accountant was the owner of the vehicle.", "(B) admissible, to show that the brakes were in need of repair on the day of the accident.", "(C) inadmissible, because the condition of the vehicle on any day other than that of the accident is irrelevant to show its condition at the time the accident occurred.", "(D) inadmissible, under a policy which encourages safety precautions."], correct: "A" },
+  { id: 1056, category: "Evidence", question: "At a defendant's trial for theft, a witness testified that he saw thieves break a jewelry store window and take jewelry and leave in a car. His wife telephoned the police and relayed to them the license number of the thieves' car as the witness read it to her through binoculars. He has no present memory of the number, but immediately afterward he listened to a playback of the police tape recording and verified his wife had relayed the number accurately. Playing the tape recording for the jury would be:", answers: ["(A) proper, because it is recorded recollection.", "(B) proper, because it is a public record or report.", "(C) improper, because it is hearsay not within any exception.", "(D) improper, because the witness's wife lacked firsthand knowledge of the license number."], correct: "A" },
+  { id: 1057, category: "Evidence", question: "In an automobile negligence action, a co-worker of the plaintiff testified for the plaintiff. The defendant later called a neighbor of the co-worker, who testified that the co-worker's reputation for truthfulness was bad. On cross-examination of the neighbor, the plaintiff's counsel asks, \"Isn't it a fact that when you bought your new car last year, you made a false affidavit to escape paying the sales tax?\" This question is:", answers: ["(A) proper, because it will indicate the neighbor's standard of judgment as to reputation for truthfulness.", "(B) proper, because it bears on the neighbor's credibility.", "(C) improper, because character cannot be proved by specific instances of conduct.", "(D) improper, because one cannot impeach an impeaching witness."], correct: "B" },
+  { id: 1058, category: "Evidence", question: "A plaintiff called a male tenant to testify that a woman who was also a tenant in the building had said to the man, a week before the plaintiff's fall, \"When I paid my rent this morning, I told the manager that he had better fix that torn carpet.\" The statement by the woman tenant, reported by the male tenant, is:", answers: ["(A) admissible, to prove that the carpet was defective.", "(B) admissible, to prove that the defendant had notice of the defect.", "(C) admissible, to prove both that the carpet was defective and that the defendant had notice of the defect.", "(D) inadmissible, because it is hearsay not within any exception."], correct: "D" },
+  { id: 1059, category: "Evidence", question: "A plaintiff's doctor testified that the disability was caused by trauma. On cross-examination, the plaintiff's doctor agreed that a medical textbook was authoritative and agreed with passages shown to her, but stated they were inapplicable to the plaintiff's condition because they dealt with rheumatoid arthritis rather than the osteoarthritis at issue. The defendant's expert testified there is no difference between the two kinds of arthritis for this issue. The defendant's counsel then asks permission to read to the jury the textbook passages. The judge should rule the textbook passages:", answers: ["(A) admissible only for the purpose of impeaching the plaintiff's doctor.", "(B) admissible as substantive evidence if the judge determines that the passages are relevant.", "(C) inadmissible, because they are hearsay not within any exception.", "(D) inadmissible, because the plaintiff's doctor contended that they are not relevant to the plaintiff's condition."], correct: "B" },
+  { id: 1060, category: "Evidence", question: "A carpenter and an electrician are charged with burgling a warehouse together, tried separately. At the carpenter's trial, the electrician testified that he saw the carpenter commit the burglary. While the electrician is still subject to recall, the carpenter calls a person who was recently the electrician's cellmate, and proposes to have the cellmate testify that the electrician told him, \"I broke into the warehouse alone because the carpenter was too drunk to help.\" This evidence of the electrician's statement is:", answers: ["(A) admissible as a declaration against penal interest.", "(B) admissible as a prior inconsistent statement.", "(C) inadmissible, because it is hearsay not within any exception.", "(D) inadmissible, because the statement is not clearly corroborated."], correct: "B" },
+  { id: 1061, category: "Evidence", question: "A plaintiff sued a defendant for breach of a commercial contract. The plaintiff called an expert witness to testify as to damages. The defendant seeks to show that the expert witness had provided false testimony as a witness in his own divorce proceedings. This evidence should be:", answers: ["(A) admitted only if elicited from the expert witness on cross-examination.", "(B) admitted only if the false testimony is established by clear and convincing extrinsic evidence.", "(C) excluded, because it is impeachment on a collateral issue.", "(D) excluded, because it is improper character evidence."], correct: "A" },
+  { id: 1062, category: "Evidence", question: "A drug manufacturer inadvertently turned over two documents reflecting communications between the manufacturer's president and its counsel regarding a drug's possible side effects. There were 23 other similar documents not turned over. Although the manufacturer learned of the disclosure during the discovery period, it did not seek return of the two documents until the day before trial. The woman claimed the manufacturer had waived attorney-client privilege as to all 25 documents. How should the court rule?", answers: ["(A) There was no waiver of the attorney-client privilege, because the disclosure was inadvertent.", "(B) There was a waiver of the attorney-client privilege regarding only the two disclosed documents.", "(C) There was a waiver of the attorney-client privilege regarding the disclosed documents as well as the other 23, because they all relate to the same subject matter.", "(D) There was a waiver of the attorney-client privilege for all 25 documents if the state law that supplies the rule of decision would support such a result."], correct: "B" },
+  { id: 1063, category: "Evidence", question: "A plaintiff's first witness testified that, although she did not see the accident, she heard her friend say just before the crash, \"Look at the crazy way [the defendant] is driving!\" The defendant offers evidence to impeach the witness's friend by asking the witness, \"Isn't it true that your friend beat up the defendant just the day before the collision?\" The question is:", answers: ["(A) proper, because it tends to show the possible bias of the witness's friend against the defendant.", "(B) proper, because it tends to show the character of the witness's friend.", "(C) improper, because the witness's friend has no opportunity to explain or deny.", "(D) improper, because impeachment cannot properly be by specific instances."], correct: "A" },
+  { id: 1064, category: "Evidence", question: "A defendant is on trial for nighttime breaking and entering of a warehouse. The warehouse owner had set up a camera to take infrared pictures of intruders. After an expert establishes the reliability of infrared photography, the prosecutor offers the authenticated infrared picture of the intruder to show similarities to the defendant. The photograph is:", answers: ["(A) admissible, provided an expert witness points out to the jury the similarities between the person in the photograph and the defendant.", "(B) admissible, allowing the jury to compare the person in the photograph and the defendant.", "(C) inadmissible, because there was no eyewitness to the scene available to authenticate the photograph.", "(D) inadmissible, because infrared photography deprives a defendant of the right to confront witnesses."], correct: "B" },
+  { id: 1065, category: "Evidence", question: "A plaintiff sued a factory owner alleging a toxin caused the plaintiff to suffer a respiratory disease. The plaintiff's expert based her opinion on several studies about another substance similar to the toxin, showing that prolonged exposure to high doses can cause the same respiratory disease. On cross-examination, the company elicits an admission that the expert did not consider two recent clinical studies concluding there was no connection between the toxin and any respiratory disease. Should the court allow the plaintiff's expert to testify at trial?", answers: ["(A) No, because the expert is relying on studies that she read for purposes of preparing her testimony in this litigation.", "(B) No, because the plaintiff has failed to show by a preponderance of the evidence that the expert based her opinion on sufficient facts and data and that she employed a reliable methodology.", "(C) Yes, because the company has not met its burden of showing that the expert's opinion is unreliable.", "(D) Yes, because the sufficiency of an expert's basis for an opinion and the reliability of an expert's methodology are questions of weight for the jury."], correct: "B" },
+  { id: 1066, category: "Evidence", question: "During a plaintiff's hospital stay, a staff physician examined the plaintiff's X rays and said, \"You have a fracture of two vertebrae, C4 and C5.\" An intern accompanying the physician on her rounds immediately wrote the diagnosis on the plaintiff's hospital record. At trial, the hospital records custodian testified that the plaintiff's hospital record was made and kept in the ordinary course of the hospital's business. The entry reporting the physician's diagnosis is:", answers: ["(A) inadmissible, because no foundation has been laid for the physician's competence as an expert.", "(B) inadmissible, because the physician's opinion is based upon data that are not in evidence.", "(C) admissible as a statement of then-existing physical condition.", "(D) admissible as a record of regularly conducted business activity."], correct: "D" },
+  { id: 1067, category: "Evidence", question: "At a defendant's trial for sale of drugs, the government called a witness to testify, but the witness refused to answer any questions about the defendant and was held in contempt. The government then calls an officer to testify that, when the witness was arrested for possession of drugs and offered leniency if he would identify his source, the witness had named the defendant as his source. The testimony offered concerning the witness's identification of the defendant is:", answers: ["(A) admissible as a prior inconsistent statement by the witness.", "(B) admissible as an identification of the defendant by the witness after having perceived him.", "(C) inadmissible, because it is hearsay not within any exception.", "(D) inadmissible, because the witness was not confronted with the statement while on the stand."], correct: "C" },
+  { id: 1068, category: "Evidence", question: "A company sued its former vice president for return of $230,000 that had been embezzled. Called as an adverse witness, the former vice-president testified that his annual salary had been $75,000, and he denied the embezzlement. The company calls a banker to show that, during the two-year period, the former vice-president had deposited $250,000 in his bank account. The witness's testimony is:", answers: ["(A) admissible as circumstantial evidence of the former vice-president's guilt.", "(B) admissible to impeach the former vice-president.", "(C) inadmissible, because its prejudicial effect substantially outweighs its probative value.", "(D) inadmissible, because the deposits could have come from legitimate sources."], correct: "A" },
+  { id: 1069, category: "Evidence", question: "A pedestrian died from injuries caused when a car struck him. At trial, the executor calls a nurse to testify that two days after the accident, the pedestrian said, \"The car that hit me ran the red light.\" Fifteen minutes thereafter, the pedestrian died. The executor offers to the court a doctor's affidavit that the doctor was the intern on duty the day of the pedestrian's death and that several times that day the pedestrian had said that he knew he was about to die. Is the affidavit properly considered by the court in ruling on the admissibility of the pedestrian's statement?", answers: ["(A) No, because it is hearsay not within any exception.", "(B) No, because it is irrelevant since dying declarations cannot be used except in prosecutions for homicide.", "(C) Yes, because, though hearsay, it is a statement of then-existing mental condition.", "(D) Yes, because the judge may consider hearsay in ruling on preliminary questions."], correct: "D" },
+  { id: 1070, category: "Evidence", question: "At a defendant's murder trial, the defendant calls a witness to testify that the defendant has a reputation in their community as a peaceable and truthful person. The prosecutor objects on the ground that the witness's testimony would constitute improper character evidence. The court should:", answers: ["(A) admit the testimony as to peaceableness, but exclude the testimony as to truthfulness.", "(B) admit the testimony as to truthfulness, but exclude the testimony as to peaceableness.", "(C) admit the testimony as to both character traits.", "(D) exclude the testimony as to both character traits."], correct: "A" },
 ];
 
 // ── TOPIC CONFIG ──────────────────────────────────────────────────────────────
 const TOPICS = {
-"Constitutional Law": { label: "Con Law", color: "#6c63ff", icon: "⚖️", questions: CON_LAW_QUESTIONS },
-"Evidence": { label: "Evidence", color: "#f5a623", icon: "🔍", questions: EVIDENCE_QUESTIONS },
+  "Constitutional Law": { label: "Con Law", color: "#6c63ff", icon: "⚖️", questions: CON_LAW_QUESTIONS },
+  "Evidence": { label: "Evidence", color: "#f5a623", icon: "🔍", questions: EVIDENCE_QUESTIONS },
 };
 
 const TOPIC_NAMES = Object.keys(TOPICS);
 
 function shuffle(arr) {
-const a = [...arr];
-for (let i = a.length - 1; i > 0; i--) {
-const j = Math.floor(Math.random() * (i + 1));
-[a[i], a[j]] = [a[j], a[i]];
-}
-return a;
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
 
 function generateCode() {
-return Math.random().toString(36).substring(2, 8).toUpperCase();
+  return Math.random().toString(36).substring(2, 8).toUpperCase();
 }
 
 const C = {
-bg: "#0b0d14",
-surface: "#13151f",
-card: "#181b28",
-border: "#252836",
-accent: "#6c63ff",
-accentDim: "#6c63ff33",
-gold: "#f5c518",
-green: "#3ecf8e",
-greenDim: "#3ecf8e22",
-red: "#ff5c5c",
-redDim: "#ff5c5c22",
-text: "#eaedf5",
-muted: "#7a7f94",
-p1: "#6c63ff",
-p2: "#f5a623",
+  bg: "#0b0d14",
+  surface: "#13151f",
+  card: "#181b28",
+  border: "#252836",
+  accent: "#6c63ff",
+  accentDim: "#6c63ff33",
+  gold: "#f5c518",
+  green: "#3ecf8e",
+  greenDim: "#3ecf8e22",
+  red: "#ff5c5c",
+  redDim: "#ff5c5c22",
+  text: "#eaedf5",
+  muted: "#7a7f94",
+  p1: "#6c63ff",
+  p2: "#f5a623",
 };
 
 // ── SCREENS ──────────────────────────────────────────────────────────────────
 
 function HomeScreen({ onCreateGame, onJoinGame }) {
-const [joinCode, setJoinCode] = useState("");
-const [name, setName] = useState("");
-const [mode, setMode] = useState(null);
-const [error, setError] = useState("");
+  const [joinCode, setJoinCode] = useState("");
+  const [name, setName] = useState("");
+  const [mode, setMode] = useState(null);
+  const [error, setError] = useState("");
 
-const handleCreate = async () => {
-if (!name.trim()) { setError("Enter your name"); return; }
-setError("");
-onCreateGame(name.trim());
-};
+  const handleCreate = async () => {
+    if (!name.trim()) { setError("Enter your name"); return; }
+    setError("");
+    onCreateGame(name.trim());
+  };
 
-const handleJoin = async () => {
-if (!name.trim()) { setError("Enter your name"); return; }
-if (!joinCode.trim()) { setError("Enter a room code"); return; }
-setError("");
-onJoinGame(name.trim(), joinCode.trim().toUpperCase());
-};
+  const handleJoin = async () => {
+    if (!name.trim()) { setError("Enter your name"); return; }
+    if (!joinCode.trim()) { setError("Enter a room code"); return; }
+    setError("");
+    onJoinGame(name.trim(), joinCode.trim().toUpperCase());
+  };
 
-return (
-<div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif" }}>
-<div style={{ maxWidth: 420, width: "100%" }}>
-<div style={{ textAlign: "center", marginBottom: 40 }}>
-<div style={{ fontSize: 11, letterSpacing: 4, color: C.accent, textTransform: "uppercase", marginBottom: 12, fontFamily: "monospace" }}>MBE Bar Prep</div>
-<h1 style={{ fontSize: 38, fontWeight: 900, color: C.text, margin: "0 0 8px", letterSpacing: -1.5 }}>Bar Exam<br /><span style={{ color: C.accent }}>Trivia</span></h1>
-<p style={{ color: C.muted, fontSize: 14, margin: "0 0 12px" }}>Play async with a friend · 3 questions per round</p>
-<div style={{ display: "flex", justifyContent: "center", gap: 8 }}>
-{TOPIC_NAMES.map(t => (
-<span key={t} style={{ background: TOPICS[t].color + "22", color: TOPICS[t].color, fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 20, fontFamily: "monospace", letterSpacing: 1 }}>
-{TOPICS[t].icon} {TOPICS[t].label}
-</span>
-))}
-</div>
-</div>
+  return (
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif" }}>
+      <div style={{ maxWidth: 420, width: "100%" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <div style={{ fontSize: 11, letterSpacing: 4, color: C.accent, textTransform: "uppercase", marginBottom: 12, fontFamily: "monospace" }}>MBE Bar Prep</div>
+          <h1 style={{ fontSize: 38, fontWeight: 900, color: C.text, margin: "0 0 8px", letterSpacing: -1.5 }}>Bar Exam<br /><span style={{ color: C.accent }}>Trivia</span></h1>
+          <p style={{ color: C.muted, fontSize: 14, margin: "0 0 12px" }}>Play async with a friend · 3 questions per round</p>
+          <div style={{ display: "flex", justifyContent: "center", gap: 8 }}>
+            {TOPIC_NAMES.map(t => (
+              <span key={t} style={{ background: TOPICS[t].color + "22", color: TOPICS[t].color, fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 20, fontFamily: "monospace", letterSpacing: 1 }}>
+                {TOPICS[t].icon} {TOPICS[t].label}
+              </span>
+            ))}
+          </div>
+        </div>
 
-{!mode && (
-<div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-<button onClick={() => setMode("create")} style={btnStyle(C.accent)}>⚡ Create Game</button>
-<button onClick={() => setMode("join")} style={btnStyle("transparent", C.border, C.text)}>🔗 Join Game with Code</button>
-</div>
-)}
+        {!mode && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <button onClick={() => setMode("create")} style={btnStyle(C.accent)}>⚡ Create Game</button>
+            <button onClick={() => setMode("join")} style={btnStyle("transparent", C.border, C.text)}>🔗 Join Game with Code</button>
+          </div>
+        )}
 
-{mode === "create" && (
-<div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-<div style={{ color: C.muted, fontSize: 12, marginBottom: 4, fontFamily: "monospace" }}>YOUR NAME</div>
-<input value={name} onChange={e => setName(e.target.value)} placeholder="Enter your name" style={inputStyle} />
-{error && <div style={{ color: C.red, fontSize: 13 }}>{error}</div>}
-<button onClick={handleCreate} style={btnStyle(C.accent)}>Create Game →</button>
-<button onClick={() => { setMode(null); setError(""); }} style={btnStyle("transparent", C.border, C.muted)}>Back</button>
-</div>
-)}
+        {mode === "create" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ color: C.muted, fontSize: 12, marginBottom: 4, fontFamily: "monospace" }}>YOUR NAME</div>
+            <input value={name} onChange={e => setName(e.target.value)} placeholder="Enter your name" style={inputStyle} />
+            {error && <div style={{ color: C.red, fontSize: 13 }}>{error}</div>}
+            <button onClick={handleCreate} style={btnStyle(C.accent)}>Create Game →</button>
+            <button onClick={() => { setMode(null); setError(""); }} style={btnStyle("transparent", C.border, C.muted)}>Back</button>
+          </div>
+        )}
 
-{mode === "join" && (
-<div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-<div style={{ color: C.muted, fontSize: 12, marginBottom: 4, fontFamily: "monospace" }}>YOUR NAME</div>
-<input value={name} onChange={e => setName(e.target.value)} placeholder="Enter your name" style={inputStyle} />
-<div style={{ color: C.muted, fontSize: 12, marginBottom: 4, fontFamily: "monospace" }}>ROOM CODE</div>
-<input value={joinCode} onChange={e => setJoinCode(e.target.value)} placeholder="e.g. AB12CD" style={{ ...inputStyle, fontFamily: "monospace", letterSpacing: 3, textTransform: "uppercase" }} maxLength={6} />
-{error && <div style={{ color: C.red, fontSize: 13 }}>{error}</div>}
-<button onClick={handleJoin} style={btnStyle(C.accent)}>Join Game →</button>
-<button onClick={() => { setMode(null); setError(""); }} style={btnStyle("transparent", C.border, C.muted)}>Back</button>
-</div>
-)}
-</div>
-</div>
-);
+        {mode === "join" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ color: C.muted, fontSize: 12, marginBottom: 4, fontFamily: "monospace" }}>YOUR NAME</div>
+            <input value={name} onChange={e => setName(e.target.value)} placeholder="Enter your name" style={inputStyle} />
+            <div style={{ color: C.muted, fontSize: 12, marginBottom: 4, fontFamily: "monospace" }}>ROOM CODE</div>
+            <input value={joinCode} onChange={e => setJoinCode(e.target.value)} placeholder="e.g. AB12CD" style={{ ...inputStyle, fontFamily: "monospace", letterSpacing: 3, textTransform: "uppercase" }} maxLength={6} />
+            {error && <div style={{ color: C.red, fontSize: 13 }}>{error}</div>}
+            <button onClick={handleJoin} style={btnStyle(C.accent)}>Join Game →</button>
+            <button onClick={() => { setMode(null); setError(""); }} style={btnStyle("transparent", C.border, C.muted)}>Back</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 // ── SPIN WHEEL ────────────────────────────────────────────────────────────────
 // Draws a pie-slice wheel on canvas. Scales automatically to however many
 // topics are in TOPIC_NAMES — add a topic to TOPICS and it appears instantly.
 function SpinWheelScreen({ pickerName, onTopicChosen, isFirstRound }) {
-const canvasRef = useRef(null);
-const rafRef = useRef(null);
+  const canvasRef = useRef(null);
+  const rafRef = useRef(null);
 
-// Wheel state kept in refs so animation loop always sees current values
-const angleRef = useRef(0); // current rotation in radians
-const velocityRef = useRef(0); // radians per frame
-const spinningRef = useRef(false);
+  // Wheel state kept in refs so animation loop always sees current values
+  const angleRef = useRef(0);          // current rotation in radians
+  const velocityRef = useRef(0);       // radians per frame
+  const spinningRef = useRef(false);
 
-const [spinning, setSpinning] = useState(false);
-const [landed, setLanded] = useState(null); // topic name once settled
-const [confirmed, setConfirmed] = useState(false);
+  const [spinning, setSpinning] = useState(false);
+  const [landed, setLanded] = useState(null);   // topic name once settled
+  const [confirmed, setConfirmed] = useState(false);
 
-const topics = TOPIC_NAMES;
-const sliceAngle = (2 * Math.PI) / topics.length;
+  const topics = TOPIC_NAMES;
+  const sliceAngle = (2 * Math.PI) / topics.length;
 
-// Slice colours cycle through each topic's own colour
-const sliceColors = topics.map(t => TOPICS[t].color);
+  // Slice colours cycle through each topic's own colour
+  const sliceColors = topics.map(t => TOPICS[t].color);
 
-// ── Draw ────────────────────────────────────────────────────────────────────
-const draw = (angle) => {
-const canvas = canvasRef.current;
-if (!canvas) return;
-const ctx = canvas.getContext("2d");
-const W = canvas.width;
-const cx = W / 2, cy = W / 2, r = W / 2 - 6;
+  // ── Draw ────────────────────────────────────────────────────────────────────
+  const draw = (angle) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const W = canvas.width;
+    const cx = W / 2, cy = W / 2, r = W / 2 - 6;
 
-ctx.clearRect(0, 0, W, W);
+    ctx.clearRect(0, 0, W, W);
 
-// Slices
-topics.forEach((topic, i) => {
-const start = angle + i * sliceAngle - Math.PI / 2;
-const end = start + sliceAngle;
-const color = sliceColors[i];
+    // Slices
+    topics.forEach((topic, i) => {
+      const start = angle + i * sliceAngle - Math.PI / 2;
+      const end   = start + sliceAngle;
+      const color = sliceColors[i];
 
-// Slice fill
-ctx.beginPath();
-ctx.moveTo(cx, cy);
-ctx.arc(cx, cy, r, start, end);
-ctx.closePath();
-ctx.fillStyle = color + "cc";
-ctx.fill();
+      // Slice fill
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, r, start, end);
+      ctx.closePath();
+      ctx.fillStyle = color + "cc";
+      ctx.fill();
 
-// Slice border
-ctx.strokeStyle = "#0b0d14";
-ctx.lineWidth = 2;
-ctx.stroke();
+      // Slice border
+      ctx.strokeStyle = "#0b0d14";
+      ctx.lineWidth = 2;
+      ctx.stroke();
 
-// Icon + label
-const midAngle = start + sliceAngle / 2;
-const labelR = r * 0.62;
-const tx = cx + Math.cos(midAngle) * labelR;
-const ty = cy + Math.sin(midAngle) * labelR;
+      // Icon + label
+      const midAngle = start + sliceAngle / 2;
+      const labelR   = r * 0.62;
+      const tx = cx + Math.cos(midAngle) * labelR;
+      const ty = cy + Math.sin(midAngle) * labelR;
 
-ctx.save();
-ctx.translate(tx, ty);
-ctx.rotate(midAngle + Math.PI / 2);
+      ctx.save();
+      ctx.translate(tx, ty);
+      ctx.rotate(midAngle + Math.PI / 2);
 
-// Icon
-ctx.font = `${Math.max(14, Math.min(22, W / (topics.length * 1.4)))}px serif`;
-ctx.textAlign = "center";
-ctx.textBaseline = "middle";
-ctx.fillStyle = "#fff";
-ctx.fillText(TOPICS[topic].icon, 0, -10);
+      // Icon
+      ctx.font = `${Math.max(14, Math.min(22, W / (topics.length * 1.4)))}px serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "#fff";
+      ctx.fillText(TOPICS[topic].icon, 0, -10);
 
-// Label
-ctx.font = `bold ${Math.max(9, Math.min(13, W / (topics.length * 1.9)))}px system-ui`;
-ctx.fillStyle = "#fff";
-ctx.fillText(TOPICS[topic].label, 0, 8);
+      // Label
+      ctx.font = `bold ${Math.max(9, Math.min(13, W / (topics.length * 1.9)))}px system-ui`;
+      ctx.fillStyle = "#fff";
+      ctx.fillText(TOPICS[topic].label, 0, 8);
 
-ctx.restore();
-});
+      ctx.restore();
+    });
 
-// Centre hub
-ctx.beginPath();
-ctx.arc(cx, cy, 18, 0, 2 * Math.PI);
-ctx.fillStyle = "#0b0d14";
-ctx.fill();
-ctx.strokeStyle = "#252836";
-ctx.lineWidth = 2;
-ctx.stroke();
+    // Centre hub
+    ctx.beginPath();
+    ctx.arc(cx, cy, 18, 0, 2 * Math.PI);
+    ctx.fillStyle = "#0b0d14";
+    ctx.fill();
+    ctx.strokeStyle = "#252836";
+    ctx.lineWidth = 2;
+    ctx.stroke();
 
-// Pointer (triangle at top)
-const pW = 14, pH = 22;
-ctx.beginPath();
-ctx.moveTo(cx, cy - r - 2);
-ctx.lineTo(cx - pW / 2, cy - r + pH);
-ctx.lineTo(cx + pW / 2, cy - r + pH);
-ctx.closePath();
-ctx.fillStyle = "#eaedf5";
-ctx.fill();
-};
+    // Pointer (triangle at top)
+    const pW = 14, pH = 22;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - r - 2);
+    ctx.lineTo(cx - pW / 2, cy - r + pH);
+    ctx.lineTo(cx + pW / 2, cy - r + pH);
+    ctx.closePath();
+    ctx.fillStyle = "#eaedf5";
+    ctx.fill();
+  };
 
-// ── Initial draw ────────────────────────────────────────────────────────────
-useEffect(() => {
-draw(angleRef.current);
-}, []);
+  // ── Initial draw ────────────────────────────────────────────────────────────
+  useEffect(() => {
+    draw(angleRef.current);
+  }, []);
 
-// ── Spin ────────────────────────────────────────────────────────────────────
-const handleSpin = () => {
-if (spinning || landed) return;
-setSpinning(true);
-setLanded(null);
-spinningRef.current = true;
+  // ── Spin ────────────────────────────────────────────────────────────────────
+  const handleSpin = () => {
+    if (spinning || landed) return;
+    setSpinning(true);
+    setLanded(null);
+    spinningRef.current = true;
 
-// Random full rotations (8–14) + random offset for unpredictability
-const extraAngle = (8 + Math.random() * 6) * 2 * Math.PI + Math.random() * 2 * Math.PI;
-const targetAngle = angleRef.current + extraAngle;
-const duration = 4000 + Math.random() * 1500; // 4–5.5 s
-const startAngle = angleRef.current;
-const startTime = performance.now();
+    // Random full rotations (8–14) + random offset for unpredictability
+    const extraAngle = (8 + Math.random() * 6) * 2 * Math.PI + Math.random() * 2 * Math.PI;
+    const targetAngle = angleRef.current + extraAngle;
+    const duration = 4000 + Math.random() * 1500; // 4–5.5 s
+    const startAngle = angleRef.current;
+    const startTime = performance.now();
 
-const animate = (now) => {
-const elapsed = now - startTime;
-const t = Math.min(elapsed / duration, 1);
-// Ease-out cubic
-const eased = 1 - Math.pow(1 - t, 3);
-angleRef.current = startAngle + (targetAngle - startAngle) * eased;
-draw(angleRef.current);
+    const animate = (now) => {
+      const elapsed = now - startTime;
+      const t = Math.min(elapsed / duration, 1);
+      // Ease-out cubic
+      const eased = 1 - Math.pow(1 - t, 3);
+      angleRef.current = startAngle + (targetAngle - startAngle) * eased;
+      draw(angleRef.current);
 
-if (t < 1) {
-rafRef.current = requestAnimationFrame(animate);
-} else {
-// Determine which slice is under the pointer.
-// draw() places slice i from: angle + i*sliceAngle - PI/2
-// The pointer sits at canvas angle -PI/2.
-// Slice i is under the pointer when: angle + i*sliceAngle - PI/2 ≈ -PI/2
-// i.e. i*sliceAngle ≈ -angle → norm = (-angle) mod 2PI
-const norm = ((-angleRef.current) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-const idx = Math.floor(norm / sliceAngle) % topics.length;
-spinningRef.current = false;
-setSpinning(false);
-setLanded(topics[idx]);
-}
-};
+      if (t < 1) {
+        rafRef.current = requestAnimationFrame(animate);
+      } else {
+        // Determine which slice is under the pointer.
+        // draw() places slice i from: angle + i*sliceAngle - PI/2
+        // The pointer sits at canvas angle -PI/2.
+        // Slice i is under the pointer when: angle + i*sliceAngle - PI/2 ≈ -PI/2
+        // i.e. i*sliceAngle ≈ -angle  →  norm = (-angle) mod 2PI
+        const norm = ((-angleRef.current) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+        const idx = Math.floor(norm / sliceAngle) % topics.length;
+        spinningRef.current = false;
+        setSpinning(false);
+        setLanded(topics[idx]);
+      }
+    };
 
-rafRef.current = requestAnimationFrame(animate);
-};
+    rafRef.current = requestAnimationFrame(animate);
+  };
 
-useEffect(() => () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); }, []);
+  useEffect(() => () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); }, []);
 
-const handleConfirm = () => {
-if (!landed) return;
-setConfirmed(true);
-onTopicChosen(landed);
-};
+  const handleConfirm = () => {
+    if (!landed) return;
+    setConfirmed(true);
+    onTopicChosen(landed);
+  };
 
-// Canvas size: fill available width, max 320
-const SIZE = 300;
+  // Canvas size: fill available width, max 320
+  const SIZE = 300;
 
-return (
-<div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px 16px", fontFamily: "system-ui, sans-serif" }}>
-<div style={{ maxWidth: 380, width: "100%", textAlign: "center" }}>
+  return (
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px 16px", fontFamily: "system-ui, sans-serif" }}>
+      <div style={{ maxWidth: 380, width: "100%", textAlign: "center" }}>
 
-{/* Header */}
-<div style={{ fontSize: 11, letterSpacing: 4, color: C.accent, textTransform: "uppercase", marginBottom: 10, fontFamily: "monospace" }}>
-{isFirstRound ? "Round 1" : "Next Round"}
-</div>
-<h2 style={{ color: C.text, fontSize: 24, fontWeight: 900, margin: "0 0 6px" }}>
-{isFirstRound ? "Pick a Topic" : "Spin for the Next Topic"}
-</h2>
-<p style={{ color: C.muted, fontSize: 13, margin: "0 0 24px", lineHeight: 1.5 }}>
-{isFirstRound
-? <span><span style={{ color: C.p1, fontWeight: 700 }}>{pickerName}</span> — you created the game, spin to pick the first topic</span>
-: <span><span style={{ color: C.p2, fontWeight: 700 }}>{pickerName}</span> lost the round — spin the wheel to pick the next topic</span>
-}
-</p>
+        {/* Header */}
+        <div style={{ fontSize: 11, letterSpacing: 4, color: C.accent, textTransform: "uppercase", marginBottom: 10, fontFamily: "monospace" }}>
+          {isFirstRound ? "Round 1" : "Next Round"}
+        </div>
+        <h2 style={{ color: C.text, fontSize: 24, fontWeight: 900, margin: "0 0 6px" }}>
+          {isFirstRound ? "Pick a Topic" : "Spin for the Next Topic"}
+        </h2>
+        <p style={{ color: C.muted, fontSize: 13, margin: "0 0 24px", lineHeight: 1.5 }}>
+          {isFirstRound
+            ? <span><span style={{ color: C.p1, fontWeight: 700 }}>{pickerName}</span> — you created the game, spin to pick the first topic</span>
+            : <span><span style={{ color: C.p2, fontWeight: 700 }}>{pickerName}</span> lost the round — spin the wheel to pick the next topic</span>
+          }
+        </p>
 
-{/* Wheel */}
-<div style={{ display: "flex", justifyContent: "center", marginBottom: 24, position: "relative" }}>
-<canvas
-ref={canvasRef}
-width={SIZE}
-height={SIZE}
-style={{ borderRadius: "50%", display: "block" }}
-/>
-</div>
+        {/* Wheel */}
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 24, position: "relative" }}>
+          <canvas
+            ref={canvasRef}
+            width={SIZE}
+            height={SIZE}
+            style={{ borderRadius: "50%", display: "block" }}
+          />
+        </div>
 
-{/* Legend */}
-<div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "8px 16px", marginBottom: 24 }}>
-{topics.map(t => (
-<div key={t} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-<div style={{ width: 10, height: 10, borderRadius: 3, background: TOPICS[t].color, flexShrink: 0 }} />
-<span style={{ color: C.muted, fontSize: 12 }}>{TOPICS[t].label}</span>
-</div>
-))}
-</div>
+        {/* Legend */}
+        <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "8px 16px", marginBottom: 24 }}>
+          {topics.map(t => (
+            <div key={t} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ width: 10, height: 10, borderRadius: 3, background: TOPICS[t].color, flexShrink: 0 }} />
+              <span style={{ color: C.muted, fontSize: 12 }}>{TOPICS[t].label}</span>
+            </div>
+          ))}
+        </div>
 
-{/* Result banner */}
-{landed && !confirmed && (
-<div style={{ background: TOPICS[landed].color + "22", border: `2px solid ${TOPICS[landed].color}`, borderRadius: 14, padding: "14px 20px", marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
-<span style={{ fontSize: 28 }}>{TOPICS[landed].icon}</span>
-<div style={{ textAlign: "left" }}>
-<div style={{ color: TOPICS[landed].color, fontWeight: 800, fontSize: 16 }}>{landed}</div>
-<div style={{ color: C.muted, fontSize: 12, marginTop: 2 }}>The wheel has spoken</div>
-</div>
-</div>
-)}
+        {/* Result banner */}
+        {landed && !confirmed && (
+          <div style={{ background: TOPICS[landed].color + "22", border: `2px solid ${TOPICS[landed].color}`, borderRadius: 14, padding: "14px 20px", marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ fontSize: 28 }}>{TOPICS[landed].icon}</span>
+            <div style={{ textAlign: "left" }}>
+              <div style={{ color: TOPICS[landed].color, fontWeight: 800, fontSize: 16 }}>{landed}</div>
+              <div style={{ color: C.muted, fontSize: 12, marginTop: 2 }}>The wheel has spoken</div>
+            </div>
+          </div>
+        )}
 
-{/* Buttons */}
-{!landed && (
-<button
-onClick={handleSpin}
-disabled={spinning}
-style={{
-background: spinning ? C.surface : C.accent,
-border: `2px solid ${spinning ? C.border : C.accent}`,
-borderRadius: 12, padding: "16px", fontSize: 16, fontWeight: 700,
-cursor: spinning ? "default" : "pointer", width: "100%", color: "#fff",
-fontFamily: "system-ui, sans-serif", opacity: spinning ? 0.6 : 1,
-transition: "all 0.2s",
-}}>
-{spinning ? "Spinning…" : "🎡 Spin the Wheel"}
-</button>
-)}
+        {/* Buttons */}
+        {!landed && (
+          <button
+            onClick={handleSpin}
+            disabled={spinning}
+            style={{
+              background: spinning ? C.surface : C.accent,
+              border: `2px solid ${spinning ? C.border : C.accent}`,
+              borderRadius: 12, padding: "16px", fontSize: 16, fontWeight: 700,
+              cursor: spinning ? "default" : "pointer", width: "100%", color: "#fff",
+              fontFamily: "system-ui, sans-serif", opacity: spinning ? 0.6 : 1,
+              transition: "all 0.2s",
+            }}>
+            {spinning ? "Spinning…" : "🎡 Spin the Wheel"}
+          </button>
+        )}
 
-{landed && !confirmed && (
-<button
-onClick={handleConfirm}
-style={{ background: TOPICS[landed].color, border: `2px solid ${TOPICS[landed].color}`, borderRadius: 12, padding: "16px", fontSize: 16, fontWeight: 700, cursor: "pointer", width: "100%", color: "#fff", fontFamily: "system-ui, sans-serif" }}>
-Play {landed} →
-</button>
-)}
-</div>
-</div>
-);
+        {landed && !confirmed && (
+          <button
+            onClick={handleConfirm}
+            style={{ background: TOPICS[landed].color, border: `2px solid ${TOPICS[landed].color}`, borderRadius: 12, padding: "16px", fontSize: 16, fontWeight: 700, cursor: "pointer", width: "100%", color: "#fff", fontFamily: "system-ui, sans-serif" }}>
+            Play {landed} →
+          </button>
+        )}
+      </div>
+    </div>
+  );
 }
 
 // ── WAITING FOR OPPONENT TOPIC SPIN ──────────────────────────────────────────
 function WaitingForTopicScreen({ loserName }) {
-return (
-<div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif" }}>
-<div style={{ maxWidth: 420, width: "100%", textAlign: "center" }}>
-<div style={{ fontSize: 44, marginBottom: 16 }}>🎡</div>
-<h2 style={{ color: C.text, fontSize: 24, fontWeight: 900, margin: "0 0 8px" }}>Waiting for Spin</h2>
-<p style={{ color: C.muted, fontSize: 14, marginBottom: 24 }}>
-<span style={{ color: C.p2, fontWeight: 700 }}>{loserName}</span> is spinning the wheel…
-</p>
-<div style={{ display: "flex", justifyContent: "center", gap: 6 }}>
-{[0, 1, 2].map(i => (
-<div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: C.accent, animation: `pulse ${0.6 + i * 0.2}s ease-in-out infinite alternate`, opacity: 0.7 }} />
-))}
-</div>
-</div>
-</div>
-);
+  return (
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif" }}>
+      <div style={{ maxWidth: 420, width: "100%", textAlign: "center" }}>
+        <div style={{ fontSize: 44, marginBottom: 16 }}>🎡</div>
+        <h2 style={{ color: C.text, fontSize: 24, fontWeight: 900, margin: "0 0 8px" }}>Waiting for Spin</h2>
+        <p style={{ color: C.muted, fontSize: 14, marginBottom: 24 }}>
+          <span style={{ color: C.p2, fontWeight: 700 }}>{loserName}</span> is spinning the wheel…
+        </p>
+        <div style={{ display: "flex", justifyContent: "center", gap: 6 }}>
+          {[0, 1, 2].map(i => (
+            <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: C.accent, animation: `pulse ${0.6 + i * 0.2}s ease-in-out infinite alternate`, opacity: 0.7 }} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 // Fully controlled — no internal state. Parent owns selectedAnswer so
 // feedback survives across renders without a remount destroying it.
 function QuestionScreen({ question, questionNum, totalQuestions, onAnswer,
-timeLeft, topic, isLastQuestion,
-selectedAnswer, waitingForOpponent, onAdvance }) {
-const topicConfig = TOPICS[topic] || TOPICS["Constitutional Law"];
-const correctAnswer = question.correct;
-const isRevealed = !!selectedAnswer;
-const isLocked = isRevealed || waitingForOpponent;
-const timerColor = timeLeft > 30 ? C.green : timeLeft > 15 ? C.gold : C.red;
+                          timeLeft, topic, isLastQuestion,
+                          selectedAnswer, waitingForOpponent, onAdvance }) {
+  const topicConfig = TOPICS[topic] || TOPICS["Constitutional Law"];
+  const correctAnswer = question.correct;
+  const isRevealed = !!selectedAnswer;
+  const isLocked = isRevealed || waitingForOpponent;
+  const timerColor = timeLeft > 30 ? C.green : timeLeft > 15 ? C.gold : C.red;
 
-return (
-<div style={{ minHeight: "100vh", background: C.bg, fontFamily: "system-ui, sans-serif", padding: "0 0 40px" }}>
-<div style={{ background: C.surface, borderBottom: `1px solid ${C.border}`, padding: "14px 20px" }}>
-<div style={{ maxWidth: 560, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-<div style={{ color: C.muted, fontSize: 12, fontFamily: "monospace" }}>Q {questionNum} / {totalQuestions}</div>
-<div style={{ color: timerColor, fontWeight: 800, fontSize: 20, fontFamily: "monospace" }}>{timeLeft}s</div>
-</div>
-<div style={{ maxWidth: 560, margin: "6px auto 0" }}>
-<div style={{ height: 3, background: C.border, borderRadius: 2 }}>
-<div style={{ height: "100%", width: `${(timeLeft / TIME_PER_Q) * 100}%`, background: timerColor, borderRadius: 2, transition: "width 1s linear, background 0.3s" }} />
-</div>
-</div>
-</div>
+  return (
+    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "system-ui, sans-serif", padding: "0 0 40px" }}>
+      <div style={{ background: C.surface, borderBottom: `1px solid ${C.border}`, padding: "14px 20px" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ color: C.muted, fontSize: 12, fontFamily: "monospace" }}>Q {questionNum} / {totalQuestions}</div>
+          <div style={{ color: timerColor, fontWeight: 800, fontSize: 20, fontFamily: "monospace" }}>{timeLeft}s</div>
+        </div>
+        <div style={{ maxWidth: 560, margin: "6px auto 0" }}>
+          <div style={{ height: 3, background: C.border, borderRadius: 2 }}>
+            <div style={{ height: "100%", width: `${(timeLeft / TIME_PER_Q) * 100}%`, background: timerColor, borderRadius: 2, transition: "width 1s linear, background 0.3s" }} />
+          </div>
+        </div>
+      </div>
 
-<div style={{ maxWidth: 560, margin: "0 auto", padding: "24px 16px" }}>
-<div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: "20px", marginBottom: 20 }}>
-<div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
-<span style={{ background: topicConfig.color + "22", color: topicConfig.color, fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 20, fontFamily: "monospace", letterSpacing: 1 }}>
-{topicConfig.icon} {topicConfig.label.toUpperCase()}
-</span>
-</div>
-<p style={{ color: C.text, fontSize: 14, lineHeight: 1.7, margin: 0 }}>{question.question}</p>
-</div>
+      <div style={{ maxWidth: 560, margin: "0 auto", padding: "24px 16px" }}>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: "20px", marginBottom: 20 }}>
+          <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+            <span style={{ background: topicConfig.color + "22", color: topicConfig.color, fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 20, fontFamily: "monospace", letterSpacing: 1 }}>
+              {topicConfig.icon} {topicConfig.label.toUpperCase()}
+            </span>
+          </div>
+          <p style={{ color: C.text, fontSize: 14, lineHeight: 1.7, margin: 0 }}>{question.question}</p>
+        </div>
 
-<div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-{question.answers.map((ans, i) => {
-const letter = ["A", "B", "C", "D"][i];
-const isSelected = selectedAnswer === letter;
-const isCorrect = letter === correctAnswer;
-let bg = C.surface, borderColor = C.border, badgeBg = C.border;
-if (isRevealed) {
-if (isCorrect) { bg = C.greenDim; borderColor = C.green; badgeBg = C.green; }
-else if (isSelected) { bg = C.redDim; borderColor = C.red; badgeBg = C.red; }
-} else if (isSelected) {
-bg = topicConfig.color + "22"; borderColor = topicConfig.color; badgeBg = topicConfig.color;
-}
-return (
-<button key={i} onClick={() => { if (!isLocked) onAnswer(letter); }}
-disabled={isLocked}
-style={{ background: bg, border: `2px solid ${borderColor}`, borderRadius: 12, padding: "14px 16px", cursor: isLocked ? "default" : "pointer", textAlign: "left", display: "flex", gap: 12, alignItems: "flex-start", transition: "all 0.2s" }}>
-<span style={{ background: badgeBg, color: "#fff", borderRadius: 6, width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, flexShrink: 0, marginTop: 1, fontFamily: "monospace" }}>{letter}</span>
-<span style={{ color: C.text, fontSize: 14, lineHeight: 1.5, flex: 1 }}>{ans.replace(/^\([A-D]\)\s*/, "")}</span>
-{isRevealed && isCorrect && <span style={{ fontSize: 16, flexShrink: 0 }}>✓</span>}
-{isRevealed && isSelected && !isCorrect && <span style={{ fontSize: 16, flexShrink: 0 }}>✗</span>}
-</button>
-);
-})}
-</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {question.answers.map((ans, i) => {
+            const letter = ["A", "B", "C", "D"][i];
+            const isSelected = selectedAnswer === letter;
+            const isCorrect = letter === correctAnswer;
+            let bg = C.surface, borderColor = C.border, badgeBg = C.border;
+            if (isRevealed) {
+              if (isCorrect)              { bg = C.greenDim; borderColor = C.green; badgeBg = C.green; }
+              else if (isSelected)        { bg = C.redDim;   borderColor = C.red;   badgeBg = C.red; }
+            } else if (isSelected) {
+              bg = topicConfig.color + "22"; borderColor = topicConfig.color; badgeBg = topicConfig.color;
+            }
+            return (
+              <button key={i} onClick={() => { if (!isLocked) onAnswer(letter); }}
+                disabled={isLocked}
+                style={{ background: bg, border: `2px solid ${borderColor}`, borderRadius: 12, padding: "14px 16px", cursor: isLocked ? "default" : "pointer", textAlign: "left", display: "flex", gap: 12, alignItems: "flex-start", transition: "all 0.2s" }}>
+                <span style={{ background: badgeBg, color: "#fff", borderRadius: 6, width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, flexShrink: 0, marginTop: 1, fontFamily: "monospace" }}>{letter}</span>
+                <span style={{ color: C.text, fontSize: 14, lineHeight: 1.5, flex: 1 }}>{ans.replace(/^\([A-D]\)\s*/, "")}</span>
+                {isRevealed && isCorrect             && <span style={{ fontSize: 16, flexShrink: 0 }}>✓</span>}
+                {isRevealed && isSelected && !isCorrect && <span style={{ fontSize: 16, flexShrink: 0 }}>✗</span>}
+              </button>
+            );
+          })}
+        </div>
 
-{isRevealed && (
-<div style={{ marginTop: 16 }}>
-<div style={{ background: selectedAnswer === correctAnswer ? C.greenDim : C.redDim, border: `1px solid ${selectedAnswer === correctAnswer ? C.green : C.red}`, borderRadius: 12, padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, marginBottom: isLastQuestion ? 0 : 12 }}>
-<span style={{ fontSize: 22, flexShrink: 0 }}>{selectedAnswer === correctAnswer ? "✅" : "❌"}</span>
-<div>
-<div style={{ color: selectedAnswer === correctAnswer ? C.green : C.red, fontWeight: 700, fontSize: 14 }}>
-{selectedAnswer === correctAnswer ? "Correct!" : `Incorrect — answer was ${correctAnswer}`}
-</div>
-{isLastQuestion && (
-<div style={{ color: C.muted, fontSize: 12, marginTop: 3 }}>
-Waiting for opponent to finish the round…
-</div>
-)}
-</div>
-</div>
-{!isLastQuestion && (
-<button
-onClick={onAdvance}
-style={{ background: C.accent, border: `2px solid ${C.accent}`, borderRadius: 12, padding: "14px 16px", fontSize: 15, fontWeight: 700, cursor: "pointer", width: "100%", color: "#fff", fontFamily: "system-ui, sans-serif" }}>
-Next Question →
-</button>
-)}
-</div>
-)}
-</div>
-</div>
-);
+        {isRevealed && (
+          <div style={{ marginTop: 16 }}>
+            <div style={{ background: selectedAnswer === correctAnswer ? C.greenDim : C.redDim, border: `1px solid ${selectedAnswer === correctAnswer ? C.green : C.red}`, borderRadius: 12, padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, marginBottom: isLastQuestion ? 0 : 12 }}>
+              <span style={{ fontSize: 22, flexShrink: 0 }}>{selectedAnswer === correctAnswer ? "✅" : "❌"}</span>
+              <div>
+                <div style={{ color: selectedAnswer === correctAnswer ? C.green : C.red, fontWeight: 700, fontSize: 14 }}>
+                  {selectedAnswer === correctAnswer ? "Correct!" : `Incorrect — answer was ${correctAnswer}`}
+                </div>
+                {isLastQuestion && (
+                  <div style={{ color: C.muted, fontSize: 12, marginTop: 3 }}>
+                    Waiting for opponent to finish the round…
+                  </div>
+                )}
+              </div>
+            </div>
+            {!isLastQuestion && (
+              <button
+                onClick={onAdvance}
+                style={{ background: C.accent, border: `2px solid ${C.accent}`, borderRadius: 12, padding: "14px 16px", fontSize: 15, fontWeight: 700, cursor: "pointer", width: "100%", color: "#fff", fontFamily: "system-ui, sans-serif" }}>
+                Next Question →
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 function RoundResultScreen({ roundResults, playerName, opponentName, scores, onNextRound, isGameOver, currentTopic, roundWinner, myName, isLoser, onPickTopic }) {
-const myTotal = roundResults.filter(r => r.myCorrect).length;
-const theirTotal = roundResults.filter(r => r.theirCorrect).length;
-const iWon = myTotal > theirTotal;
-const tied = myTotal === theirTotal;
-const topicConfig = TOPICS[currentTopic] || TOPICS["Constitutional Law"];
+  const myTotal = roundResults.filter(r => r.myCorrect).length;
+  const theirTotal = roundResults.filter(r => r.theirCorrect).length;
+  const iWon = myTotal > theirTotal;
+  const tied = myTotal === theirTotal;
+  const topicConfig = TOPICS[currentTopic] || TOPICS["Constitutional Law"];
 
-const handleContinue = () => {
-if (!isGameOver && !tied) {
-onPickTopic();
-} else {
-onNextRound(null);
-}
-};
+  const handleContinue = () => {
+    if (!isGameOver && !tied) {
+      onPickTopic();
+    } else {
+      onNextRound(null);
+    }
+  };
 
-const loserName = tied ? null : (!iWon ? myName : opponentName);
+  const loserName = tied ? null : (!iWon ? myName : opponentName);
 
-return (
-<div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif" }}>
-<div style={{ maxWidth: 460, width: "100%" }}>
-<div style={{ textAlign: "center", marginBottom: 32 }}>
-<div style={{ fontSize: 48, marginBottom: 12 }}>{tied ? "🤝" : iWon ? "🏆" : "💪"}</div>
-<h2 style={{ color: C.text, fontSize: 28, fontWeight: 900, margin: "0 0 6px" }}>
-{tied ? "Round Tied!" : iWon ? "You Won This Round!" : `${opponentName} Won This Round`}
-</h2>
-<p style={{ color: C.muted, fontSize: 14, margin: "0 0 8px" }}>Round complete · {roundResults.length} questions</p>
-<span style={{ background: topicConfig.color + "22", color: topicConfig.color, fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 20, fontFamily: "monospace" }}>
-{topicConfig.icon} {topicConfig.label}
-</span>
-</div>
+  return (
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif" }}>
+      <div style={{ maxWidth: 460, width: "100%" }}>
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <div style={{ fontSize: 48, marginBottom: 12 }}>{tied ? "🤝" : iWon ? "🏆" : "💪"}</div>
+          <h2 style={{ color: C.text, fontSize: 28, fontWeight: 900, margin: "0 0 6px" }}>
+            {tied ? "Round Tied!" : iWon ? "You Won This Round!" : `${opponentName} Won This Round`}
+          </h2>
+          <p style={{ color: C.muted, fontSize: 14, margin: "0 0 8px" }}>Round complete · {roundResults.length} questions</p>
+          <span style={{ background: topicConfig.color + "22", color: topicConfig.color, fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 20, fontFamily: "monospace" }}>
+            {topicConfig.icon} {topicConfig.label}
+          </span>
+        </div>
 
-<div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
-{[{ name: "You", score: myTotal, color: C.p1, total: scores.me }, { name: opponentName, score: theirTotal, color: C.p2, total: scores.them }].map((p, i) => (
-<div key={i} style={{ flex: 1, background: C.surface, border: `2px solid ${tied ? C.border : (i === 0 ? iWon : !iWon) ? p.color : C.border}`, borderRadius: 14, padding: "16px 12px", textAlign: "center" }}>
-<div style={{ color: p.color, fontSize: 11, fontWeight: 700, marginBottom: 6, fontFamily: "monospace" }}>{p.name.toUpperCase()}</div>
-<div style={{ fontSize: 36, fontWeight: 900, color: C.text, lineHeight: 1 }}>{p.score}</div>
-<div style={{ color: C.muted, fontSize: 11, marginTop: 4 }}>this round</div>
-<div style={{ color: C.muted, fontSize: 12, marginTop: 8, borderTop: `1px solid ${C.border}`, paddingTop: 8 }}>
-<span style={{ color: C.text, fontWeight: 700 }}>{p.total}</span> total pts
-</div>
-</div>
-))}
-</div>
+        <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
+          {[{ name: "You", score: myTotal, color: C.p1, total: scores.me }, { name: opponentName, score: theirTotal, color: C.p2, total: scores.them }].map((p, i) => (
+            <div key={i} style={{ flex: 1, background: C.surface, border: `2px solid ${tied ? C.border : (i === 0 ? iWon : !iWon) ? p.color : C.border}`, borderRadius: 14, padding: "16px 12px", textAlign: "center" }}>
+              <div style={{ color: p.color, fontSize: 11, fontWeight: 700, marginBottom: 6, fontFamily: "monospace" }}>{p.name.toUpperCase()}</div>
+              <div style={{ fontSize: 36, fontWeight: 900, color: C.text, lineHeight: 1 }}>{p.score}</div>
+              <div style={{ color: C.muted, fontSize: 11, marginTop: 4 }}>this round</div>
+              <div style={{ color: C.muted, fontSize: 12, marginTop: 8, borderTop: `1px solid ${C.border}`, paddingTop: 8 }}>
+                <span style={{ color: C.text, fontWeight: 700 }}>{p.total}</span> total pts
+              </div>
+            </div>
+          ))}
+        </div>
 
-<div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, overflow: "hidden", marginBottom: 24 }}>
-<div style={{ padding: "12px 16px", borderBottom: `1px solid ${C.border}` }}>
-<div style={{ color: C.muted, fontSize: 11, fontFamily: "monospace", letterSpacing: 1 }}>QUESTION BREAKDOWN</div>
-</div>
-{roundResults.map((r, i) => (
-<div key={i} style={{ padding: "12px 16px", borderBottom: i < roundResults.length - 1 ? `1px solid ${C.border}` : "none", display: "flex", alignItems: "center", gap: 12 }}>
-<div style={{ color: C.muted, fontSize: 12, fontFamily: "monospace", width: 20 }}>Q{i + 1}</div>
-<div style={{ flex: 1, color: C.muted, fontSize: 12 }}>Correct: <span style={{ color: C.text, fontFamily: "monospace" }}>{r.correct}</span></div>
-<div style={{ display: "flex", gap: 8 }}>
-<span style={{ fontSize: 14 }}>{r.myCorrect ? "✅" : "❌"}</span>
-<span style={{ fontSize: 14 }}>{r.theirCorrect ? "✅" : "❌"}</span>
-</div>
-</div>
-))}
-<div style={{ padding: "8px 16px 8px", display: "flex", justifyContent: "flex-end", gap: 8 }}>
-<div style={{ color: C.p1, fontSize: 11, fontFamily: "monospace" }}>YOU</div>
-<div style={{ color: C.p2, fontSize: 11, fontFamily: "monospace" }}>{opponentName.toUpperCase()}</div>
-</div>
-</div>
+        <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 14, overflow: "hidden", marginBottom: 24 }}>
+          <div style={{ padding: "12px 16px", borderBottom: `1px solid ${C.border}` }}>
+            <div style={{ color: C.muted, fontSize: 11, fontFamily: "monospace", letterSpacing: 1 }}>QUESTION BREAKDOWN</div>
+          </div>
+          {roundResults.map((r, i) => (
+            <div key={i} style={{ padding: "12px 16px", borderBottom: i < roundResults.length - 1 ? `1px solid ${C.border}` : "none", display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ color: C.muted, fontSize: 12, fontFamily: "monospace", width: 20 }}>Q{i + 1}</div>
+              <div style={{ flex: 1, color: C.muted, fontSize: 12 }}>Correct: <span style={{ color: C.text, fontFamily: "monospace" }}>{r.correct}</span></div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <span style={{ fontSize: 14 }}>{r.myCorrect ? "✅" : "❌"}</span>
+                <span style={{ fontSize: 14 }}>{r.theirCorrect ? "✅" : "❌"}</span>
+              </div>
+            </div>
+          ))}
+          <div style={{ padding: "8px 16px 8px", display: "flex", justifyContent: "flex-end", gap: 8 }}>
+            <div style={{ color: C.p1, fontSize: 11, fontFamily: "monospace" }}>YOU</div>
+            <div style={{ color: C.p2, fontSize: 11, fontFamily: "monospace" }}>{opponentName.toUpperCase()}</div>
+          </div>
+        </div>
 
-{!isGameOver && !tied && (
-<div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, padding: "12px 16px", marginBottom: 16, textAlign: "center" }}>
-<div style={{ color: C.muted, fontSize: 13 }}>
-<span style={{ color: tied ? C.muted : (!iWon ? C.p1 : C.p2), fontWeight: 700 }}>{loserName}</span>
-{" "}gets to pick the next topic
-</div>
-</div>
-)}
+        {!isGameOver && !tied && (
+          <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, padding: "12px 16px", marginBottom: 16, textAlign: "center" }}>
+            <div style={{ color: C.muted, fontSize: 13 }}>
+              <span style={{ color: tied ? C.muted : (!iWon ? C.p1 : C.p2), fontWeight: 700 }}>{loserName}</span>
+              {" "}gets to pick the next topic
+            </div>
+          </div>
+        )}
 
-{!isGameOver
-? <button onClick={handleContinue} style={btnStyle(C.accent)}>
-{tied ? "Next Round →" : isLoser ? "Pick the Next Topic →" : "Wait for Topic Pick…"}
-</button>
-: <button onClick={() => onNextRound(null)} style={btnStyle(C.accent)}>See Final Results →</button>
-}
-</div>
-</div>
-);
+        {!isGameOver
+          ? <button
+              onClick={!tied && !isLoser ? undefined : handleContinue}
+              disabled={!tied && !isLoser}
+              style={{
+                ...btnStyle(tied || isLoser ? C.accent : C.surface, tied || isLoser ? C.accent : C.border, tied || isLoser ? "#fff" : C.muted),
+                opacity: tied || isLoser ? 1 : 0.5,
+                cursor: tied || isLoser ? "pointer" : "default",
+              }}>
+              {tied ? "Next Round →" : isLoser ? "Pick the Next Topic →" : "Wait for Topic Pick…"}
+            </button>
+          : <button onClick={() => onNextRound(null)} style={btnStyle(C.accent)}>See Final Results →</button>
+        }
+      </div>
+    </div>
+  );
 }
 
 function FinalResultScreen({ playerName, opponentName, scores, onPlayAgain }) {
-const iWon = scores.me > scores.them;
-const tied = scores.me === scores.them;
-return (
-<div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif" }}>
-<div style={{ maxWidth: 420, width: "100%", textAlign: "center" }}>
-<div style={{ fontSize: 56, marginBottom: 12 }}>{tied ? "🤝" : iWon ? "🎉" : "💪"}</div>
-<h2 style={{ color: C.text, fontSize: 32, fontWeight: 900, margin: "0 0 8px" }}>
-{tied ? "It's a Tie!" : iWon ? "You Won!" : `${opponentName} Won!`}
-</h2>
-<p style={{ color: C.muted, fontSize: 14, marginBottom: 32 }}>Final results · 5 rounds complete</p>
-<div style={{ display: "flex", gap: 12, marginBottom: 32 }}>
-{[{ name: "You", score: scores.me, color: C.p1 }, { name: opponentName, score: scores.them, color: C.p2 }].map((p, i) => (
-<div key={i} style={{ flex: 1, background: C.surface, border: `2px solid ${(i === 0 ? iWon : !iWon) && !tied ? p.color : C.border}`, borderRadius: 16, padding: "20px 12px", textAlign: "center" }}>
-<div style={{ color: p.color, fontSize: 11, fontWeight: 700, marginBottom: 8, fontFamily: "monospace" }}>{p.name.toUpperCase()}</div>
-<div style={{ fontSize: 44, fontWeight: 900, color: C.text, lineHeight: 1 }}>{p.score}</div>
-<div style={{ color: C.muted, fontSize: 12, marginTop: 4 }}>points</div>
-</div>
-))}
-</div>
-<button onClick={onPlayAgain} style={btnStyle(C.accent)}>Play Again</button>
-</div>
-</div>
-);
+  const iWon = scores.me > scores.them;
+  const tied = scores.me === scores.them;
+  return (
+    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif" }}>
+      <div style={{ maxWidth: 420, width: "100%", textAlign: "center" }}>
+        <div style={{ fontSize: 56, marginBottom: 12 }}>{tied ? "🤝" : iWon ? "🎉" : "💪"}</div>
+        <h2 style={{ color: C.text, fontSize: 32, fontWeight: 900, margin: "0 0 8px" }}>
+          {tied ? "It's a Tie!" : iWon ? "You Won!" : `${opponentName} Won!`}
+        </h2>
+        <p style={{ color: C.muted, fontSize: 14, marginBottom: 32 }}>Final results · 5 rounds complete</p>
+        <div style={{ display: "flex", gap: 12, marginBottom: 32 }}>
+          {[{ name: "You", score: scores.me, color: C.p1 }, { name: opponentName, score: scores.them, color: C.p2 }].map((p, i) => (
+            <div key={i} style={{ flex: 1, background: C.surface, border: `2px solid ${(i === 0 ? iWon : !iWon) && !tied ? p.color : C.border}`, borderRadius: 16, padding: "20px 12px", textAlign: "center" }}>
+              <div style={{ color: p.color, fontSize: 11, fontWeight: 700, marginBottom: 8, fontFamily: "monospace" }}>{p.name.toUpperCase()}</div>
+              <div style={{ fontSize: 44, fontWeight: 900, color: C.text, lineHeight: 1 }}>{p.score}</div>
+              <div style={{ color: C.muted, fontSize: 12, marginTop: 4 }}>points</div>
+            </div>
+          ))}
+        </div>
+        <button onClick={onPlayAgain} style={btnStyle(C.accent)}>Play Again</button>
+      </div>
+    </div>
+  );
 }
 
 // ── STYLES ───────────────────────────────────────────────────────────────────
 const inputStyle = { background: "#13151f", border: `1px solid #252836`, borderRadius: 10, padding: "14px 16px", fontSize: 16, color: "#eaedf5", width: "100%", boxSizing: "border-box", outline: "none", fontFamily: "system-ui, sans-serif" };
 
 function btnStyle(bg, border, color = "#fff") {
-return { background: bg, border: `2px solid ${border || bg}`, borderRadius: 12, padding: "16px", fontSize: 16, fontWeight: 700, cursor: "pointer", width: "100%", color, fontFamily: "system-ui, sans-serif", transition: "opacity 0.15s" };
+  return { background: bg, border: `2px solid ${border || bg}`, borderRadius: 12, padding: "16px", fontSize: 16, fontWeight: 700, cursor: "pointer", width: "100%", color, fontFamily: "system-ui, sans-serif", transition: "opacity 0.15s" };
 }
 
 // ── GAME STATE ENGINE ─────────────────────────────────────────────────────────
@@ -714,418 +721,445 @@ const MAX_ROUNDS = 5;
 const TIME_PER_Q = 90;
 
 export default function App() {
-const [screen, setScreen] = useState("home");
-const [roomCode, setRoomCode] = useState("");
-const [playerName, setPlayerName] = useState("");
-const [opponentName, setOpponentName] = useState("");
-const [isCreator, setIsCreator] = useState(false);
-const [pendingCreatorName, setPendingCreatorName] = useState(""); // held while creator picks first topic
+  const [screen, setScreen] = useState("home");
+  const [roomCode, setRoomCode] = useState("");
+  const [playerName, setPlayerName] = useState("");
+  const [opponentName, setOpponentName] = useState("");
+  const [isCreator, setIsCreator] = useState(false);
+  const [pendingCreatorName, setPendingCreatorName] = useState("");
 
-// Per-round question pool (3 questions drawn from chosen topic)
-const [roundQuestions, setRoundQuestions] = useState([]);
-// Track which questions have been used per topic
-const [usedIds, setUsedIds] = useState({ "Constitutional Law": [], "Evidence": [] });
+  const [roundQuestions, setRoundQuestions] = useState([]);
+  const [usedIds, setUsedIds] = useState(() => {
+    const init = {};
+    TOPIC_NAMES.forEach(t => { init[t] = []; });
+    return init;
+  });
 
-const [currentRound, setCurrentRound] = useState(0);
-const [currentQ, setCurrentQ] = useState(0);
-const [currentTopic, setCurrentTopic] = useState("Constitutional Law");
-const [myAnswers, setMyAnswers] = useState({});
-const [opponentAnswers, setOpponentAnswers] = useState({});
-const [scores, setScores] = useState({ me: 0, them: 0 });
-const [roundResults, setRoundResults] = useState([]);
-const [timeLeft, setTimeLeft] = useState(TIME_PER_Q);
-const [timerActive, setTimerActive] = useState(false);
-const [timerKey, setTimerKey] = useState(0); // increments each question to force timer re-fire
-const [waitingForOpponent, setWaitingForOpponent] = useState(false);
-const [showCodeBanner, setShowCodeBanner] = useState(false);
-const [roundLoser, setRoundLoser] = useState(null); // "me" | "them" | "tie"
-const [currentQSelected, setCurrentQSelected] = useState(null); // letter selected for current Q, drives feedback
+  const [currentRound, setCurrentRound] = useState(0);
+  const [currentQ, setCurrentQ] = useState(0);
+  const [currentTopic, setCurrentTopic] = useState(TOPIC_NAMES[0]);
+  const [myAnswers, setMyAnswers] = useState({});
+  const [scores, setScores] = useState({ me: 0, them: 0 });
+  const [roundResults, setRoundResults] = useState([]);
+  const [timeLeft, setTimeLeft] = useState(TIME_PER_Q);
+  const [timerActive, setTimerActive] = useState(false);
+  const [timerKey, setTimerKey] = useState(0);
+  const [waitingForOpponent, setWaitingForOpponent] = useState(false);
+  const [showCodeBanner, setShowCodeBanner] = useState(false);
+  const [inviteCopied, setInviteCopied] = useState(false);
+  const [roundLoser, setRoundLoser] = useState(null);
+  const [currentQSelected, setCurrentQSelected] = useState(null);
 
-const timerRef = useRef(null);
-const pollRef = useRef(null);
+  // ── Refs for values needed inside async callbacks / intervals ────────────
+  // React state is stale inside closures; refs always have the current value.
+  const roomCodeRef      = useRef("");
+  const isCreatorRef     = useRef(false);
+  const currentRoundRef  = useRef(0);
+  const currentQRef      = useRef(0);
+  const myAnswersRef     = useRef({});
+  const roundQuestionsRef = useRef([]);
 
-const qKey = (round, q) => `r${round}q${q}`;
+  const timerRef = useRef(null);
+  const pollRef  = useRef(null);
 
-// ── STORAGE HELPERS ──────────────────────────────────────────────────────
-const saveRoomData = async (code, data) => {
-try {
-await window.storage.set(`room:${code}`, JSON.stringify(data), true);
-} catch (e) { console.error("save error", e); }
-};
+  // Keep refs in sync with state
+  const setRoomCodeBoth = (v) => { roomCodeRef.current = v; setRoomCode(v); };
+  const setIsCreatorBoth = (v) => { isCreatorRef.current = v; setIsCreator(v); };
 
-const loadRoomData = async (code) => {
-try {
-const r = await window.storage.get(`room:${code}`, true);
-return r ? JSON.parse(r.value) : null;
-} catch { return null; }
-};
+  const qKey = (round, q) => `r${round}q${q}`;
 
-// ── DRAW QUESTIONS FOR A ROUND ──────────────────────────────────────────
-const drawRoundQuestions = (topic, alreadyUsed) => {
-const pool = TOPICS[topic].questions.filter(q => !alreadyUsed.includes(q.id));
-// If pool is exhausted, reset
-const available = pool.length >= QUESTIONS_PER_ROUND ? pool : TOPICS[topic].questions;
-return shuffle(available).slice(0, QUESTIONS_PER_ROUND);
-};
+  // ── STORAGE HELPERS ──────────────────────────────────────────────────────
+  const saveRoomData = async (code, data) => {
+    try {
+      await window.storage.set(`room:${code}`, JSON.stringify(data), true);
+    } catch (e) { console.error("save error", e); }
+  };
 
-// ── CREATE GAME ──────────────────────────────────────────────────────────
-const handleCreateGame = async (name) => {
-// Don't start yet — let the creator pick the first topic first
-setPendingCreatorName(name);
-setPlayerName(name);
-setIsCreator(true);
-setScreen("topicPickerFirst");
-};
+  const loadRoomData = async (code) => {
+    try {
+      const r = await window.storage.get(`room:${code}`, true);
+      return r ? JSON.parse(r.value) : null;
+    } catch { return null; }
+  };
 
-// Called after the creator picks the first topic
-const handleFirstTopicChosen = async (topic) => {
-const name = pendingCreatorName;
-const code = generateCode();
-const firstQs = drawRoundQuestions(topic, []);
-const room = {
-code,
-creator: name,
-joiner: null,
-roundQuestions: { 0: firstQs.map(q => q.id) },
-roundTopics: { 0: topic },
-usedIds: { "Constitutional Law": topic === "Constitutional Law" ? firstQs.map(q => q.id) : [], "Evidence": topic === "Evidence" ? firstQs.map(q => q.id) : [] },
-answers: {},
-round: 0,
-topicPick: null,
-createdAt: Date.now(),
-};
-await saveRoomData(code, room);
-setRoomCode(code);
-setShowCodeBanner(true);
-setCurrentRound(0);
-setCurrentTopic(topic);
-setRoundQuestions(firstQs);
-setUsedIds(room.usedIds);
-setScreen("playing");
-startQuestion(0, 0);
+  // ── DRAW QUESTIONS FOR A ROUND ──────────────────────────────────────────
+  const drawRoundQuestions = (topic, alreadyUsed) => {
+    const pool = TOPICS[topic].questions.filter(q => !alreadyUsed.includes(q.id));
+    const available = pool.length >= QUESTIONS_PER_ROUND ? pool : TOPICS[topic].questions;
+    return shuffle(available).slice(0, QUESTIONS_PER_ROUND);
+  };
 
-pollRef.current = setInterval(async () => {
-const r = await loadRoomData(code);
-if (r && r.joiner) {
-setOpponentName(r.joiner);
-clearInterval(pollRef.current);
-}
-}, 3000);
-};
+  // ── CREATE GAME ──────────────────────────────────────────────────────────
+  const handleCreateGame = (name) => {
+    setPendingCreatorName(name);
+    setPlayerName(name);
+    setIsCreatorBoth(true);
+    setScreen("topicPickerFirst");
+  };
 
-// ── JOIN GAME ─────────────────────────────────────────────────────────────
-const handleJoinGame = async (name, code) => {
-const room = await loadRoomData(code);
-if (!room) { alert("Room not found. Check the code and try again."); return; }
-if (room.joiner && room.joiner !== name) { alert("This game already has two players."); return; }
+  const handleFirstTopicChosen = async (topic) => {
+    const name = pendingCreatorName;
+    const code = generateCode();
+    const firstQs = drawRoundQuestions(topic, []);
 
-const topic = room.roundTopics[0] || "Constitutional Law";
-const qIds = room.roundQuestions[0] || [];
-const qs = qIds.map(id => [...CON_LAW_QUESTIONS, ...EVIDENCE_QUESTIONS].find(q => q.id === id)).filter(Boolean);
+    const initUsed = {};
+    TOPIC_NAMES.forEach(t => { initUsed[t] = []; });
+    initUsed[topic] = firstQs.map(q => q.id);
 
-room.joiner = name;
-await saveRoomData(code, room);
+    const room = {
+      code, creator: name, joiner: null,
+      roundQuestions: { 0: firstQs.map(q => q.id) },
+      roundTopics: { 0: topic },
+      usedIds: initUsed,
+      answers: {},
+      round: 0, topicPick: null,
+      createdAt: Date.now(),
+    };
+    await saveRoomData(code, room);
 
-setRoomCode(code);
-setPlayerName(name);
-setOpponentName(room.creator);
-setIsCreator(false);
-setCurrentRound(0);
-setCurrentTopic(topic);
-setRoundQuestions(qs);
-setUsedIds(room.usedIds || { "Constitutional Law": [], "Evidence": [] });
-setShowCodeBanner(false);
-setScreen("playing");
-startQuestion(0, 0);
-};
+    roundQuestionsRef.current = firstQs;
+    setRoomCodeBoth(code);
+    setShowCodeBanner(true);
+    setCurrentTopic(topic);
+    setRoundQuestions(firstQs);
+    setUsedIds(initUsed);
+    startQuestion(0, 0);
+    setScreen("playing");
 
-// ── QUESTION TIMER ────────────────────────────────────────────────────────
-const startQuestion = (round, qIndex) => {
-setCurrentRound(round);
-setCurrentQ(qIndex);
-setTimeLeft(TIME_PER_Q);
-setTimerActive(true);
-setTimerKey(k => k + 1);
-setWaitingForOpponent(false);
-setCurrentQSelected(null); // clear previous answer highlight
-};
+    // Poll until joiner arrives
+    pollRef.current = setInterval(async () => {
+      const r = await loadRoomData(code);
+      if (r && r.joiner) { setOpponentName(r.joiner); clearInterval(pollRef.current); }
+    }, 3000);
+  };
 
-useEffect(() => {
-if (!timerActive) return;
-clearInterval(timerRef.current);
-timerRef.current = setInterval(() => {
-setTimeLeft(t => {
-if (t <= 1) {
-clearInterval(timerRef.current);
-setTimerActive(false);
-handleAnswer("__timeout__", currentRound, currentQ);
-return 0;
-}
-return t - 1;
-});
-}, 1000);
-return () => clearInterval(timerRef.current);
-}, [timerKey]); // timerKey increments each question — guarantees re-fire even when timerActive was already true
+  // ── JOIN GAME ─────────────────────────────────────────────────────────────
+  const handleJoinGame = async (name, code) => {
+    const room = await loadRoomData(code);
+    if (!room) { alert("Room not found. Check the code and try again."); return; }
+    if (room.joiner && room.joiner !== name) { alert("This game already has two players."); return; }
 
-// ── ANSWER ────────────────────────────────────────────────────────────────
-// Collect answers locally Q1→Q3. Only write to storage + start polling
-// after all QUESTIONS_PER_ROUND answers are in — this is what lets the
-// player move through all 3 questions without waiting for the opponent.
-const handleAnswer = async (letter, round, qIdx) => {
-clearInterval(timerRef.current);
-setTimerActive(false);
-setCurrentQSelected(letter); // show feedback immediately in the controlled component
+    const topic = room.roundTopics[0] || TOPIC_NAMES[0];
+    const allQs = Object.values(TOPICS).flatMap(t => t.questions);
+    const qs = (room.roundQuestions[0] || []).map(id => allQs.find(q => q.id === id)).filter(Boolean);
 
-const key = qKey(round, qIdx);
-const newMyAnswers = { ...myAnswers, [key]: letter };
-setMyAnswers(newMyAnswers);
+    room.joiner = name;
+    await saveRoomData(code, room);
 
-const nextQ = qIdx + 1;
+    const initUsed = {};
+    TOPIC_NAMES.forEach(t => { initUsed[t] = []; });
+    const usedFromRoom = room.usedIds || initUsed;
 
-if (nextQ < QUESTIONS_PER_ROUND) {
-// Player taps "Next Question" to advance — nothing to do here automatically.
-// onAdvance prop on QuestionScreen calls startQuestion when ready.
-} else {
-// All questions answered — write every answer for this round to storage,
-// then poll until the opponent has also finished all questions.
-const role = isCreator ? "creator" : "joiner";
-const room = await loadRoomData(roomCode);
-if (!room) return;
-for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
-const k = qKey(round, i);
-room.answers[`${role}_${k}`] = newMyAnswers[k] || "__timeout__";
-}
-await saveRoomData(roomCode, room);
-setWaitingForOpponent(true);
-pollForRoundCompletion(round, newMyAnswers);
-}
-};
+    roundQuestionsRef.current = qs;
+    setRoomCodeBoth(code);
+    setIsCreatorBoth(false);
+    setPlayerName(name);
+    setOpponentName(room.creator);
+    setCurrentTopic(topic);
+    setRoundQuestions(qs);
+    setUsedIds(usedFromRoom);
+    setShowCodeBanner(false);
+    startQuestion(0, 0);
+    setScreen("playing");
+  };
 
-// ── POLL FOR OPPONENT FINISHING THE ROUND ────────────────────────────────
-// Waits until the opponent has answered all QUESTIONS_PER_ROUND questions,
-// then builds results and advances to roundResult screen.
-const pollForRoundCompletion = (round, currentMyAnswers) => {
-const oppRole = isCreator ? "joiner" : "creator";
+  // ── QUESTION TIMER ────────────────────────────────────────────────────────
+  const startQuestion = (round, qIndex) => {
+    currentRoundRef.current = round;
+    currentQRef.current = qIndex;
+    setCurrentRound(round);
+    setCurrentQ(qIndex);
+    setTimeLeft(TIME_PER_Q);
+    setTimerActive(true);
+    setTimerKey(k => k + 1);
+    setWaitingForOpponent(false);
+    setCurrentQSelected(null);
+  };
 
-pollRef.current = setInterval(async () => {
-const room = await loadRoomData(roomCode);
-if (!room) return;
+  useEffect(() => {
+    if (!timerActive) return;
+    clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setTimeLeft(t => {
+        if (t <= 1) {
+          clearInterval(timerRef.current);
+          setTimerActive(false);
+          // Use refs — not stale closure state
+          handleAnswer("__timeout__", currentRoundRef.current, currentQRef.current);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timerRef.current);
+  }, [timerKey]);
 
-// Check that opponent has answered every question in the round
-const allOppDone = Array.from({ length: QUESTIONS_PER_ROUND }, (_, i) =>
-room.answers[`${oppRole}_${qKey(round, i)}`]
-).every(Boolean);
+  // ── ANSWER ────────────────────────────────────────────────────────────────
+  const handleAnswer = async (letter, round, qIdx) => {
+    clearInterval(timerRef.current);
+    setTimerActive(false);
+    setCurrentQSelected(letter);
 
-if (allOppDone) {
-clearInterval(pollRef.current);
+    const key = qKey(round, qIdx);
+    const newMyAnswers = { ...myAnswersRef.current, [key]: letter };
+    myAnswersRef.current = newMyAnswers;
+    setMyAnswers(newMyAnswers);
 
-const results = [];
-for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
-const k = qKey(round, i);
-const q = roundQuestions[i];
-const myAns = currentMyAnswers[k] || "__timeout__";
-const theirAns = room.answers[`${oppRole}_${k}`];
-results.push({
-correct: q ? q.correct : "?",
-myAnswer: myAns,
-theirAnswer: theirAns,
-myCorrect: myAns === (q ? q.correct : null),
-theirCorrect: theirAns === (q ? q.correct : null),
-});
-}
+    const nextQ = qIdx + 1;
+    if (nextQ < QUESTIONS_PER_ROUND) {
+      // Player taps "Next Question" — onAdvance in QuestionScreen calls startQuestion
+    } else {
+      // All 3 done — write to storage and start polling
+      const role = isCreatorRef.current ? "creator" : "joiner";
+      const room = await loadRoomData(roomCodeRef.current);
+      if (!room) return;
+      for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
+        const k = qKey(round, i);
+        room.answers[`${role}_${k}`] = newMyAnswers[k] || "__timeout__";
+      }
+      await saveRoomData(roomCodeRef.current, room);
+      setWaitingForOpponent(true);
+      pollForRoundCompletion(round, newMyAnswers);
+    }
+  };
 
-const myRoundScore = results.filter(r => r.myCorrect).length;
-const theirRoundScore = results.filter(r => r.theirCorrect).length;
-const loser = myRoundScore > theirRoundScore ? "them" : myRoundScore < theirRoundScore ? "me" : "tie";
-setRoundLoser(loser);
-setScores(s => ({ me: s.me + myRoundScore, them: s.them + theirRoundScore }));
-setRoundResults(results);
-setWaitingForOpponent(false);
-setScreen("roundResult");
-}
-}, 2000);
-};
+  // ── POLL FOR OPPONENT FINISHING THE ROUND ────────────────────────────────
+  const pollForRoundCompletion = (round, currentMyAnswers) => {
+    const oppRole = isCreatorRef.current ? "joiner" : "creator";
+    const code = roomCodeRef.current;
 
-// ── HANDLE POST-ROUND TOPIC LOGIC ─────────────────────────────────────────
-// Called from RoundResultScreen when it's time to move on
-const handlePickTopic = () => {
-// I am the loser — show me the topic picker
-setScreen("topicPicker");
-};
+    pollRef.current = setInterval(async () => {
+      const room = await loadRoomData(code);
+      if (!room) return;
 
-const handleTopicChosen = async (topic) => {
-const nextRound = currentRound + 1;
-const newUsed = { ...usedIds };
-const newQs = drawRoundQuestions(topic, newUsed[topic] || []);
-newUsed[topic] = [...(newUsed[topic] || []), ...newQs.map(q => q.id)];
-setUsedIds(newUsed);
-setCurrentTopic(topic);
-setRoundQuestions(newQs);
+      const allOppDone = Array.from({ length: QUESTIONS_PER_ROUND }, (_, i) =>
+        room.answers[`${oppRole}_${qKey(round, i)}`]
+      ).every(Boolean);
 
-// Save topic pick to room so opponent can read it
-const room = await loadRoomData(roomCode);
-if (room) {
-room.roundTopics = room.roundTopics || {};
-room.roundQuestions = room.roundQuestions || {};
-room.usedIds = newUsed;
-room.roundTopics[nextRound] = topic;
-room.roundQuestions[nextRound] = newQs.map(q => q.id);
-room.topicPick = { round: nextRound, topic, timestamp: Date.now() };
-await saveRoomData(roomCode, room);
-}
+      if (allOppDone) {
+        clearInterval(pollRef.current);
 
-setScreen("playing");
-startQuestion(nextRound, 0);
-};
+        const qs = roundQuestionsRef.current;
+        const results = [];
+        for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
+          const k = qKey(round, i);
+          const q = qs[i];
+          const myAns = currentMyAnswers[k] || "__timeout__";
+          const theirAns = room.answers[`${oppRole}_${k}`];
+          results.push({
+            correct: q ? q.correct : "?",
+            myAnswer: myAns,
+            theirAnswer: theirAns,
+            myCorrect: myAns === (q ? q.correct : null),
+            theirCorrect: theirAns === (q ? q.correct : null),
+          });
+        }
 
-// Winner waits for the loser to pick — poll for topicPick update
-const handleWinnerWaitsForTopic = () => {
-const nextRound = currentRound + 1;
-setScreen("waitingForTopic");
-pollRef.current = setInterval(async () => {
-const room = await loadRoomData(roomCode);
-if (!room) return;
-if (room.topicPick && room.topicPick.round === nextRound) {
-clearInterval(pollRef.current);
-const topic = room.topicPick.topic;
-const qIds = room.roundQuestions[nextRound] || [];
-const allQs = [...CON_LAW_QUESTIONS, ...EVIDENCE_QUESTIONS];
-const qs = qIds.map(id => allQs.find(q => q.id === id)).filter(Boolean);
-setCurrentTopic(topic);
-setRoundQuestions(qs);
-setUsedIds(room.usedIds || usedIds);
-setScreen("playing");
-startQuestion(nextRound, 0);
-}
-}, 2000);
-};
+        const myRoundScore   = results.filter(r => r.myCorrect).length;
+        const theirRoundScore = results.filter(r => r.theirCorrect).length;
+        const loser = myRoundScore > theirRoundScore ? "them"
+                    : myRoundScore < theirRoundScore ? "me" : "tie";
+        setRoundLoser(loser);
+        setScores(s => ({ me: s.me + myRoundScore, them: s.them + theirRoundScore }));
+        setRoundResults(results);
+        setWaitingForOpponent(false);
+        setScreen("roundResult");
+      }
+    }, 2000);
+  };
 
-// Called by RoundResultScreen button (winner path or tie)
-const handleNextRound = (chosenTopic) => {
-const nextRound = currentRound + 1;
-const totalRounds = MAX_ROUNDS;
-if (nextRound >= totalRounds) {
-setScreen("finalResult");
-return;
-}
-if (roundLoser === "tie") {
-// Tie: keep same topic, draw new questions
-const newUsed = { ...usedIds };
-const newQs = drawRoundQuestions(currentTopic, newUsed[currentTopic] || []);
-newUsed[currentTopic] = [...(newUsed[currentTopic] || []), ...newQs.map(q => q.id)];
-setUsedIds(newUsed);
-setRoundQuestions(newQs);
-setScreen("playing");
-startQuestion(nextRound, 0);
-}
-};
+  // ── POST-ROUND TOPIC LOGIC ────────────────────────────────────────────────
+  const handlePickTopic = () => setScreen("topicPicker");
 
-const handlePlayAgain = () => {
-clearInterval(pollRef.current);
-clearInterval(timerRef.current);
-setMyAnswers({});
-setOpponentAnswers({});
-setScores({ me: 0, them: 0 });
-setRoundResults([]);
-setShowCodeBanner(false);
-setRoundLoser(null);
-setPendingCreatorName("");
-setCurrentQSelected(null);
-setScreen("home");
-};
+  const handleTopicChosen = async (topic) => {
+    const nextRound = currentRoundRef.current + 1;
+    const newUsed = { ...usedIds };
+    const newQs = drawRoundQuestions(topic, newUsed[topic] || []);
+    newUsed[topic] = [...(newUsed[topic] || []), ...newQs.map(q => q.id)];
 
-// ── RENDER ────────────────────────────────────────────────────────────────
-if (screen === "home") return <HomeScreen onCreateGame={handleCreateGame} onJoinGame={handleJoinGame} />;
+    const room = await loadRoomData(roomCodeRef.current);
+    if (room) {
+      room.roundTopics  = room.roundTopics  || {};
+      room.roundQuestions = room.roundQuestions || {};
+      room.usedIds = newUsed;
+      room.roundTopics[nextRound]    = topic;
+      room.roundQuestions[nextRound] = newQs.map(q => q.id);
+      room.topicPick = { round: nextRound, topic, timestamp: Date.now() };
+      await saveRoomData(roomCodeRef.current, room);
+    }
 
-if (screen === "topicPickerFirst") {
-return <SpinWheelScreen pickerName={playerName} isFirstRound onTopicChosen={handleFirstTopicChosen} />;
-}
+    roundQuestionsRef.current = newQs;
+    setUsedIds(newUsed);
+    setCurrentTopic(topic);
+    setRoundQuestions(newQs);
+    startQuestion(nextRound, 0);
+    setScreen("playing");
+  };
 
-if (screen === "topicPicker") {
-return <SpinWheelScreen pickerName={playerName} onTopicChosen={handleTopicChosen} />;
-}
+  const handleWinnerWaitsForTopic = () => {
+    const nextRound = currentRoundRef.current + 1;
+    const code = roomCodeRef.current;
+    setScreen("waitingForTopic");
+    clearInterval(pollRef.current);
+    pollRef.current = setInterval(async () => {
+      const room = await loadRoomData(code);
+      if (!room) return;
+      if (room.topicPick && room.topicPick.round === nextRound) {
+        clearInterval(pollRef.current);
+        const topic = room.topicPick.topic;
+        const allQs = Object.values(TOPICS).flatMap(t => t.questions);
+        const qs = (room.roundQuestions[nextRound] || []).map(id => allQs.find(q => q.id === id)).filter(Boolean);
+        roundQuestionsRef.current = qs;
+        setCurrentTopic(topic);
+        setRoundQuestions(qs);
+        setUsedIds(room.usedIds || usedIds);
+        startQuestion(nextRound, 0);
+        setScreen("playing");
+      }
+    }, 2000);
+  };
 
-if (screen === "waitingForTopic") {
-const loserDisplayName = roundLoser === "them" ? playerName : opponentName;
-return <WaitingForTopicScreen loserName={loserDisplayName} />;
-}
+  const handleNextRound = () => {
+    const nextRound = currentRoundRef.current + 1;
+    if (nextRound >= MAX_ROUNDS) { setScreen("finalResult"); return; }
+    if (roundLoser === "tie") {
+      const newUsed = { ...usedIds };
+      const newQs = drawRoundQuestions(currentTopic, newUsed[currentTopic] || []);
+      newUsed[currentTopic] = [...(newUsed[currentTopic] || []), ...newQs.map(q => q.id)];
+      roundQuestionsRef.current = newQs;
+      setUsedIds(newUsed);
+      setRoundQuestions(newQs);
+      startQuestion(nextRound, 0);
+      setScreen("playing");
+    }
+  };
 
-if (screen === "playing") {
-const q = roundQuestions[currentQ];
-if (!q) return null;
-return (
-<div style={{ position: "relative" }}>
-{showCodeBanner && (
-<div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: "#1a1d27", borderBottom: `2px solid ${C.accent}`, padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", fontFamily: "system-ui, sans-serif" }}>
-<div>
-<div style={{ color: C.muted, fontSize: 10, letterSpacing: 2, textTransform: "uppercase", fontFamily: "monospace", marginBottom: 2 }}>Share this code with your friend</div>
-<div style={{ color: C.accent, fontSize: 26, fontWeight: 900, letterSpacing: 6, fontFamily: "monospace" }}>{roomCode}</div>
-</div>
-<div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-<button onClick={() => { navigator.clipboard.writeText(roomCode); }} style={{ background: C.accentDim, border: `1px solid ${C.accent}`, borderRadius: 8, padding: "8px 14px", color: C.accent, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "monospace" }}>COPY</button>
-<button onClick={() => setShowCodeBanner(false)} style={{ background: "transparent", border: "none", color: C.muted, fontSize: 20, cursor: "pointer", padding: "4px 8px" }}>✕</button>
-</div>
-</div>
-)}
-<div style={{ paddingTop: showCodeBanner ? 80 : 0 }}>
-<QuestionScreen
-question={q}
-questionNum={currentQ + 1}
-totalQuestions={QUESTIONS_PER_ROUND}
-onAnswer={(letter) => handleAnswer(letter, currentRound, currentQ)}
-timeLeft={timeLeft}
-selectedAnswer={currentQSelected}
-waitingForOpponent={waitingForOpponent}
-topic={currentTopic}
-isLastQuestion={currentQ === QUESTIONS_PER_ROUND - 1}
-onAdvance={() => startQuestion(currentRound, currentQ + 1)}
-/>
-</div>
-</div>
-);
-}
+  const handlePlayAgain = () => {
+    clearInterval(pollRef.current);
+    clearInterval(timerRef.current);
+    myAnswersRef.current = {};
+    setMyAnswers({});
+    setScores({ me: 0, them: 0 });
+    setRoundResults([]);
+    setShowCodeBanner(false);
+    setInviteCopied(false);
+    setRoundLoser(null);
+    setPendingCreatorName("");
+    setCurrentQSelected(null);
+    setScreen("home");
+  };
 
-if (screen === "roundResult") {
-const isGameOver = currentRound + 1 >= MAX_ROUNDS;
-const iAmLoser = roundLoser === "me";
-const iAmWinner = roundLoser === "them";
-const isTie = roundLoser === "tie";
+  // ── RENDER ────────────────────────────────────────────────────────────────
+  if (screen === "home") return <HomeScreen onCreateGame={handleCreateGame} onJoinGame={handleJoinGame} />;
 
-return (
-<RoundResultScreen
-roundResults={roundResults}
-playerName={playerName}
-opponentName={opponentName || "Opponent"}
-scores={scores}
-currentTopic={currentTopic}
-roundWinner={roundLoser}
-myName={playerName}
-isLoser={iAmLoser}
-isGameOver={isGameOver}
-onNextRound={handleNextRound}
-onPickTopic={() => {
-if (iAmLoser) {
-handlePickTopic();
-} else if (iAmWinner) {
-handleWinnerWaitsForTopic();
-} else {
-handleNextRound(null);
-}
-}}
-/>
-);
-}
+  if (screen === "topicPickerFirst")
+    return <SpinWheelScreen pickerName={playerName} isFirstRound onTopicChosen={handleFirstTopicChosen} />;
 
-if (screen === "finalResult") {
-return (
-<FinalResultScreen
-playerName={playerName}
-opponentName={opponentName || "Opponent"}
-scores={scores}
-onPlayAgain={handlePlayAgain}
-/>
-);
-}
+  if (screen === "topicPicker")
+    return <SpinWheelScreen pickerName={playerName} onTopicChosen={handleTopicChosen} />;
 
-return null;
+  if (screen === "waitingForTopic") {
+    const loserDisplayName = roundLoser === "them" ? playerName : opponentName;
+    return <WaitingForTopicScreen loserName={loserDisplayName} />;
+  }
+
+  if (screen === "playing") {
+    const q = roundQuestions[currentQ];
+    if (!q) return null;
+    return (
+      <div style={{ position: "relative" }}>
+        {showCodeBanner && (() => {
+          const url = window.location.href;
+          const msg = `Join my Bar Exam Trivia game! 🎓\n\nRoom code: ${roomCode}\n\n${url}`;
+          const doCopy = () => {
+            const ta = document.getElementById("invite-ta");
+            if (ta) { ta.select(); ta.setSelectionRange(0, 99999); }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(msg).catch(() => { try { document.execCommand("copy"); } catch {} });
+            } else {
+              try { document.execCommand("copy"); } catch {}
+            }
+            setInviteCopied(true);
+            setTimeout(() => setInviteCopied(false), 2500);
+          };
+          return (
+            <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: "#1a1d27", borderBottom: `2px solid ${C.accent}`, padding: "14px 16px", fontFamily: "system-ui, sans-serif" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                <div>
+                  <div style={{ color: C.muted, fontSize: 10, letterSpacing: 2, textTransform: "uppercase", fontFamily: "monospace", marginBottom: 2 }}>Invite a friend</div>
+                  <div style={{ color: C.accent, fontSize: 24, fontWeight: 900, letterSpacing: 6, fontFamily: "monospace" }}>{roomCode}</div>
+                </div>
+                <button onClick={() => setShowCodeBanner(false)} style={{ background: "transparent", border: "none", color: C.muted, fontSize: 22, cursor: "pointer", padding: "4px 8px", lineHeight: 1 }}>✕</button>
+              </div>
+              <textarea
+                id="invite-ta"
+                readOnly
+                value={msg}
+                rows={3}
+                onFocus={e => e.target.select()}
+                style={{ width: "100%", background: C.surface, border: `1px solid ${C.border}`, borderRadius: 8, padding: "8px 10px", color: C.text, fontSize: 12, fontFamily: "monospace", resize: "none", boxSizing: "border-box", lineHeight: 1.5, marginBottom: 8 }}
+              />
+              <button
+                onClick={doCopy}
+                style={{ width: "100%", background: inviteCopied ? C.green : C.accent, border: "none", borderRadius: 8, padding: "10px", fontSize: 13, fontWeight: 700, cursor: "pointer", color: "#fff", fontFamily: "system-ui, sans-serif", transition: "background 0.2s" }}>
+                {inviteCopied ? "✓ Copied!" : "Copy Invite Link"}
+              </button>
+            </div>
+          );
+        })()}
+        <div style={{ paddingTop: showCodeBanner ? 200 : 0 }}>
+          <QuestionScreen
+            question={q}
+            questionNum={currentQ + 1}
+            totalQuestions={QUESTIONS_PER_ROUND}
+            onAnswer={(letter) => handleAnswer(letter, currentRound, currentQ)}
+            timeLeft={timeLeft}
+            selectedAnswer={currentQSelected}
+            waitingForOpponent={waitingForOpponent}
+            topic={currentTopic}
+            isLastQuestion={currentQ === QUESTIONS_PER_ROUND - 1}
+            onAdvance={() => startQuestion(currentRound, currentQ + 1)}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (screen === "roundResult") {
+    const isGameOver = currentRound + 1 >= MAX_ROUNDS;
+    const iAmLoser   = roundLoser === "me";
+    const iAmWinner  = roundLoser === "them";
+    return (
+      <RoundResultScreen
+        roundResults={roundResults}
+        playerName={playerName}
+        opponentName={opponentName || "Opponent"}
+        scores={scores}
+        currentTopic={currentTopic}
+        roundWinner={roundLoser}
+        myName={playerName}
+        isLoser={iAmLoser}
+        isGameOver={isGameOver}
+        onNextRound={handleNextRound}
+        onPickTopic={() => {
+          if (iAmLoser) handlePickTopic();
+          else if (iAmWinner) handleWinnerWaitsForTopic();
+          else handleNextRound();
+        }}
+      />
+    );
+  }
+
+  if (screen === "finalResult") {
+    return (
+      <FinalResultScreen
+        playerName={playerName}
+        opponentName={opponentName || "Opponent"}
+        scores={scores}
+        onPlayAgain={handlePlayAgain}
+      />
+    );
+  }
+
+  return null;
 }

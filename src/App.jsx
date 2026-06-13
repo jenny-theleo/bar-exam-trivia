@@ -183,18 +183,90 @@ const C = {
 
 // ── SCREENS ──────────────────────────────────────────────────────────────────
 
+// ── SESSION STORAGE HELPERS ──────────────────────────────────────────────────
+const getAllSessions = () => {
+  try {
+    const raw = localStorage.getItem("btSessions");
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+};
+
+const upsertSession = (name, code) => {
+  try {
+    const sessions = getAllSessions().filter(s => s.code !== code);
+    sessions.unshift({ name, code, lastSeen: Date.now() });
+    localStorage.setItem("btSessions", JSON.stringify(sessions.slice(0, 10)));
+  } catch {}
+};
+
+const removeSession = (code) => {
+  try {
+    const sessions = getAllSessions().filter(s => s.code !== code);
+    localStorage.setItem("btSessions", JSON.stringify(sessions));
+  } catch {}
+};
+
+// ── HOME / LOBBY SCREEN ───────────────────────────────────────────────────────
 function HomeScreen({ onCreateGame, onJoinGame }) {
-  // Read room code from ?room=XXXXXX query param
   const urlCode = (() => {
-    try {
-      return new URLSearchParams(window.location.search).get("room") || "";
-    } catch { return ""; }
+    try { return new URLSearchParams(window.location.search).get("room") || ""; } catch { return ""; }
   })();
-  const [joinCode, setJoinCode] = useState(urlCode.toUpperCase());
-  const [name, setName] = useState("");
+
   const [mode, setMode] = useState(urlCode ? "join" : null);
+  const [name, setName] = useState("");
+  const [joinCode, setJoinCode] = useState(urlCode.toUpperCase());
   const [error, setError] = useState("");
   const [joining, setJoining] = useState(false);
+  const [sessions, setSessions] = useState([]);
+  const [roomStatuses, setRoomStatuses] = useState({});
+  const [loadingStatuses, setLoadingStatuses] = useState(true);
+
+  const FB_URL = "https://cracked-bar-trivia-default-rtdb.firebaseio.com";
+
+  // Load all saved sessions and fetch their status from Firebase
+  useEffect(() => {
+    const saved = getAllSessions();
+    setSessions(saved);
+    if (saved.length === 0) { setLoadingStatuses(false); return; }
+
+    const fetchStatuses = async () => {
+      const statuses = {};
+      await Promise.all(saved.map(async ({ name, code }) => {
+        try {
+          const res = await fetch(`${FB_URL}/rooms/${code}.json`);
+          if (!res.ok) return;
+          const room = await res.json();
+          if (!room) return;
+          const isCreator = room.creator === name;
+          const role = isCreator ? "creator" : "joiner";
+          const oppRole = isCreator ? "joiner" : "creator";
+          const opponent = isCreator ? (room.joiner || "Waiting for opponent…") : room.creator;
+
+          // Find current round
+          const rounds = Object.keys(room.roundTopics || {}).map(Number).sort((a, b) => b - a);
+          const currentRound = rounds.length > 0 ? rounds[0] : 0;
+          const totalRounds = Object.keys(room.roundTopics || {}).length;
+
+          // Check if it's my turn (I haven't submitted answers this round)
+          let myTurn = false;
+          if (room.roundTopics && room.roundTopics[currentRound]) {
+            const myDone = [0, 1, 2].every(i => room.answers && room.answers[`${role}_r${currentRound}q${i}`]);
+            const oppDone = [0, 1, 2].every(i => room.answers && room.answers[`${oppRole}_r${currentRound}q${i}`]);
+            if (!myDone) myTurn = true;
+            else if (myDone && oppDone && currentRound + 1 < 5) myTurn = true; // round result pending
+          } else {
+            // Creator hasn't spun yet
+            myTurn = isCreator;
+          }
+
+          statuses[code] = { opponent, myTurn, currentRound: totalRounds, opponent };
+        } catch {}
+      }));
+      setRoomStatuses(statuses);
+      setLoadingStatuses(false);
+    };
+    fetchStatuses();
+  }, []);
 
   const handleCreate = async () => {
     if (!name.trim()) { setError("Enter your name"); return; }
@@ -211,33 +283,84 @@ function HomeScreen({ onCreateGame, onJoinGame }) {
     setJoining(false);
   };
 
+  const handleResumeSession = async (session) => {
+    setJoining(true);
+    await onJoinGame(session.name, session.code, true);
+    setJoining(false);
+  };
+
+  const handleRemoveSession = (code, e) => {
+    e.stopPropagation();
+    removeSession(code);
+    setSessions(s => s.filter(x => x.code !== code));
+  };
+
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif" }}>
-      <div style={{ maxWidth: 420, width: "100%" }}>
-        <div style={{ textAlign: "center", marginBottom: 40 }}>
-          <div style={{ fontSize: 11, letterSpacing: 4, color: C.accent, textTransform: "uppercase", marginBottom: 12, fontFamily: "monospace" }}>MBE Bar Prep</div>
-          <h1 style={{ fontSize: 38, fontWeight: 900, color: C.text, margin: "0 0 8px", letterSpacing: -1.5 }}>Bar Exam<br /><span style={{ color: C.accent }}>Trivia</span></h1>
-          <p style={{ color: C.muted, fontSize: 14, margin: "0 0 12px" }}>Play async with a friend · 3 questions per round</p>
-          <div style={{ display: "flex", justifyContent: "center", gap: 8 }}>
-            {TOPIC_NAMES.map(t => (
-              <span key={t} style={{ background: TOPICS[t].color + "22", color: TOPICS[t].color, fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 20, fontFamily: "monospace", letterSpacing: 1 }}>
-                {TOPICS[t].icon} {TOPICS[t].label}
-              </span>
-            ))}
-          </div>
+    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "system-ui, sans-serif", padding: "24px 16px 40px" }}>
+      <div style={{ maxWidth: 420, margin: "0 auto" }}>
+
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: 32, paddingTop: 16 }}>
+          <div style={{ fontSize: 11, letterSpacing: 4, color: C.accent, textTransform: "uppercase", marginBottom: 10, fontFamily: "monospace" }}>MBE Bar Prep</div>
+          <h1 style={{ fontSize: 34, fontWeight: 900, color: C.text, margin: "0 0 6px", letterSpacing: -1.5 }}>Bar Exam <span style={{ color: C.accent }}>Trivia</span></h1>
+          <p style={{ color: C.muted, fontSize: 13, margin: 0 }}>Async multiplayer · 5 rounds · 3 questions each</p>
         </div>
 
+        {/* Active Games Lobby */}
+        {sessions.length > 0 && !mode && (
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ color: C.muted, fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", fontFamily: "monospace", marginBottom: 12 }}>Your Active Games</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {sessions.map(session => {
+                const status = roomStatuses[session.code];
+                const myTurn = status ? status.myTurn : null;
+                const opponent = status ? status.opponent : "Loading…";
+                const rounds = status ? status.currentRound : "—";
+                return (
+                  <div key={session.code}
+                    onClick={() => !joining && handleResumeSession(session)}
+                    style={{ background: C.card, border: `2px solid ${myTurn ? C.green : C.border}`, borderRadius: 14,
+                      padding: "14px 16px", cursor: joining ? "default" : "pointer", position: "relative",
+                      transition: "border-color 0.2s" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                          {myTurn === true && <span style={{ background: C.green, color: "#000", fontSize: 9, fontWeight: 800, padding: "2px 7px", borderRadius: 10, fontFamily: "monospace", letterSpacing: 1, flexShrink: 0 }}>YOUR TURN</span>}
+                          {myTurn === false && <span style={{ background: C.border, color: C.muted, fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 10, fontFamily: "monospace", letterSpacing: 1, flexShrink: 0 }}>WAITING</span>}
+                          {myTurn === null && loadingStatuses && <span style={{ color: C.muted, fontSize: 11 }}>Loading…</span>}
+                          <span style={{ color: C.accent, fontFamily: "monospace", fontSize: 11, fontWeight: 700 }}>{session.code}</span>
+                        </div>
+                        <div style={{ color: C.text, fontWeight: 700, fontSize: 15 }}>vs {opponent}</div>
+                        <div style={{ color: C.muted, fontSize: 12, marginTop: 2 }}>Round {rounds} of 5 · Playing as {session.name}</div>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+                        <span style={{ fontSize: 20 }}>{myTurn ? "▶" : "⏳"}</span>
+                        <button onClick={e => handleRemoveSession(session.code, e)}
+                          style={{ background: "transparent", border: "none", color: C.muted, fontSize: 18,
+                            cursor: "pointer", padding: "4px", lineHeight: 1, borderRadius: 6 }}>✕</button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* New Game Actions */}
         {!mode && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {sessions.length > 0 && <div style={{ color: C.muted, fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", fontFamily: "monospace", marginBottom: 2 }}>New Game</div>}
             <button onClick={() => setMode("create")} style={btnStyle(C.accent)}>⚡ Create Game</button>
-            <button onClick={() => setMode("join")} style={btnStyle("transparent", C.border, C.text)}>🔗 Join or Rejoin with Code</button>
+            <button onClick={() => setMode("join")} style={btnStyle("transparent", C.border, C.text)}>🔗 Join with Code</button>
           </div>
         )}
 
         {mode === "create" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div style={{ color: C.muted, fontSize: 12, marginBottom: 4, fontFamily: "monospace" }}>YOUR NAME</div>
-            <input value={name} onChange={e => setName(e.target.value)} placeholder="Enter your name" style={inputStyle} onKeyDown={e => e.key === "Enter" && handleCreate()} />
+            <input value={name} onChange={e => setName(e.target.value)} placeholder="Enter your name"
+              style={inputStyle} onKeyDown={e => e.key === "Enter" && handleCreate()} autoFocus />
             {error && <div style={{ color: C.red, fontSize: 13 }}>{error}</div>}
             <button onClick={handleCreate} style={btnStyle(C.accent)}>Create Game →</button>
             <button onClick={() => { setMode(null); setError(""); }} style={btnStyle("transparent", C.border, C.muted)}>Back</button>
@@ -249,9 +372,12 @@ function HomeScreen({ onCreateGame, onJoinGame }) {
             <div style={{ color: C.muted, fontSize: 12, marginBottom: 4, fontFamily: "monospace" }}>YOUR NAME</div>
             <input value={name} onChange={e => setName(e.target.value)} placeholder="Enter your name" style={inputStyle} />
             <div style={{ color: C.muted, fontSize: 12, marginBottom: 4, fontFamily: "monospace" }}>ROOM CODE</div>
-            <input value={joinCode} onChange={e => setJoinCode(e.target.value)} placeholder="e.g. AB12CD" style={{ ...inputStyle, fontFamily: "monospace", letterSpacing: 3, textTransform: "uppercase" }} maxLength={6} onKeyDown={e => e.key === "Enter" && handleJoin()} />
+            <input value={joinCode} onChange={e => setJoinCode(e.target.value)} placeholder="e.g. AB12CD"
+              style={{ ...inputStyle, fontFamily: "monospace", letterSpacing: 3, textTransform: "uppercase" }}
+              maxLength={6} onKeyDown={e => e.key === "Enter" && handleJoin()} autoFocus />
             {error && <div style={{ color: C.red, fontSize: 13 }}>{error}</div>}
-            <button onClick={handleJoin} disabled={joining} style={{ ...btnStyle(joining ? C.surface : C.accent, joining ? C.border : C.accent), opacity: joining ? 0.6 : 1, cursor: joining ? "default" : "pointer" }}>
+            <button onClick={handleJoin} disabled={joining}
+              style={{ ...btnStyle(joining ? C.surface : C.accent, joining ? C.border : C.accent), opacity: joining ? 0.6 : 1, cursor: joining ? "default" : "pointer" }}>
               {joining ? "Joining…" : "Join Game →"}
             </button>
             <button onClick={() => { setMode(null); setError(""); }} style={btnStyle("transparent", C.border, C.muted)}>Back</button>
@@ -961,28 +1087,21 @@ export default function App() {
   const setIsCreatorBoth = (v) => { isCreatorRef.current = v; setIsCreator(v); };
 
   // ── SESSION PERSISTENCE ───────────────────────────────────────────────────
-  const saveSession = (name, code) => {
-    try { localStorage.setItem("btSession", JSON.stringify({ name, code })); } catch {}
-  };
+  const saveSession = (name, code) => { upsertSession(name, code); };
+  const clearSession = (code) => { if (code) removeSession(code); };
 
-  const clearSession = () => {
-    try { localStorage.removeItem("btSession"); } catch {}
-  };
-
-  // On mount: restore session if one exists
+  // On mount: just show home — lobby loads sessions itself
   useEffect(() => {
-    const restore = async () => {
-      try {
-        const raw = localStorage.getItem("btSession");
-        if (!raw) { setSessionRestoring(false); return; }
-        const { name, code } = JSON.parse(raw);
-        if (!name || !code) { setSessionRestoring(false); return; }
-        // Try to rejoin silently — no alerts if room not found
-        await handleJoinGame(name, code, true);
-      } catch {}
-      setSessionRestoring(false);
-    };
-    restore();
+    // Migrate old single-session format if present
+    try {
+      const old = localStorage.getItem("btSession");
+      if (old) {
+        const { name, code } = JSON.parse(old);
+        if (name && code) upsertSession(name, code);
+        localStorage.removeItem("btSession");
+      }
+    } catch {}
+    setSessionRestoring(false);
   }, []);
 
   const qKey = (round, q) => `r${round}q${q}`;
@@ -1500,7 +1619,7 @@ export default function App() {
         }, 2000);
       }
     } else {
-      clearSession();
+      clearSession(code);
       setPendingCreatorName("");
       setScreen("home");
     }

@@ -233,7 +233,7 @@ function HomeScreen({ onCreateGame, onJoinGame }) {
         {!mode && (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <button onClick={() => setMode("create")} style={btnStyle(C.accent)}>⚡ Create Game</button>
-            <button onClick={() => setMode("join")} style={btnStyle("transparent", C.border, C.text)}>🔗 Join Game with Code</button>
+            <button onClick={() => setMode("join")} style={btnStyle("transparent", C.border, C.text)}>🔗 Join or Rejoin with Code</button>
           </div>
         )}
 
@@ -1080,25 +1080,41 @@ export default function App() {
       alert("Room not found. Double-check the code and try again.");
       return;
     }
-    if (room.joiner && room.joiner !== name) { alert("This game already has two players."); return; }
 
-    // Register joiner name immediately (creator may still be spinning)
-    room.joiner = name;
-    await saveRoomData(code, room);
+    // Determine role — allow rejoin if name matches an existing player
+    const isCreator = room.creator === name;
+    const isExistingJoiner = room.joiner === name;
+    const isNewJoiner = !room.joiner;
+
+    if (!isCreator && !isExistingJoiner && !isNewJoiner) {
+      alert("This game already has two players.");
+      return;
+    }
+
+    // Register as joiner if new
+    if (isNewJoiner && !isCreator) {
+      room.joiner = name;
+      await saveRoomData(code, room);
+    }
 
     setRoomCodeBoth(code);
-    setIsCreatorBoth(false);
+    setIsCreatorBoth(isCreator);
     setPlayerName(name);
-    setOpponentName(room.creator);
+    setOpponentName(isCreator ? (room.joiner || "") : room.creator);
 
     const allQs = Object.values(TOPICS).flatMap(t => t.questions);
-    const topic = room.roundTopics ? room.roundTopics[0] : null;
+
+    // Figure out which round we're in by finding the highest round with questions
+    const rounds = Object.keys(room.roundTopics || {}).map(Number).sort((a, b) => b - a);
+    const currentRoundNum = rounds.length > 0 ? rounds[0] : 0;
+    const topic = room.roundTopics ? room.roundTopics[currentRoundNum] : null;
     const qs = topic
-      ? (room.roundQuestions[0] || []).map(id => allQs.find(q => q.id === id)).filter(Boolean)
+      ? (room.roundQuestions[currentRoundNum] || []).map(id => allQs.find(q => q.id === id)).filter(Boolean)
       : [];
+    const usedFromRoom = room.usedIds || (() => { const u = {}; TOPIC_NAMES.forEach(t => { u[t] = []; }); return u; })();
 
     if (!topic || qs.length < QUESTIONS_PER_ROUND) {
-      // Creator hasn't spun yet — show waiting screen, poll until they do
+      // Creator hasn't spun yet
       setScreen("joinerWaiting");
       clearInterval(pollRef.current);
       pollRef.current = setInterval(async () => {
@@ -1108,30 +1124,106 @@ export default function App() {
         const q = t ? (r.roundQuestions[0] || []).map(id => allQs.find(q => q.id === id)).filter(Boolean) : [];
         if (t && q.length >= QUESTIONS_PER_ROUND) {
           clearInterval(pollRef.current);
-          const usedFromRoom = r.usedIds || (() => { const u = {}; TOPIC_NAMES.forEach(x => { u[x] = []; }); return u; })();
+          const used = r.usedIds || (() => { const u = {}; TOPIC_NAMES.forEach(x => { u[x] = []; }); return u; })();
           roundQuestionsRef.current = q;
           setCurrentTopic(t);
           setRoundQuestions(q);
-          setUsedIds(usedFromRoom);
+          setUsedIds(used);
           setTopicRevealTopic(t);
-          setScreen("topicReveal");
+          setScreen(isCreator ? "playing" : "topicReveal");
+          if (isCreator) startQuestion(0, 0);
         }
       }, 2000);
+      return;
+    }
+
+    // Game is in progress — check if this player already submitted answers this round
+    const role = isCreator ? "creator" : "joiner";
+    const oppRole = isCreator ? "joiner" : "creator";
+    const myAnswersThisRound = {};
+    let iAlreadyFinished = true;
+    for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
+      const k = qKey(currentRoundNum, i);
+      const ans = room.answers ? room.answers[`${role}_${k}`] : null;
+      if (ans) { myAnswersThisRound[k] = ans; } else { iAlreadyFinished = false; }
+    }
+
+    roundQuestionsRef.current = qs;
+    setCurrentTopic(topic);
+    setRoundQuestions(qs);
+    setUsedIds(usedFromRoom);
+    currentRoundRef.current = currentRoundNum;
+    setCurrentRound(currentRoundNum);
+
+    if (iAlreadyFinished) {
+      // I already submitted — check if opponent also done
+      const oppDone = Array.from({ length: QUESTIONS_PER_ROUND }, (_, i) =>
+        room.answers && room.answers[`${oppRole}_${qKey(currentRoundNum, i)}`]
+      ).every(Boolean);
+
+      if (oppDone) {
+        // Both done — rebuild results and show round result
+        const results = [];
+        for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
+          const k = qKey(currentRoundNum, i);
+          const q = qs[i];
+          const myAns = myAnswersThisRound[k] || "__timeout__";
+          const theirAns = room.answers[`${oppRole}_${k}`];
+          results.push({
+            correct: q ? q.correct : "?",
+            myAnswer: myAns, theirAnswer: theirAns,
+            myCorrect: myAns === (q ? q.correct : null),
+            theirCorrect: theirAns === (q ? q.correct : null),
+          });
+        }
+        const myScore = results.filter(r => r.myCorrect).length;
+        const theirScore = results.filter(r => r.theirCorrect).length;
+        const loser = myScore > theirScore ? "them" : myScore < theirScore ? "me" : "tie";
+        myAnswersRef.current = myAnswersThisRound;
+        setMyAnswers(myAnswersThisRound);
+        setRoundLoser(loser);
+        setRoundResults(results);
+        // Rebuild cumulative scores from all rounds
+        let meTotal = 0, themTotal = 0;
+        const allRounds = Object.keys(room.roundTopics || {}).map(Number);
+        allRounds.forEach(rNum => {
+          for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
+            const k = qKey(rNum, i);
+            const q = (room.roundQuestions[rNum] || []).map(id => allQs.find(x => x.id === id)).filter(Boolean)[i];
+            const myA = room.answers[`${role}_${k}`];
+            const theirA = room.answers[`${oppRole}_${k}`];
+            if (myA && q && myA === q.correct) meTotal++;
+            if (theirA && q && theirA === q.correct) themTotal++;
+          }
+        });
+        setScores({ me: meTotal, them: themTotal });
+        setScreen("roundResult");
+      } else {
+        // I'm done, opponent isn't — resume waiting
+        myAnswersRef.current = myAnswersThisRound;
+        setMyAnswers(myAnswersThisRound);
+        setWaitingForOpponent(true);
+        setScreen("playing");
+        startQuestion(currentRoundNum, QUESTIONS_PER_ROUND - 1);
+        pollForRoundCompletion(currentRoundNum, myAnswersThisRound);
+      }
     } else {
-      // Creator already spun — go straight to topic reveal animation then play
-      const usedFromRoom = room.usedIds || (() => { const u = {}; TOPIC_NAMES.forEach(t => { u[t] = []; }); return u; })();
-      roundQuestionsRef.current = qs;
-      setCurrentTopic(topic);
-      setRoundQuestions(qs);
-      setUsedIds(usedFromRoom);
-      setTopicRevealTopic(topic);
-      setScreen("topicReveal");
+      // I haven't finished — resume playing from Q1 (answers not stored mid-round)
+      myAnswersRef.current = {};
+      setMyAnswers({});
+      if (isCreator) {
+        startQuestion(currentRoundNum, 0);
+        setScreen("playing");
+      } else {
+        setTopicRevealTopic(topic);
+        setScreen("topicReveal");
+      }
     }
   };
 
   // Joiner hits "Let's Play" after topic reveal animation
   const handleJoinerReady = () => {
-    startQuestion(0, 0);
+    startQuestion(currentRoundRef.current, 0);
     setScreen("playing");
   };
 

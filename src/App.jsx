@@ -184,12 +184,9 @@ const C = {
 // ── SCREENS ──────────────────────────────────────────────────────────────────
 
 function HomeScreen({ onCreateGame, onJoinGame }) {
-  // Auto-detect room code from URL hash (#room=XXXXXX) or query param (?room=XXXXXX)
+  // Read room code from ?room=XXXXXX query param
   const urlCode = (() => {
     try {
-      const hash = window.location.hash.replace("#", "");
-      const hashParams = new URLSearchParams(hash);
-      if (hashParams.get("room")) return hashParams.get("room");
       return new URLSearchParams(window.location.search).get("room") || "";
     } catch { return ""; }
   })();
@@ -269,15 +266,13 @@ function HomeScreen({ onCreateGame, onJoinGame }) {
 // Creator sees this immediately after hitting Create Game — code is live,
 // joiner can connect before the spin even happens.
 function ShareCodeScreen({ creatorName, roomCode, onSpin, inviteCopied, onCopy }) {
+  // Always build from origin only — never inherit existing query/hash
   const joinUrl = (() => {
     try {
-      const u = new URL(window.location.href);
-      u.search = "";
-      u.hash = "room=" + roomCode;
-      return u.toString();
-    } catch { return window.location.href.split("?")[0].split("#")[0] + "#room=" + roomCode; }
+      return window.location.origin + "?room=" + roomCode;
+    } catch { return "?room=" + roomCode; }
   })();
-  const shareMsg = "Join my Bar Exam Trivia game! \uD83C\uDF93\n\n" + joinUrl;
+  const shareMsg = joinUrl;
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif" }}>
@@ -291,14 +286,15 @@ function ShareCodeScreen({ creatorName, roomCode, onSpin, inviteCopied, onCopy }
         <div style={{ background: C.card, border: "2px solid " + C.accent, borderRadius: 18, padding: "24px", textAlign: "center", marginBottom: 20 }}>
           <div style={{ color: C.muted, fontSize: 10, letterSpacing: 3, textTransform: "uppercase", fontFamily: "monospace", marginBottom: 8 }}>Room Code</div>
           <div style={{ color: C.accent, fontSize: 44, fontWeight: 900, letterSpacing: 8, fontFamily: "monospace", lineHeight: 1, marginBottom: 16 }}>{roomCode}</div>
-          <div style={{ color: C.muted, fontSize: 10, letterSpacing: 2, textTransform: "uppercase", fontFamily: "monospace", marginBottom: 8 }}>Join Link (tap to copy)</div>
+          <div style={{ color: C.muted, fontSize: 10, letterSpacing: 2, textTransform: "uppercase", fontFamily: "monospace", marginBottom: 8 }}>Join Link</div>
           <div
             onClick={onCopy}
             style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: 8, padding: "10px 12px",
-              wordBreak: "break-all", fontSize: 11, fontFamily: "monospace", color: C.accent,
+              wordBreak: "break-all", fontSize: 12, fontFamily: "monospace", color: C.accent,
               lineHeight: 1.5, cursor: "pointer", userSelect: "all" }}>
             {joinUrl}
           </div>
+          <div style={{ color: C.muted, fontSize: 11, marginTop: 6 }}>Tap above or use the button below to copy</div>
         </div>
 
         <textarea id="share-ta" readOnly value={shareMsg} onChange={() => {}}

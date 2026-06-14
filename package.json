@@ -13,5 +13,8 @@
   "browserslist": {
     "production": [">0.2%"],
     "development": ["last 1 chrome version"]
+  },
+  "dependencies": {
+    "web-push": "^3.6.7"
   }
 }
